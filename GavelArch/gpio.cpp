@@ -1,5 +1,6 @@
 #include "gpio.h"
 
+#include "license.h"
 #include "serialport.h"
 
 #define DEBOUNCE_TIMER 50
@@ -416,6 +417,7 @@ GPIO_DESCRIPTION* GPIOManager::getPin(GPIO_TYPE __type, int __index) {
 }
 
 void GPIOManager::setupTask() {
+  TCA9555_LICENSE;
   PORT->addCmd("gpio", "[v|all]", "Prints the configured GPIO Table", GPIOManager::printTable);
   if (gpioTypeConfigured[GPIO_TONE] == true) { PORT->addCmd("tone", "[n] [Hz]", "Sets a Square Wave in Hz on Tone Pin n ", GPIOManager::toneCmd); }
   if (gpioTypeConfigured[GPIO_PWM] == true) { PORT->addCmd("pwm", "[n] [f] [%]", "Sets the frequency and % Duty Cycyle PWM Pin n ", GPIOManager::pwmCmd); }

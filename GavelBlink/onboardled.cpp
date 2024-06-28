@@ -2,6 +2,7 @@
 
 #include <Adafruit_NeoPixel.h>
 #include <gpio.h>
+#include <license.h>
 #include <serialport.h>
 #define RP2040_PIN 16
 #define NUMPIXELS 1
@@ -16,6 +17,7 @@ Blink* Blink::get() {
 }
 
 void Blink::setupTask() {
+  ADAFRUIT_PIXEL_LICENSE;
   switch (ProgramInfo::hw_type) {
   case HW_RP2040_ZERO:
     setRefreshMilli(50);

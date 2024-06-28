@@ -1,4 +1,4 @@
-#include "communication.h"
+#include "datastructure.h"
 #include "gpio.h"
 #include "serialport.h"
 

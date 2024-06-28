@@ -2,6 +2,7 @@
 
 #include "architecture.h"
 #include "ethernetmodule.h"
+#include "license.h"
 #include "serialport.h"
 #include "watchdog.h"
 
@@ -107,32 +108,24 @@ HTMLBuilder* CodePage::getHtml(HTMLBuilder* html) {
   html->closeTag();
   html->hrTag();
   html->brTag()->println();
-  html->openTag("h2")->print("Libraries and Tools")->closeTag()->println();
-  html->openTag("table", "border=\"1\" class=\"center\"")->println();
-  html->openTrTag()->tdTag("Arduino IDE")->tdTag("Ver. 2.3.2")->closeTag()->println();
-  html->openTrTag()->tdTag("Raspberry Pi Pico/RP2040")->tdTag("Ver. 3.9.3")->closeTag()->println();
-  html->openTrTag()->tdTag("Adafruit BusIO")->tdTag("Ver. 1.16.1")->closeTag()->println();
-  html->openTrTag()->tdTag("Adafruit GFX Library")->tdTag("Ver. 1.11.9")->closeTag()->println();
-  html->openTrTag()->tdTag("Adafruit MCP4725")->tdTag("Ver. 2.0.2")->closeTag()->println();
-  html->openTrTag()->tdTag("Adafruit NeoPixel")->tdTag("Ver. 1.12.2")->closeTag()->println();
-  html->openTrTag()->tdTag("Adafruit SSD1306")->tdTag("Ver. 2.5.10")->closeTag()->println();
-  html->openTrTag()->tdTag("Adafruit_Unified_Sensor")->tdTag("")->closeTag()->println();
-  html->openTrTag()->tdTag("DHT sensor library")->tdTag("Ver. 1.4.6")->closeTag()->println();
-  html->openTrTag()->tdTag("Ethernet")->tdTag("Ver. 2.0.2")->closeTag()->println();
-  html->openTrTag()->tdTag("I2C_EEPROM")->tdTag("Ver. 1.8.5")->closeTag()->println();
-  html->openTrTag()->tdTag("TCA9555")->tdTag("Ver. 0.3.2")->closeTag()->println();
-  html->openTrTag()->tdTag("Little FS Upload Tool")->tdTag("Ver. 2.0.0")->closeTag()->println();
-  html->openTrTag()
-      ->tdTag("DHCPLite")
-      ->openTdTag()
-      ->openTag("a", "href=\"https://github.com/pkulchenko/DHCPLite/tree/master\"")
-      ->print("//github.com/pkulchenko/DHCPLite/tree/master")
-      ->closeTag()
-      ->closeTag()
-      ->closeTag()
-      ->println();
-  html->closeTag()->brTag()->println();
-  html->hrTag();
+  if (LICENSE_AVAILABLE) {
+    html->openTag("h2")->print("Libraries and Tools")->closeTag()->println();
+
+    html->openTag("table", "border=\"1\" class=\"center\"")->println();
+    for (unsigned long i = 0; i < LICENSE->count(); i++) {
+      LicenseFile file;
+      LICENSE->getFile(i, &file);
+      String name = file.libraryName;
+      String version = file.version;
+      String link = file.link;
+      html->openTrTag()->tdTag(name)->tdTag(version);
+      html->openTdTag()->openTag("a", "href=\"/license/" + link + "\"")->print(link)->closeTag()->closeTag();
+      html->closeTag()->println();
+    }
+    html->closeTag()->brTag()->println();
+    html->hrTag();
+  }
+
   html->openTag("h2")->print("Miscellaneous Tools")->closeTag()->brTag()->println();
   html->openTag("small");
   html->openTag("a", "href=\"https://github.com/earlephilhower/arduino-pico-littlefs-plugin/releases\"");

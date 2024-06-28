@@ -1,6 +1,7 @@
 #include "temperature.h"
 
 #include "gpio.h"
+#include "license.h"
 #include "serialport.h"
 
 Temperature* Temperature::temperature = nullptr;
@@ -20,6 +21,8 @@ void Temperature::configure(int __pin, int __drift) {
 }
 
 void Temperature::setupTask() {
+  DHT_LICENSE;
+  ADAFRUIT_UNIFIED_LICENSE;
   if (configured) {
     GPIO->configurePinReserve(GPIO_INTERNAL, pin, "Temperature Sensor");
     PORT->addCmd("temp", "", "Temperature Status", Temperature::temperatureStatus);

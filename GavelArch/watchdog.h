@@ -2,7 +2,6 @@
 #define __GAVEL_WATCHDOG
 
 #include "architecture.h"
-#include "communication.h"
 
 #define WATCHDOG Watchdog::get()
 

@@ -2,6 +2,7 @@
 
 #include "bitmap.h"
 #include "gpio.h"
+#include "license.h"
 #include "serialport.h"
 
 Screen* Screen::screen = nullptr;
@@ -12,6 +13,9 @@ Screen* Screen::get() {
 }
 
 void Screen::setupTask() {
+  ADAFRUIT_SSD1306_LICENSE;
+  ADAFRUIT_GFX_LICENSE;
+  ADAFRUIT_BUS_LICENSE;
   PORT->addCmd("bitmap", "[n]", "Displays an image on the screen", Screen::bitmap);
   GPIO->configurePinReserve(GPIO_INTERNAL, ProgramInfo::hardwarewire.pinSDA, "I2C SDA", true);
   GPIO->configurePinReserve(GPIO_INTERNAL, ProgramInfo::hardwarewire.pinSCL, "I2C SCL", true);

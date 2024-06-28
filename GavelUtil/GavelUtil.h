@@ -3,6 +3,7 @@
 
 #include "average.h"
 #include "communication.h"
+#include "datastructure.h"
 #include "lock.h"
 #include "stopwatch.h"
 #include "timer.h"

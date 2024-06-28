@@ -81,14 +81,16 @@ void Files::printInfo() {
 
   Dir dir = LittleFS.openDir("/");
   while (dir.next()) {
-    PORT->print(INFO, dir.fileName());
-    if (dir.fileSize()) {
-      File file = dir.openFile("r");
-      count++;
-      size += file.size();
-      for (int i = dir.fileName().length(); i < 17; i++) PORT->print(INFO, " ");
-      PORT->println(INFO, " " + String(file.size()));
-      file.close();
+    if (dir.isFile()) {
+      PORT->print(INFO, dir.fileName());
+      if (dir.fileSize()) {
+        File file = dir.openFile("r");
+        count++;
+        size += file.size();
+        for (int i = dir.fileName().length(); i < 17; i++) PORT->print(INFO, " ");
+        PORT->println(INFO, " " + String(file.size()));
+        file.close();
+      }
     }
   }
   String countString = "   " + String(count) + " File(s)";

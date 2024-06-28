@@ -1,4 +1,5 @@
 #include "gpio.h"
+#include "license.h"
 #include "lock.h"
 #include "serialport.h"
 
@@ -7,6 +8,10 @@ static Mutex startupMutex1;
 
 void setup0Start() {
   startupMutex.take();
+
+  ARDUINO_IDE_LICENSE;
+  RASPBERRY_PICO_LICENSE;
+
   PORT->println();
   PORT->println(PROMPT, "************************************************************");
   PORT->println(INFO, String(ProgramInfo::AppName) + " Version: " + String(ProgramInfo::MajorVersion) + String(".") + String(ProgramInfo::MinorVersion));

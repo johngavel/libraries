@@ -1,6 +1,6 @@
 #include "html.h"
 
-#include "communication.h"
+#include "datastructure.h"
 #include "serialport.h"
 
 #define HTML_BUFFER_SIZE 49152

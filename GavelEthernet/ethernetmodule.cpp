@@ -1,6 +1,7 @@
 #include "ethernetmodule.h"
 
 #include "gpio.h"
+#include "license.h"
 #include "serialport.h"
 
 EthernetModule* EthernetModule::ethernetModule = nullptr;
@@ -84,6 +85,7 @@ void EthernetModule::configure(byte* __macAddress, bool __isDHCP, byte* __ipAddr
 
 void EthernetModule::setupTask() {
   bool status = false;
+  ETHERNET_LICENSE;
   PORT->addCmd("ip", "", "IP Stats", EthernetModule::ipStat);
   setRefreshMilli(60000);
   if (isConfigured) {

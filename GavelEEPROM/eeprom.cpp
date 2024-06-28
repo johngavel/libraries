@@ -1,6 +1,7 @@
 #include "eeprom.h"
 
 #include "gpio.h"
+#include "license.h"
 #include "serialport.h"
 
 //#define FULL_DATA_SIZE I2C_DEVICESIZE_24LC16 / 8
@@ -23,6 +24,7 @@ void EEpromMemory::configure(unsigned long size) {
 
 void EEpromMemory::setupTask() {
   unsigned int fullDataSize = memorySize / 8;
+  I2C_EEPROM_LICENSE;
   GPIO->configurePinReserve(GPIO_INTERNAL, ProgramInfo::hardwarewire.pinSDA, "I2C SDA", true);
   GPIO->configurePinReserve(GPIO_INTERNAL, ProgramInfo::hardwarewire.pinSCL, "I2C SCL", true);
 
