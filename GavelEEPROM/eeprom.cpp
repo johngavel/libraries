@@ -28,7 +28,7 @@ void EEpromMemory::setupTask() {
 
   PORT->addCmd("wipe", "", "Wipe and Initialize EEPROM Memory", EEpromMemory::wipe);
   PORT->addCmd("mem", "", "Contents of Flash Memory", EEpromMemory::mem);
-  setRefreshMilli(30000);
+  setRefreshMilli(1000);
   memset(&appInfo, 0, sizeof(PrivateAppInfo));
   dataSize = sizeof(PrivateAppInfo) + ((getData()) ? getData()->getLength() : 0);
   if (memorySize == 0) { PORT->println(ERROR, "EEPROM Memory Chip Unconfigured. "); }
@@ -66,9 +66,17 @@ void EEpromMemory::setupTask() {
 
 void EEpromMemory::executeTask() {
   if (seal) {
-    seal = false;
-    writeEEPROM();
+    forceWrite();
+  } else {
+    setRefreshMilli(1000);
   }
+}
+
+void EEpromMemory::forceWrite() {
+  setRefreshMilli(30000);
+  seal = false;
+  reset();
+  writeEEPROM();
 }
 
 void EEpromMemory::initMemory() {

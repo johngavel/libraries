@@ -1,5 +1,6 @@
 #include "watchdog.h"
 
+#include "eeprom.h"
 #include "serialport.h"
 
 Watchdog* Watchdog::watchdog = nullptr;
@@ -44,6 +45,7 @@ void Watchdog::petWatchdog() {
 }
 
 void Watchdog::reboot() {
+  EEPROM_FORCE;
   lock.take();
   petWatchdog();
   resetFlag = false;

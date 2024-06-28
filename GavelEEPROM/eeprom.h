@@ -15,16 +15,24 @@ public:
 };
 
 #define EEPROM EEpromMemory::get()
+#define EEPROM_AVAILABLE EEpromMemory::initialized()
+#define EEPROM_FORCE                                                                                                                                           \
+  {                                                                                                                                                            \
+    if (EEPROM_AVAILABLE) EEPROM->forceWrite();                                                                                                                \
+  }
 #define EEPROM_TAKE EEPROM->mutex.take()
 #define EEPROM_GIVE EEPROM->mutex.give()
 
 class EEpromMemory : public Task {
 public:
   static EEpromMemory* get();
+  static bool initialized() { return eeprom != nullptr; };
   void configure(unsigned long size);
   void setupTask();
   void executeTask();
+  void forceWrite();
   void breakSeal();
+  bool getSeal() { return seal; };
   void initMemory();
   void setData(Data* __data) { data = __data; };
   Data* getData() { return data; };

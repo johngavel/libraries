@@ -26,8 +26,10 @@ public:
 
 class CodePage : public BasicPage {
 public:
-  CodePage() { setPageName("code"); };
+  CodePage(String __name, String __location) : name(__name), location(__location) { setPageName("code"); };
   HTMLBuilder* getHtml(HTMLBuilder* html);
+  String name;
+  String location;
 };
 
 class UploadPage : public BasicPage {

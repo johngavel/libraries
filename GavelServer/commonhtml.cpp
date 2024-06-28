@@ -92,7 +92,22 @@ HTMLBuilder* ErrorPage::getHtml(HTMLBuilder* html) {
 
 HTMLBuilder* CodePage::getHtml(HTMLBuilder* html) {
   sendPageBegin(html);
-  html->openTag("h2")->print("Code")->closeTag()->println();
+  html->openTag("h2")->print("Source Code")->closeTag()->println();
+  html->openTag("table", "border=\"1\" class=\"center\"")->println();
+  html->openTrTag()->tdTag(name)->openTdTag()->openTag("a", "href=\"" + location + "\"")->print(location)->closeTag()->closeTag()->closeTag()->println();
+  html->openTrTag()
+      ->tdTag("Libraries")
+      ->openTdTag()
+      ->openTag("a", "href=\"https://github.com/johngavel/libraries\"")
+      ->print("https://github.com/johngavel/libraries")
+      ->closeTag()
+      ->closeTag()
+      ->closeTag()
+      ->println();
+  html->closeTag();
+  html->hrTag();
+  html->brTag()->println();
+  html->openTag("h2")->print("Libraries and Tools")->closeTag()->println();
   html->openTag("table", "border=\"1\" class=\"center\"")->println();
   html->openTrTag()->tdTag("Arduino IDE")->tdTag("Ver. 2.3.2")->closeTag()->println();
   html->openTrTag()->tdTag("Raspberry Pi Pico/RP2040")->tdTag("Ver. 3.9.3")->closeTag()->println();
@@ -117,6 +132,8 @@ HTMLBuilder* CodePage::getHtml(HTMLBuilder* html) {
       ->closeTag()
       ->println();
   html->closeTag()->brTag()->println();
+  html->hrTag();
+  html->openTag("h2")->print("Miscellaneous Tools")->closeTag()->brTag()->println();
   html->openTag("small");
   html->openTag("a", "href=\"https://github.com/earlephilhower/arduino-pico-littlefs-plugin/releases\"");
   html->print("PicoLittleFS")->closeTag();
