@@ -75,7 +75,7 @@ void EEpromMemory::executeTask() {
 }
 
 void EEpromMemory::forceWrite() {
-  setRefreshMilli(30000);
+  setRefreshMilli(5000);
   seal = false;
   reset();
   writeEEPROM();
