@@ -163,18 +163,17 @@ void ServerModule::processGet(char* action) {
         ProcessPage* page = processPages[i];
         int pageNameLength = strlen(page->getPageName());
         if (strncmp(page->getPageName(), action, pageNameLength) == 0) {
-          char* token;
+          char* parameter;
+          char* value;
           char* processString;
           char* processStringSave;
-          page->list.parameterCount = 0;
+          LIST->clear();
           processString = subStringAfterQuestion(action);
-          token = strtok_r(processString, "=&", &processStringSave);
-          while (token != NULL) {
-            page->list.parameters[page->list.parameterCount].parameter = String(token);
-            token = strtok_r(NULL, "=&", &processStringSave);
-            page->list.parameters[page->list.parameterCount].value = String(token);
-            token = strtok_r(NULL, "=&", &processStringSave);
-            page->list.parameterCount++;
+          parameter = strtok_r(processString, "=&", &processStringSave);
+          while (parameter != NULL) {
+            value = strtok_r(NULL, "=&", &processStringSave);
+            LIST->addParameter(String(parameter), String(value));
+            parameter = strtok_r(NULL, "=&", &processStringSave);
           }
           page->processParameterList();
           clientWrite(page->getHtml(&html));

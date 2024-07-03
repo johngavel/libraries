@@ -12,6 +12,8 @@ class Files {
 public:
   static Files* get();
   void setup();
+  bool verifyFile(String path);
+  bool catFile(String path);
   File getFile(String path);
   void deleteFile(String path);
   File writeFile(String path);
@@ -25,6 +27,7 @@ private:
 
   static void deleteCommand();
   static void printDir();
+  static void catCommand();
 };
 
 #endif

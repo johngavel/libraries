@@ -1,6 +1,7 @@
 #include "commonhtml.h"
 
 #include "architecture.h"
+#include "eeprom.h"
 #include "ethernetmodule.h"
 #include "license.h"
 #include "serialport.h"
@@ -161,6 +162,32 @@ HTMLBuilder* UploadPage::getHtml(HTMLBuilder* html) {
   return html;
 }
 
+HTMLBuilder* ExportPage::getHtml(HTMLBuilder* html) {
+  EEPROM->getData()->exportMem();
+  sendPageBegin(html);
+  html->openTag("h2")->print("Configuration Export")->closeTag()->println();
+  html->openTag("a", "href=\"/" + MEMORY_CONFIG_FILE + "\"")->openTag("button", "type=\"button\" class=\"button4 button\"");
+  html->print("File")->closeTag()->closeTag()->brTag()->println();
+  html->openTag("a", "href=\"/server\"")->openTag("button", "type=\"button\" class=\"button2 button\"");
+  html->print("Cancel")->closeTag()->closeTag()->brTag()->println();
+  sendPageEnd(html);
+  return html;
+}
+
+HTMLBuilder* ImportPage::getHtml(HTMLBuilder* html) {
+  sendPageBegin(html);
+  html->openTag("h2")->print("Configuration Import")->closeTag()->println();
+  html->openTag("form", "method=\"post\" enctype=\"multipart/form-data\"")->println();
+  html->openTag("label", "for=\"file\"")->print("File")->closeTag()->println();
+  html->closeTag("input", "id=\"file\" name=\"file\" type=\"file\"")->println();
+  html->openTag("button")->print("Import")->closeTag()->println();
+  html->closeTag()->brTag()->println();
+  html->openTag("a", "href=\"/server\"")->openTag("button", "type=\"button\" class=\"button2 button\"");
+  html->print("Cancel")->closeTag()->closeTag()->brTag()->println();
+  sendPageEnd(html);
+  return html;
+}
+
 HTMLBuilder* UpgradePage::getHtml(HTMLBuilder* html) {
   sendPageBegin(html);
   html->openTag("h2")->print("OTA Upgrade")->closeTag()->println();
@@ -205,6 +232,19 @@ HTMLBuilder* UploadProcessingFilePage::getHtml(HTMLBuilder* html) {
     html->print("Processing File Upload....");
   else
     html->print("Processing File Upload FAILED....");
+  html->brTag();
+  sendPageEnd(html);
+  return html;
+}
+
+HTMLBuilder* ImportProcessingFilePage::getHtml(HTMLBuilder* html) {
+  EEPROM->getData()->importMem();
+  sendPageBegin(html, true, 5);
+  html->brTag();
+  if (success)
+    html->print("Processing Import Upload - Please Reboot the Device....");
+  else
+    html->print("Processing Import FAILED....");
   html->brTag();
   sendPageEnd(html);
   return html;

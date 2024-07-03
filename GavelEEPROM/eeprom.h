@@ -5,6 +5,8 @@
 
 #include <I2C_eeprom.h>
 
+#define MEMORY_CONFIG_FILE (String(ProgramInfo::ShortName) + "_config.txt")
+
 class Data {
 public:
   virtual void setup() = 0;
@@ -12,6 +14,8 @@ public:
   virtual void printData() = 0;
   virtual unsigned char* getData() = 0;
   virtual unsigned long getLength() = 0;
+  virtual void exportMem() = 0;
+  virtual void importMem() = 0;
 };
 
 #define EEPROM EEpromMemory::get()

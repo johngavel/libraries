@@ -1,5 +1,6 @@
 #include "license.h"
 
+#include "asciitable.h"
 #include "files.h"
 #include "serialport.h"
 #include "stringutils.h"
@@ -43,31 +44,19 @@ void LicenseManager::addLicenseToDatabase(String libraryName, String version, St
 }
 
 void LicenseManager::printTable() {
-  String name;
-  String version;
-  String number;
+  AsciiTable table;
   LicenseFile oldLicense;
-  PORT->println();
-  PORT->println(HELP, " # | Name                                    ", "| Version   ");
-  PORT->println(HELP, "---|-----------------------------------------", "|-----------");
+  table.addColumn(Cyan, "#", 4);
+  table.addColumn(Normal, "Name", 28);
+  table.addColumn(Yellow, "Version", 15);
+  table.addColumn(Green, "File Name", 28);
+  table.printHeader();
   for (unsigned long i = 0; i < LICENSE->count(); i++) {
-    if (LICENSE->getFile(i, &oldLicense)) {
-      number = String(i + 1);
-      number += tab(number.length(), 3) + "| ";
-      name = oldLicense.libraryName;
-      version = oldLicense.version;
-      name += tab(name.length(), 40);
-      version = "| " + version;
-      PORT->println(HELP, number + name, version);
-    }
+    if (LICENSE->getFile(i, &oldLicense)) { table.printData(String(i + 1), oldLicense.libraryName, oldLicense.version, oldLicense.link); }
   }
-  PORT->println();
-  PORT->println(PASSED, "All Libraries");
+  table.printDone("All Libraries");
   PORT->prompt();
 }
-
-#define BUFFER_SIZE 2
-static char fileBuffer[BUFFER_SIZE];
 
 void LicenseManager::printLicense() {
   bool success = false;
@@ -81,26 +70,8 @@ void LicenseManager::printLicense() {
       LICENSE->getFile(index, &oldLicense);
       PORT->println(INFO, String(oldLicense.libraryName) + " " + String(oldLicense.version) + "  - License File");
       PORT->println();
-      File file = FILES->getFile("/license/" + String(oldLicense.link));
-      if (file && file.isFile()) {
+      if (FILES->catFile("/license/" + String(oldLicense.link))) {
         success = true;
-        memset(fileBuffer, 0, BUFFER_SIZE);
-        unsigned long loops = file.size();
-        unsigned long count = 0;
-        String line = "";
-        for (unsigned long i = 0; i < loops; i++) {
-          file.readBytes(fileBuffer, 1);
-          count++;
-          if (fileBuffer[0] == '\n') line += String("\r");
-          line += String(fileBuffer);
-          memset(fileBuffer, 0, BUFFER_SIZE);
-          if (count % 200 == 0) {
-            PORT->print(INFO, line);
-            line = "";
-            count = 0;
-          }
-        }
-        PORT->println(INFO, line);
       } else
         PORT->println(ERROR, "Missing License File.");
     } else

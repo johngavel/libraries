@@ -6,7 +6,6 @@
 #include "lock.h"
 
 #define PORT SerialPort::get()
-#define DEBUG(s) PORT->println(TRACE, s)
 
 typedef enum { TRACE, INFO, WARNING, ERROR, HELP, PASSED, FAILED, PROMPT } PRINT_TYPES;
 
@@ -22,6 +21,7 @@ public:
   void executeTask();
   int addCmd(String command, String parameterDesc, String description, void (*)());
   void println();
+  void print(COLOR color, String line);
   void print(PRINT_TYPES type, String line);
   void print(PRINT_TYPES type, String line, String line2);
   void println(PRINT_TYPES type, String line);

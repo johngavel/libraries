@@ -1,5 +1,6 @@
 #include "taskmanager.h"
 
+#include "asciitable.h"
 #include "serialport.h"
 #include "stringutils.h"
 
@@ -44,12 +45,18 @@ void TaskManager::add(Task* task) {
 
 void TaskManager::system() {
   Task* task;
+  AsciiTable table;
   double coreUtil[CPU_CORES] = {0.0, 0.0};
   PORT->println();
   SerialPort::banner();
-  PORT->println();
-  PORT->println(PROMPT, "Core|Task Name          |Time(ms)|Max(ms)|Min(ms)|Rate(ms) |Percent CPU");
-  PORT->println(PROMPT, "----|-------------------|--------|-------|-------|---------|-----------");
+  table.addColumn(Green, "Core", 6);
+  table.addColumn(Normal, "Task Name", 19);
+  table.addColumn(Yellow, "Time(ms)", 10);
+  table.addColumn(Yellow, "Max(ms)", 10);
+  table.addColumn(Yellow, "Min(ms)", 10);
+  table.addColumn(Cyan, "Rate(ms)", 10);
+  table.addColumn(Cyan, "% CPU", 8);
+  table.printHeader();
   for (unsigned long i = 0; i < queue.count(); i++) {
     queue.get(i, &task);
     String name = task->getName();
@@ -66,14 +73,10 @@ void TaskManager::system() {
     double percentage = timeTakenPerSec / 1000000.0 * 100;
     int core = task->getCore();
     coreUtil[core] += timeTakenPerSec;
-    String nameString = String(core) + tab(1, 4) + "|" + name + tab(5 + name.length(), 24);
-    String dataString = "|" + timeString + tab(timeString.length(), 8) + "|" + highString + tab(highString.length(), 7) + "|" + lowString +
-                        tab(lowString.length(), 7) + "|" + String(rateString) + tab(rateString.length(), 9) + "|" + String(percentage, 1) + " %";
-    PORT->println(HELP, nameString, dataString);
+    table.printData(String(core), name, timeString, highString, lowString, rateString, String(percentage, 1) + "%");
   }
   for (int i = 0; i < CPU_CORES; i++) { PORT->println(HELP, "CPU Core " + String(i) + ": ", String(coreUtil[i] / 10000.0, 1) + " %"); }
-  PORT->println();
-  PORT->println(PASSED, "System Complete");
+  table.printDone("System Complete");
   PORT->prompt();
 }
 void TaskManager::systemCmd() {

@@ -5,6 +5,7 @@
 #include "ethernetmodule.h"
 #include "files.h"
 #include "html.h"
+#include "parameter.h"
 
 #define MAX_PAGES 64
 #define PAGE_NAME_LENGTH 16
@@ -19,24 +20,10 @@ private:
   char pageName[PAGE_NAME_LENGTH];
 };
 
-#define MAX_PARAMETERS 32
 class ProcessPage : public BasicPage {
 public:
-  class ParameterList {
-  public:
-    class Parameter {
-    public:
-      Parameter() : parameter(""), value(""){};
-      String parameter;
-      String value;
-    };
-    ParameterList() : parameterCount(0){};
-    Parameter parameters[MAX_PARAMETERS];
-    int parameterCount;
-  };
   ProcessPage() : parametersProcessed(false){};
   virtual void processParameterList() = 0;
-  ParameterList list;
   bool parametersProcessed;
 
 private:

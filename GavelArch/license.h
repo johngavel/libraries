@@ -17,7 +17,7 @@
 #define ADAFRUIT_PIXEL_LICENSE LICENSE_ADD("Adafruit NeoPixel", "Ver. 1.12.2", "NeoPixel_COPYING")
 #define ADAFRUIT_SSD1306_LICENSE LICENSE_ADD("Adafruit SSD1306", "Ver. 2.5.10", "SSD1306_license.txt")
 #define ADAFRUIT_UNIFIED_LICENSE LICENSE_ADD("Adafruit_Unified_Sensor", "", "Sensor_LICENSE.txt")
-#define DHT_LICENSE LICENSE_ADD("DHT sensor library	", "Ver. 1.4.6", "DHT_license.txt")
+#define DHT_LICENSE LICENSE_ADD("DHT sensor library", "Ver. 1.4.6", "DHT_license.txt")
 #define ETHERNET_LICENSE LICENSE_ADD("Ethernet", "Ver. 2.0.2", "Ethernet_README.adoc")
 #define I2C_EEPROM_LICENSE LICENSE_ADD("I2C_EEPROM", "Ver. 1.8.5", "I2C_EEPROM_LICENSE")
 #define TCA9555_LICENSE LICENSE_ADD("TCA9555", "Ver. 0.3.2", "TCA9555_LICENSE")

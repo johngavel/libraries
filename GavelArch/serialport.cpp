@@ -36,38 +36,36 @@ void SerialPort::printColor(COLOR color) {
   __print(colorString);
 }
 
+void SerialPort::print(COLOR color, String line) {
+  printColor(color);
+  __print(line);
+  printColor(Normal);
+}
+
 void SerialPort::print(PRINT_TYPES type, String line) {
   printColor(Normal);
   switch (type) {
   case TRACE:
     __print("[");
-    printColor(Cyan);
-    __print("  DEBUG ");
-    printColor(Normal);
+    print(Cyan, "  DEBUG ");
     __print("] ");
     printColor(Cyan);
     break;
   case PROMPT: printColor(Green); break;
   case ERROR:
     __print("[");
-    printColor(Red);
-    __print("  ERROR ");
-    printColor(Normal);
+    print(Red, "  ERROR ");
     __print("] ");
     printColor(Red);
     break;
   case PASSED:
     __print("[");
-    printColor(Green);
-    __print("   OK   ");
-    printColor(Normal);
+    print(Green, "   OK   ");
     __print("] ");
     break;
   case FAILED:
     __print("[");
-    printColor(Red);
-    __print(" FAILED ");
-    printColor(Normal);
+    print(Red, " FAILED ");
     __print("] ");
     break;
   case WARNING: printColor(Magenta); break;

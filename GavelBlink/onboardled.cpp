@@ -1,13 +1,15 @@
 #include "onboardled.h"
 
+#ifdef ARDUINO_WAVESHARE_RP2040_ZERO
 #include <Adafruit_NeoPixel.h>
+#define RP2040_PIN 16
+#define NUMPIXELS 1
+static Adafruit_NeoPixel pixels(NUMPIXELS, RP2040_PIN, NEO_GRB + NEO_KHZ800);
+#endif
+
 #include <gpio.h>
 #include <license.h>
 #include <serialport.h>
-#define RP2040_PIN 16
-#define NUMPIXELS 1
-
-static Adafruit_NeoPixel pixels(NUMPIXELS, RP2040_PIN, NEO_GRB + NEO_KHZ800);
 
 Blink* Blink::blink = nullptr;
 
@@ -17,13 +19,15 @@ Blink* Blink::get() {
 }
 
 void Blink::setupTask() {
-  ADAFRUIT_PIXEL_LICENSE;
   switch (ProgramInfo::hw_type) {
   case HW_RP2040_ZERO:
+#ifdef ARDUINO_WAVESHARE_RP2040_ZERO
+    ADAFRUIT_PIXEL_LICENSE;
     setRefreshMilli(50);
     GPIO->configurePinReserve(GPIO_INTERNAL, RP2040_PIN, "Built in LED");
     pixels.begin();
     PORT->println(PASSED, "Onboard LED Blink for RP2040 Zero Complete");
+#endif
     break;
   case HW_RASPBERRYPI_PICO:
   case HW_RASPBERRYPI_PICOW:
@@ -44,11 +48,14 @@ void Blink::setupTask() {
 #define BRIGHTNESS_PER_TIME ((BLINK_TIME_MS / BRIGHTNESS) / 2)
 
 void Blink::executeTask() {
+#ifdef ARDUINO_WAVESHARE_RP2040_ZERO
   long brightness = 0;
   long blinkTime = 0;
   long color = 0;
+#endif
   switch (ProgramInfo::hw_type) {
   case HW_RP2040_ZERO:
+#ifdef ARDUINO_WAVESHARE_RP2040_ZERO
     blinkTime = millis() % BLINK_TIME_MS;
     if (blinkTime < (BLINK_TIME_MS / 2))
       brightness = blinkTime / BRIGHTNESS_PER_TIME;
@@ -66,6 +73,7 @@ void Blink::executeTask() {
     default: pixels.setPixelColor(0, pixels.Color(brightness, brightness, brightness)); break;
     }
     pixels.show();
+#endif
     break;
   case HW_RASPBERRYPI_PICO:
   case HW_RASPBERRYPI_PICOW:

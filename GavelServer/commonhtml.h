@@ -38,6 +38,18 @@ public:
   HTMLBuilder* getHtml(HTMLBuilder* html);
 };
 
+class ExportPage : public BasicPage {
+public:
+  ExportPage() { setPageName("export"); };
+  HTMLBuilder* getHtml(HTMLBuilder* html);
+};
+
+class ImportPage : public BasicPage {
+public:
+  ImportPage() { setPageName("import"); };
+  HTMLBuilder* getHtml(HTMLBuilder* html);
+};
+
 class UpgradePage : public BasicPage {
 public:
   UpgradePage() { setPageName("upgrade"); };
@@ -59,6 +71,12 @@ public:
 class UploadProcessingFilePage : public FilePage {
 public:
   UploadProcessingFilePage() { setPageName("upload"); };
+  HTMLBuilder* getHtml(HTMLBuilder* html);
+};
+
+class ImportProcessingFilePage : public FilePage {
+public:
+  ImportProcessingFilePage() { setPageName("import"); };
   HTMLBuilder* getHtml(HTMLBuilder* html);
 };
 
