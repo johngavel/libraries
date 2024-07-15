@@ -14,7 +14,8 @@ void Watchdog::setupTask() {
   rp2040.wdt_begin(watchdogTimeout);
   setRefreshMilli(watchdogPetCycle);
   petWatchdog();
-  PORT->println(PASSED, "Watchdog Complete");
+  watchdogRunning = true;
+  CONSOLE->println(PASSED, "Watchdog Complete");
 }
 
 void Watchdog::loop() {
@@ -46,6 +47,7 @@ void Watchdog::petWatchdog() {
 
 void Watchdog::reboot() {
   EEPROM_FORCE;
+  if (!watchdogRunning) { rp2040.reboot(); }
   lock.take();
   petWatchdog();
   resetFlag = false;

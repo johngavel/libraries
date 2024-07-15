@@ -1,10 +1,13 @@
 #include "export.h"
 
+#include "serialport.h"
+#include "termcmd.h"
+
 #define PARAMETER_COUNT String("ParameterCount")
 
 Export::Export(String __filename) {
   filename = "/" + __filename;
-  if (verifyFile()) FILES->deleteFile(filename);
+  if (verifyFile()) FILES->deleteFile(filename, CONSOLE);
   exportFile = FILES->writeFile(filename);
 }
 

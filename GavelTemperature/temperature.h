@@ -30,7 +30,7 @@ private:
   unsigned long pin;
   unsigned long drift;
 
-  static void temperatureStatus();
+  static void temperatureStatus(Terminal* terminal);
 };
 
 #endif

@@ -3,6 +3,7 @@
 #include "asciitable.h"
 #include "serialport.h"
 #include "stringutils.h"
+#include "termcmd.h"
 
 void Task::setup() {
   lock.take();
@@ -31,8 +32,8 @@ TaskManager* TaskManager::taskManager = nullptr;
 TaskManager::TaskManager() : queue(20, sizeof(Task*)){};
 
 void TaskManager::setup() {
-  PORT->addCmd("system", "", "Prints a list of Tasks running in the system", systemCmd);
-  PORT->println(PASSED, "Task Initialization Complete");
+  TERM_CMD->addCmd("system", "", "Prints a list of Tasks running in the system", systemCmd);
+  CONSOLE->println(PASSED, "Task Initialization Complete");
 }
 TaskManager* TaskManager::get() {
   if (taskManager == nullptr) taskManager = new TaskManager();
@@ -43,12 +44,12 @@ void TaskManager::add(Task* task) {
   queue.push(&task);
 }
 
-void TaskManager::system() {
+void TaskManager::system(Terminal* terminal) {
   Task* task;
-  AsciiTable table;
+  AsciiTable table(terminal);
   double coreUtil[CPU_CORES] = {0.0, 0.0};
-  PORT->println();
-  SerialPort::banner();
+  terminal->println();
+  terminal->banner();
   table.addColumn(Green, "Core", 6);
   table.addColumn(Normal, "Task Name", 19);
   table.addColumn(Yellow, "Time(ms)", 10);
@@ -75,10 +76,10 @@ void TaskManager::system() {
     coreUtil[core] += timeTakenPerSec;
     table.printData(String(core), name, timeString, highString, lowString, rateString, String(percentage, 1) + "%");
   }
-  for (int i = 0; i < CPU_CORES; i++) { PORT->println(HELP, "CPU Core " + String(i) + ": ", String(coreUtil[i] / 10000.0, 1) + " %"); }
+  for (int i = 0; i < CPU_CORES; i++) { terminal->println(HELP, "CPU Core " + String(i) + ": ", String(coreUtil[i] / 10000.0, 1) + " %"); }
   table.printDone("System Complete");
-  PORT->prompt();
+  terminal->prompt();
 }
-void TaskManager::systemCmd() {
-  MANAGER->system();
+void TaskManager::systemCmd(Terminal* terminal) {
+  MANAGER->system(terminal);
 }

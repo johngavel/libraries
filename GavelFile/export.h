@@ -2,6 +2,7 @@
 #define __GAVEL_EXPORT
 
 #include "files.h"
+#include "terminal.h"
 
 #include <Arduino.h>
 

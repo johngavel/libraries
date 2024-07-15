@@ -16,7 +16,7 @@ void Screen::setupTask() {
   ADAFRUIT_SSD1306_LICENSE;
   ADAFRUIT_GFX_LICENSE;
   ADAFRUIT_BUS_LICENSE;
-  PORT->addCmd("bitmap", "[n]", "Displays an image on the screen", Screen::bitmap);
+  TERM_CMD->addCmd("bitmap", "[n]", "Displays an image on the screen", Screen::bitmap);
   GPIO->configurePinReserve(GPIO_INTERNAL, ProgramInfo::hardwarewire.pinSDA, "I2C SDA", true);
   GPIO->configurePinReserve(GPIO_INTERNAL, ProgramInfo::hardwarewire.pinSCL, "I2C SCL", true);
   COMM_TAKE;
@@ -27,13 +27,13 @@ void Screen::setupTask() {
   // SSD1306_SWITCHCAPVCC = generate display voltage from 3.3V internally
   if ((getTimerRun() == true) && !display.begin(SSD1306_SWITCHCAPVCC, SCREEN_ADDRESS)) {
     runTimer(false);
-    PORT->println(ERROR, "SSD1306 Display Not Connected");
+    CONSOLE->println(ERROR, "SSD1306 Display Not Connected");
   }
   // Clear the buffer
   display.clearDisplay();
   COMM_GIVE;
   setScreen(JAXSON, String(ProgramInfo::AppName) + " v" + String(ProgramInfo::MajorVersion) + String(".") + String(ProgramInfo::MinorVersion));
-  PORT->println((getTimerRun()) ? PASSED : FAILED, "Screen Complete");
+  CONSOLE->println((getTimerRun()) ? PASSED : FAILED, "Screen Complete");
 }
 
 void Screen::beginScreen() {
@@ -125,11 +125,11 @@ void Screen::setScreen(String line1, String line2, String line3, String line4, S
   screenAccess.give();
 }
 
-void Screen::bitmap() {
+void Screen::bitmap(Terminal* terminal) {
   char* value;
   StopWatch time;
-  PORT->println();
-  value = PORT->readParameter();
+  terminal->println();
+  value = terminal->readParameter();
   if (value != NULL) {
     BITMAP bitmap = (BITMAP) atoi(value);
 
@@ -137,10 +137,10 @@ void Screen::bitmap() {
       time.start();
       SCREEN->setScreen(bitmap, String("Test Bitmap " + String(bitmap)));
       time.stop();
-      PORT->println(PASSED, "Bitmap Displayed - " + String(time.time() / 1000.0, 3) + " us");
+      terminal->println(PASSED, "Bitmap Displayed - " + String(time.time() / 1000.0, 3) + " us");
     } else
-      PORT->println(FAILED, "Unknown Bitmap, only valid 0 - " + String(BITMAP_LENGTH - 1));
+      terminal->println(FAILED, "Unknown Bitmap, only valid 0 - " + String(BITMAP_LENGTH - 1));
   } else
-    PORT->invalidParameter();
-  PORT->prompt();
+    terminal->invalidParameter();
+  terminal->prompt();
 }

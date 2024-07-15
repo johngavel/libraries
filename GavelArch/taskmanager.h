@@ -5,6 +5,7 @@
 #include <datastructure.h>
 #include <lock.h>
 #include <stopwatch.h>
+#include <terminal.h>
 #include <timer.h>
 
 class Task : public Timer {
@@ -30,7 +31,7 @@ public:
   static TaskManager* get();
   void add(Task* task);
   void setup();
-  void system();
+  void system(Terminal* terminal);
 
 private:
   TaskManager();
@@ -38,7 +39,7 @@ private:
 
   ClassicQueue queue;
 
-  static void systemCmd();
+  static void systemCmd(Terminal* terminal);
 };
 
 #endif

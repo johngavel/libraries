@@ -2,6 +2,7 @@
 #define __GAVEL_ETHERNET
 
 #include "architecture.h"
+#include "networkinterface.h"
 
 #include <Arduino.h>
 #include <Ethernet.h>
@@ -9,7 +10,7 @@
 
 #define ETHERNET EthernetModule::get()
 
-class EthernetModule : public Task {
+class EthernetModule : public Task, public VirtualNetwork, public VirtualServerFactory {
 public:
   static EthernetModule* get();
 
@@ -21,6 +22,8 @@ public:
   IPAddress getSubnetMask();
   IPAddress getGateway();
   IPAddress getDNS();
+  bool getDHCP() { return isDHCP; };
+  VirtualServer* getServer(int port);
   bool ipChanged;
   // Only used for initial configuration
   bool isConfigured;
@@ -40,7 +43,21 @@ private:
   byte* subnetMask;
   byte* gatewayAddress;
 
-  static void ipStat();
+  static void ipStat(Terminal* terminal);
+};
+
+class WiredServer : public VirtualServer {
+public:
+  WiredServer(int __port) : port(__port){};
+  void begin();
+  Client* accept();
+  void closeClient();
+  VirtualNetwork* getNetworkInterface() { return ETHERNET; };
+
+private:
+  EthernetServer* server;
+  EthernetClient client;
+  int port;
 };
 
 #endif

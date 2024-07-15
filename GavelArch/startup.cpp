@@ -2,6 +2,7 @@
 #include "license.h"
 #include "lock.h"
 #include "serialport.h"
+#include "stdtermcmd.h"
 
 static Mutex startupMutex;
 static Mutex startupMutex1;
@@ -12,9 +13,9 @@ void setup0Start() {
   ARDUINO_IDE_LICENSE;
   RASPBERRY_PICO_LICENSE;
 
-  PORT->println();
-  PORT->println(PROMPT, "************************************************************");
-  PORT->println(INFO, String(ProgramInfo::AppName) + " Version: " + String(ProgramInfo::MajorVersion) + String(".") + String(ProgramInfo::MinorVersion));
+  CONSOLE->println();
+  CONSOLE->println(PROMPT, "************************************************************");
+  CONSOLE->println(INFO, String(ProgramInfo::AppName) + " Version: " + String(ProgramInfo::MajorVersion) + String(".") + String(ProgramInfo::MinorVersion));
 }
 
 void setup1Start() {
@@ -25,11 +26,13 @@ void setup0Complete() {
   startupMutex.give();
   startupMutex1.take();
   MANAGER->setup();
+  addStandardTerminalCommands();
   startupMutex1.give();
 
-  PORT->println(PASSED, ProgramInfo::AppName + String(" - Startup Complete"));
-  PORT->println(PROMPT, "************************************************************");
-  PORT->complete();
+  CONSOLE->println(PASSED, ProgramInfo::AppName + String(" - Startup Complete"));
+  CONSOLE->println(PROMPT, "************************************************************");
+  CONSOLE->banner();
+  CONSOLE->prompt();
 }
 
 void setup1Complete() {

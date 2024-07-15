@@ -28,14 +28,14 @@ void EEpromMemory::setupTask() {
   GPIO->configurePinReserve(GPIO_INTERNAL, ProgramInfo::hardwarewire.pinSDA, "I2C SDA", true);
   GPIO->configurePinReserve(GPIO_INTERNAL, ProgramInfo::hardwarewire.pinSCL, "I2C SCL", true);
 
-  PORT->addCmd("wipe", "", "Wipe and Initialize EEPROM Memory", EEpromMemory::wipe);
-  PORT->addCmd("mem", "", "Contents of Flash Memory", EEpromMemory::mem);
+  TERM_CMD->addCmd("wipe", "", "Wipe and Initialize EEPROM Memory", EEpromMemory::wipe);
+  TERM_CMD->addCmd("mem", "", "Contents of Flash Memory", EEpromMemory::mem);
   setRefreshMilli(1000);
   memset(&appInfo, 0, sizeof(PrivateAppInfo));
   dataSize = sizeof(PrivateAppInfo) + ((getData()) ? getData()->getLength() : 0);
-  if (memorySize == 0) { PORT->println(ERROR, "EEPROM Memory Chip Unconfigured. "); }
+  if (memorySize == 0) { CONSOLE->println(ERROR, "EEPROM Memory Chip Unconfigured. "); }
   if (dataSize > fullDataSize) {
-    PORT->println(ERROR, "EEPROM Data Structure is too large: " + String(dataSize) + "/" + String(fullDataSize));
+    CONSOLE->println(ERROR, "EEPROM Data Structure is too large: " + String(dataSize) + "/" + String(fullDataSize));
     dataSize = fullDataSize;
   }
   COMM_TAKE;
@@ -47,23 +47,23 @@ void EEpromMemory::setupTask() {
   readEEPROM();
   if ((appInfo.ProgramNumber != ProgramInfo::ProgramNumber) || (appInfo.MajorVersion != ProgramInfo::MajorVersion)) {
     initMemory();
-    PORT->println(ERROR, "EEPROM memory incorrect values, intializing default values");
+    CONSOLE->println(ERROR, "EEPROM memory incorrect values, intializing default values");
   } else {
-    PORT->println(PASSED, "EEPROM memory success");
+    CONSOLE->println(PASSED, "EEPROM memory success");
   }
   if ((appInfo.MinorVersion != ProgramInfo::MinorVersion)) {
     appInfo.MajorVersion = ProgramInfo::MajorVersion;
     appInfo.MinorVersion = ProgramInfo::MinorVersion;
     breakSeal();
   }
-  if (!getTimerRun()) PORT->println(ERROR, "EEPROM Not Connected");
+  if (!getTimerRun()) CONSOLE->println(ERROR, "EEPROM Not Connected");
   String memoryString =
       "Memory Complete: PRG Num: " + String(appInfo.ProgramNumber) + " PRG Ver: " + String(appInfo.MajorVersion) + "." + String(appInfo.MinorVersion);
   if (getData())
     getData()->setup();
   else
-    PORT->println(WARNING, "No User Data Available!");
-  PORT->println((getTimerRun()) ? PASSED : FAILED, memoryString);
+    CONSOLE->println(WARNING, "No User Data Available!");
+  CONSOLE->println((getTimerRun()) ? PASSED : FAILED, memoryString);
 }
 
 void EEpromMemory::executeTask() {
@@ -101,7 +101,7 @@ byte EEpromMemory::readEEPROMbyte(unsigned long address) {
 
 void EEpromMemory::writeEEPROMbyte(unsigned long address, byte value) {
   if (i2c_eeprom->isConnected() && !i2c_eeprom->updateByteVerify(address, value))
-    PORT->println(ERROR, "Error in Writing EEPROM " + String(address) + " = " + String(value, HEX));
+    CONSOLE->println(ERROR, "Error in Writing EEPROM " + String(address) + " = " + String(value, HEX));
 }
 
 void EEpromMemory::readEEPROM() {
@@ -134,23 +134,23 @@ void EEpromMemory::writeEEPROM() {
   }
 }
 
-void EEpromMemory::wipe() {
-  PORT->println();
+void EEpromMemory::wipe(Terminal* terminal) {
+  terminal->println();
   EEPROM->initMemory();
   if (EEPROM->getData()) EEPROM->initMemory();
-  PORT->println((EEPROM->getTimerRun()) ? PASSED : FAILED, "EEPROM Initialize Memory Complete.");
-  PORT->prompt();
+  terminal->println((EEPROM->getTimerRun()) ? PASSED : FAILED, "EEPROM Initialize Memory Complete.");
+  terminal->prompt();
 }
 
-void EEpromMemory::mem() {
-  PORT->println();
-  PORT->println(PROMPT, String(ProgramInfo::AppName) + " Version: " + String(ProgramInfo::MajorVersion) + String(".") + String(ProgramInfo::MinorVersion));
-  PORT->println(INFO, "Program: " + String(ProgramInfo::ProgramNumber));
-  PORT->println(INFO, "EEPROM Size: " + String(EEPROM->getLength()) + "/" + String(EEPROM->getMemorySize() / 8));
+void EEpromMemory::mem(Terminal* terminal) {
+  terminal->println();
+  terminal->println(PROMPT, String(ProgramInfo::AppName) + " Version: " + String(ProgramInfo::MajorVersion) + String(".") + String(ProgramInfo::MinorVersion));
+  terminal->println(INFO, "Program: " + String(ProgramInfo::ProgramNumber));
+  terminal->println(INFO, "EEPROM Size: " + String(EEPROM->getLength()) + "/" + String(EEPROM->getMemorySize() / 8));
   if (EEPROM->getData())
-    EEPROM->getData()->printData();
+    EEPROM->getData()->printData(terminal);
   else
-    PORT->println(WARNING, "No User Data Available!");
-  PORT->println(INFO, "EEPROM Read Memory Complete");
-  PORT->prompt();
+    terminal->println(WARNING, "No User Data Available!");
+  terminal->println(INFO, "EEPROM Read Memory Complete");
+  terminal->prompt();
 }

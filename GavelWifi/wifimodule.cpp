@@ -1,8 +1,23 @@
 #include "wifimodule.h"
 
 #include "serialport.h"
+#include "termcmd.h"
 
 WifiModule* WifiModule::wifiModule = nullptr;
+
+void WifiServer::begin() {
+  server = new WiFiServer(port);
+  server->begin();
+}
+
+Client* WifiServer::accept() {
+  client = server->accept();
+  return &client;
+}
+
+void WifiServer::closeClient() {
+  client.flush();
+}
 
 WifiModule* WifiModule::get() {
   if (wifiModule == nullptr) wifiModule = new WifiModule();
@@ -19,13 +34,13 @@ void WifiModule::setupTask() {
   bool status = false;
   bool initializing = true;
   unsigned int wifiStatus;
-  PORT->addCmd("ip", "", "IP Stats", WifiModule::wifiStat);
-  PORT->addCmd("wifiscan", "", "Scans the Wifi for Networks", WifiModule::wifiScan);
+  TERM_CMD->addCmd("ip", "", "IP Stats", WifiModule::wifiStat);
+  TERM_CMD->addCmd("wifiscan", "", "Scans the Wifi for Networks", WifiModule::wifiScan);
   setRefreshMilli(60000);
   if (isConfigured) {
     WiFi.mode(WIFI_STA);
     WiFi.setHostname("GavelWifiModule");
-    PORT->print(INFO, "Connecting Wifi to " + String(ssid));
+    CONSOLE->print(INFO, "Connecting Wifi to " + String(ssid));
     WiFi.begin(ssid.c_str(), password.c_str());
     while (initializing) {
       wifiStatus = WiFi.status();
@@ -42,16 +57,16 @@ void WifiModule::setupTask() {
         break;
       default:
         delay(500);
-        PORT->print(INFO, ".");
+        CONSOLE->print(INFO, ".");
         break;
       }
     }
   }
-  PORT->println();
+  CONSOLE->println();
   if (status)
-    PORT->println(PASSED, "Wifi Complete");
+    CONSOLE->println(PASSED, "Wifi Complete");
   else
-    PORT->println(FAILED, "Wifi Complete");
+    CONSOLE->println(FAILED, "Wifi Complete");
   runTimer(status);
 }
 
@@ -97,6 +112,10 @@ IPAddress WifiModule::getGateway() {
   return address;
 }
 
+VirtualServer* WifiModule::getServer(int port) {
+  return new WifiServer(port);
+}
+
 bool WifiModule::linkStatus() {
   bool status;
   COMM_TAKE;
@@ -105,23 +124,23 @@ bool WifiModule::linkStatus() {
   return status;
 }
 
-void WifiModule::wifiStat() {
+void WifiModule::wifiStat(Terminal* terminal) {
   IPAddress ipAddress = WIFI->getIPAddress();
   bool linked = WIFI->linkStatus();
-  PORT->println();
-  PORT->println(INFO, "Network: " + WIFI->getSSID() + ((linked) ? " Connected" : " Unconnected"));
-  PORT->println(INFO, "  IP Address:  " + String(ipAddress[0]) + String(".") + String(ipAddress[1]) + String(".") + String(ipAddress[2]) + String(".") +
-                          String(ipAddress[3]));
+  terminal->println();
+  terminal->println(INFO, "Network: " + WIFI->getSSID() + ((linked) ? " Connected" : " Unconnected"));
+  terminal->println(INFO, "  IP Address:  " + String(ipAddress[0]) + String(".") + String(ipAddress[1]) + String(".") + String(ipAddress[2]) + String(".") +
+                              String(ipAddress[3]));
   ipAddress = WIFI->getSubnetMask();
-  PORT->println(INFO, "  Subnet Mask: " + String(ipAddress[0]) + String(".") + String(ipAddress[1]) + String(".") + String(ipAddress[2]) + String(".") +
-                          String(ipAddress[3]));
+  terminal->println(INFO, "  Subnet Mask: " + String(ipAddress[0]) + String(".") + String(ipAddress[1]) + String(".") + String(ipAddress[2]) + String(".") +
+                              String(ipAddress[3]));
   ipAddress = WIFI->getGateway();
-  PORT->println(INFO, "  Gateway:     " + String(ipAddress[0]) + String(".") + String(ipAddress[1]) + String(".") + String(ipAddress[2]) + String(".") +
-                          String(ipAddress[3]));
+  terminal->println(INFO, "  Gateway:     " + String(ipAddress[0]) + String(".") + String(ipAddress[1]) + String(".") + String(ipAddress[2]) + String(".") +
+                              String(ipAddress[3]));
   ipAddress = WIFI->getDNS();
-  PORT->println(INFO, "  DNS Server:  " + String(ipAddress[0]) + String(".") + String(ipAddress[1]) + String(".") + String(ipAddress[2]) + String(".") +
-                          String(ipAddress[3]));
-  PORT->prompt();
+  terminal->println(INFO, "  DNS Server:  " + String(ipAddress[0]) + String(".") + String(ipAddress[1]) + String(".") + String(ipAddress[2]) + String(".") +
+                              String(ipAddress[3]));
+  terminal->prompt();
 }
 
 static const char* macToString(uint8_t mac[6]) {
@@ -140,25 +159,25 @@ static const char* encToString(uint8_t enc) {
   return "UNKN";
 }
 
-void WifiModule::wifiScan() {
-  PORT->println();
-  PORT->println(INFO, "Begining Scan.........");
+void WifiModule::wifiScan(Terminal* terminal) {
+  terminal->println();
+  terminal->println(INFO, "Begining Scan.........");
   auto cnt = WiFi.scanNetworks();
   if (!cnt) {
-    PORT->println(INFO, "No Networks Found.");
+    terminal->println(INFO, "No Networks Found.");
   } else {
     char line[80];
     sprintf(line, "Found %d networks\n", cnt);
-    PORT->println(INFO, line);
+    terminal->println(INFO, line);
     sprintf(line, "%32s %5s %17s %2s %4s", "SSID", "ENC", "BSSID        ", "CH", "RSSI");
-    PORT->println(INFO, line);
+    terminal->println(INFO, line);
     for (auto i = 0; i < cnt; i++) {
       uint8_t bssid[6];
       WiFi.BSSID(i, bssid);
       sprintf(line, "%32s %5s %17s %2d %4ld", WiFi.SSID(i), encToString(WiFi.encryptionType(i)), macToString(bssid), WiFi.channel(i), WiFi.RSSI(i));
-      PORT->println(INFO, line);
+      terminal->println(INFO, line);
     }
   }
-  PORT->println(PASSED, "Scan Complete");
-  PORT->prompt();
+  terminal->println(PASSED, "Scan Complete");
+  terminal->prompt();
 }

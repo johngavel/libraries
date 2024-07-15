@@ -16,7 +16,8 @@ public:
   void monitor(unsigned long core, bool monitor);
 
 private:
-  Watchdog(uint32_t timeout = 8300, uint32_t petCycle = 1000) : Task("Watchdog"), watchdogTimeout(timeout), watchdogPetCycle(petCycle), resetFlag(true) {
+  Watchdog(uint32_t timeout = 8300, uint32_t petCycle = 1000)
+      : Task("Watchdog"), watchdogTimeout(timeout), watchdogPetCycle(petCycle), resetFlag(true), watchdogRunning(false) {
     monitorCore[0] = true;
     monitorCore[1] = true;
   };
@@ -27,6 +28,7 @@ private:
   bool resetFlag;
   Timer rebootTimer;
   bool monitorCore[CPU_CORES];
+  bool watchdogRunning;
 };
 
 #endif

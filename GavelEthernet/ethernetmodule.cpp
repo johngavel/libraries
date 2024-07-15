@@ -6,6 +6,21 @@
 
 EthernetModule* EthernetModule::ethernetModule = nullptr;
 
+void WiredServer::begin() {
+  server = new EthernetServer(port);
+  server->begin();
+}
+
+Client* WiredServer::accept() {
+  client = server->available();
+  return &client;
+}
+
+void WiredServer::closeClient() {
+  client.flush();
+  client.stop();
+}
+
 EthernetModule* EthernetModule::get() {
   if (ethernetModule == nullptr) ethernetModule = new EthernetModule();
   return ethernetModule;
@@ -25,7 +40,7 @@ bool EthernetModule::setupSPI() {
   COMM_TAKE;
   SPI.begin();
   COMM_GIVE;
-  PORT->println(PASSED, "SPI Start Complete");
+  CONSOLE->println(PASSED, "SPI Start Complete");
   return status;
 }
 
@@ -36,7 +51,7 @@ bool EthernetModule::resetW5500() {
   delay(200);
   digitalWrite(15, HIGH);
   delay(200);
-  PORT->println(PASSED, "W5500 Restart Complete");
+  CONSOLE->println(PASSED, "W5500 Restart Complete");
   return true;
 }
 
@@ -61,14 +76,14 @@ bool EthernetModule::setupW5500() {
   COMM_GIVE;
   if (hardwareStatus == EthernetNoHardware) {
     status = false;
-    PORT->println(ERROR, "Ethernet Module was not found.");
+    CONSOLE->println(ERROR, "Ethernet Module was not found.");
   } else if (hardwareStatus == EthernetW5100) {
-    PORT->println(PASSED, "W5100 Ethernet controller detected.");
+    CONSOLE->println(PASSED, "W5100 Ethernet controller detected.");
   } else if (hardwareStatus == EthernetW5200) {
-    PORT->println(PASSED, "W5200 Ethernet controller detected.");
+    CONSOLE->println(PASSED, "W5200 Ethernet controller detected.");
   } else if (hardwareStatus == EthernetW5500) {
     status &= true;
-    PORT->println(PASSED, "W5500 Ethernet controller detected.");
+    CONSOLE->println(PASSED, "W5500 Ethernet controller detected.");
   }
   return status;
 }
@@ -86,16 +101,16 @@ void EthernetModule::configure(byte* __macAddress, bool __isDHCP, byte* __ipAddr
 void EthernetModule::setupTask() {
   bool status = false;
   ETHERNET_LICENSE;
-  PORT->addCmd("ip", "", "IP Stats", EthernetModule::ipStat);
+  TERM_CMD->addCmd("ip", "", "IP Stats", EthernetModule::ipStat);
   setRefreshMilli(60000);
   if (isConfigured) {
     status = setupSPI();
     status &= setupW5500();
   }
   if (status)
-    PORT->println(PASSED, "Ethernet Complete");
+    CONSOLE->println(PASSED, "Ethernet Complete");
   else
-    PORT->println(FAILED, "Ethernet Complete");
+    CONSOLE->println(FAILED, "Ethernet Complete");
   runTimer(status);
 }
 
@@ -138,6 +153,10 @@ IPAddress EthernetModule::getGateway() {
   return address;
 }
 
+VirtualServer* EthernetModule::getServer(int port) {
+  return new WiredServer(port);
+}
+
 bool EthernetModule::linkStatus() {
   bool status;
   COMM_TAKE;
@@ -146,29 +165,29 @@ bool EthernetModule::linkStatus() {
   return status;
 }
 
-void EthernetModule::ipStat() {
+void EthernetModule::ipStat(Terminal* terminal) {
   IPAddress ipAddress = ETHERNET->getIPAddress();
   bool linked = ETHERNET->linkStatus();
-  PORT->println();
-  PORT->print(INFO, "MAC Address:  ");
-  PORT->print(INFO, String(ETHERNET->macAddress[0], HEX) + ":");
-  PORT->print(INFO, String(ETHERNET->macAddress[1], HEX) + ":");
-  PORT->print(INFO, String(ETHERNET->macAddress[2], HEX) + ":");
-  PORT->print(INFO, String(ETHERNET->macAddress[3], HEX) + ":");
-  PORT->print(INFO, String(ETHERNET->macAddress[4], HEX) + ":");
-  PORT->println(INFO, String(ETHERNET->macAddress[5], HEX));
-  PORT->println(INFO, "IP Address is " + String((ETHERNET->isDHCP) ? "DHCP" : "Static"));
-  PORT->println(INFO, String((linked) ? "Connected" : "Unconnected"));
-  PORT->println(INFO, "  IP Address:  " + String(ipAddress[0]) + String(".") + String(ipAddress[1]) + String(".") + String(ipAddress[2]) + String(".") +
-                          String(ipAddress[3]));
+  terminal->println();
+  terminal->print(INFO, "MAC Address:  ");
+  terminal->print(INFO, String(ETHERNET->macAddress[0], HEX) + ":");
+  terminal->print(INFO, String(ETHERNET->macAddress[1], HEX) + ":");
+  terminal->print(INFO, String(ETHERNET->macAddress[2], HEX) + ":");
+  terminal->print(INFO, String(ETHERNET->macAddress[3], HEX) + ":");
+  terminal->print(INFO, String(ETHERNET->macAddress[4], HEX) + ":");
+  terminal->println(INFO, String(ETHERNET->macAddress[5], HEX));
+  terminal->println(INFO, "IP Address is " + String((ETHERNET->isDHCP) ? "DHCP" : "Static"));
+  terminal->println(INFO, String((linked) ? "Connected" : "Unconnected"));
+  terminal->println(INFO, "  IP Address:  " + String(ipAddress[0]) + String(".") + String(ipAddress[1]) + String(".") + String(ipAddress[2]) + String(".") +
+                              String(ipAddress[3]));
   ipAddress = ETHERNET->getSubnetMask();
-  PORT->println(INFO, "  Subnet Mask: " + String(ipAddress[0]) + String(".") + String(ipAddress[1]) + String(".") + String(ipAddress[2]) + String(".") +
-                          String(ipAddress[3]));
+  terminal->println(INFO, "  Subnet Mask: " + String(ipAddress[0]) + String(".") + String(ipAddress[1]) + String(".") + String(ipAddress[2]) + String(".") +
+                              String(ipAddress[3]));
   ipAddress = ETHERNET->getGateway();
-  PORT->println(INFO, "  Gateway:     " + String(ipAddress[0]) + String(".") + String(ipAddress[1]) + String(".") + String(ipAddress[2]) + String(".") +
-                          String(ipAddress[3]));
+  terminal->println(INFO, "  Gateway:     " + String(ipAddress[0]) + String(".") + String(ipAddress[1]) + String(".") + String(ipAddress[2]) + String(".") +
+                              String(ipAddress[3]));
   ipAddress = ETHERNET->getDNS();
-  PORT->println(INFO, "  DNS Server:  " + String(ipAddress[0]) + String(".") + String(ipAddress[1]) + String(".") + String(ipAddress[2]) + String(".") +
-                          String(ipAddress[3]));
-  PORT->prompt();
+  terminal->println(INFO, "  DNS Server:  " + String(ipAddress[0]) + String(".") + String(ipAddress[1]) + String(".") + String(ipAddress[2]) + String(".") +
+                              String(ipAddress[3]));
+  terminal->prompt();
 }

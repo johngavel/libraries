@@ -1,6 +1,8 @@
 #include "servermodule.h"
 
+#include "commonhtml.h"
 #include "serialport.h"
+#include "termcmd.h"
 #include "watchdog.h"
 
 #define BUFFER_SIZE 1024
@@ -9,9 +11,6 @@
 ServerModule* ServerModule::serverModule = nullptr;
 
 ServerModule::ServerModule() : Task("Server") {
-  COMM_TAKE;
-  server = new EthernetServer(80);
-  COMM_GIVE;
   setRefreshMilli(1);
   rootPage = nullptr;
   upgradePage = nullptr;
@@ -34,15 +33,16 @@ void ServerModule::setupTask() {
   COMM_TAKE;
   server->begin();
   COMM_GIVE;
-  PORT->addCmd("pages", "", "List of Pages Available on the server", ServerModule::pageListCmd);
-  PORT->println(PASSED, "HTTP Server Complete");
+  setCommonHTMLIpAddress(server->getNetworkInterface()->getIPAddress());
+  TERM_CMD->addCmd("pages", "", "List of Pages Available on the server", ServerModule::pageListCmd);
+  CONSOLE->println(PASSED, "HTTP Server Complete");
 }
 
 void ServerModule::setRootPage(BasicPage* page) {
   if (rootPage == nullptr)
     rootPage = page;
   else
-    PORT->println(ERROR, "Only one root page allowed.");
+    CONSOLE->println(ERROR, "Only one root page allowed.");
 }
 
 void ServerModule::setPage(BasicPage* page) {
@@ -50,7 +50,7 @@ void ServerModule::setPage(BasicPage* page) {
     pages[currentPageCount] = page;
     currentPageCount++;
   } else {
-    PORT->println(ERROR, "Server has too many pages " + String(currentPageCount) + " to add " + page->getPageName());
+    CONSOLE->println(ERROR, "Server has too many pages " + String(currentPageCount) + " to add " + page->getPageName());
   }
 }
 
@@ -59,7 +59,7 @@ void ServerModule::setUploadPage(FilePage* page) {
     uploadPages[currentUploadPageCount] = page;
     currentUploadPageCount++;
   } else {
-    PORT->println(ERROR, "Server has too many upload pages.");
+    CONSOLE->println(ERROR, "Server has too many upload pages.");
   }
 }
 
@@ -68,7 +68,7 @@ void ServerModule::setFormProcessingPage(ProcessPage* page) {
     processPages[currentProcessPageCount] = page;
     currentProcessPageCount++;
   } else {
-    PORT->println(ERROR, "Server has too many process pages.");
+    CONSOLE->println(ERROR, "Server has too many process pages.");
   }
 }
 
@@ -76,14 +76,14 @@ void ServerModule::setUpgradePage(FilePage* page) {
   if (upgradePage == nullptr)
     upgradePage = page;
   else
-    PORT->println(ERROR, "Only one upgrade page allowed.");
+    CONSOLE->println(ERROR, "Only one upgrade page allowed.");
 }
 
 void ServerModule::setErrorPage(BasicPage* page) {
   if (errorPage == nullptr)
     errorPage = page;
   else
-    PORT->println(ERROR, "Only one Error page allowed.");
+    CONSOLE->println(ERROR, "Only one Error page allowed.");
 }
 
 static char fileBuffer[BUFFER_SIZE];
@@ -95,13 +95,13 @@ void ServerModule::sendFile(File* file) {
   for (unsigned long i = 0; i < loops; i++) {
     bytes = file->readBytes(fileBuffer, BUFFER_SIZE);
     COMM_TAKE;
-    bytes = client.write(fileBuffer, bytes);
+    bytes = client->write((const uint8_t*) fileBuffer, bytes);
     COMM_GIVE;
     memset(fileBuffer, 0, BUFFER_SIZE);
   }
   bytes = file->readBytes(fileBuffer, remainder);
   COMM_TAKE;
-  bytes = client.write(fileBuffer, bytes);
+  bytes = client->write((const uint8_t*) fileBuffer, bytes);
   COMM_GIVE;
 }
 
@@ -114,7 +114,7 @@ bool ServerModule::receiveFile(File* file, unsigned long bytes) {
   unsigned long receivedBytes = 0;
   while ((total < bytes) && !timeout.expired()) {
     COMM_TAKE;
-    receivedBytes = client.read((uint8_t*) fileBuffer, BUFFER_SIZE);
+    receivedBytes = client->read((uint8_t*) fileBuffer, BUFFER_SIZE);
     COMM_GIVE;
     if ((total + receivedBytes) > bytes) receivedBytes = bytes - total;
     receivedBytes = file->write(fileBuffer, receivedBytes);
@@ -188,7 +188,7 @@ void ServerModule::processGet(char* action) {
     if (file) {
       sendFile(&file);
     } else if (errorPage != nullptr) {
-      PORT->println(ERROR, "SERVER: " + String(fileName) + " not found!");
+      CONSOLE->println(ERROR, "SERVER: " + String(fileName) + " not found!");
       clientWrite(errorPage->getHtml(&html));
     }
     file.close();
@@ -326,8 +326,8 @@ void ServerModule::processPost(char* action) {
               state = ERROR_STATE;
             }
           } else {
-            PORT->println(WARNING, "NOT ENOUGH SPACE FOR FILE: " + String(fileName) + String(" Size: ") + String(fileLength) + String("/") +
-                                       String(FILES->availableSpace()));
+            CONSOLE->println(WARNING, "NOT ENOUGH SPACE FOR FILE: " + String(fileName) + String(" Size: ") + String(fileLength) + String("/") +
+                                          String(FILES->availableSpace()));
             state = ERROR_STATE;
           }
           memset(postBuffer, 0, HEADER_LENGTH);
@@ -366,23 +366,20 @@ void ServerModule::processPost(char* action) {
 static char headerBuffer[HEADER_LENGTH];
 
 void ServerModule::executeTask() {
-  Timer timer;
   const unsigned long timeoutTime = 1000;
   bool actionRcv = false;
 
   memset(headerBuffer, 0, HEADER_LENGTH);
   unsigned long headerIndex = 0;
   COMM_TAKE;
-  client = server->available();
+  client = server->accept();
   COMM_GIVE;
-  if (client) { // If a new client connects,
+  if (clientConnected()) { // If a new client connects,
     COMM_TAKE;
-    client.setTimeout(timeoutTime);
+    client->setTimeout(timeoutTime);
     COMM_GIVE;
-    timer.setRefreshMilli(timeoutTime);
-    timer.runTimer(true);
-    while (clientConnected() && (!timer.expired())) { // loop while the client's connected
-      if (client) {
+    while (clientConnected()) { // loop while the client's connected
+      if (client->available()) {
         char c = clientRead(); // read a byte
         if ((headerIndex <= 4) || (strncmp("GET  ", headerBuffer, 4) == 0) || (strncmp("POST", headerBuffer, 4) == 0)) {
           if (headerIndex < 5) {
@@ -411,22 +408,21 @@ void ServerModule::executeTask() {
         delay(5);
     }
     COMM_TAKE;
-    client.flush();
-    client.stop();
+    server->closeClient();
     COMM_GIVE;
   }
 }
 
 char ServerModule::clientRead() {
-  COMM_TAKE;              // if there's bytes to read from the client,
-  char c = client.read(); // read a byte
+  COMM_TAKE;               // if there's bytes to read from the client,
+  char c = client->read(); // read a byte
   COMM_GIVE;
   return c;
 }
 
 bool ServerModule::clientAvailable() {
   COMM_TAKE;
-  bool a = client.available();
+  bool a = client->available();
   COMM_GIVE;
   return a;
 }
@@ -436,41 +432,41 @@ void ServerModule::clientWrite(HTMLBuilder* html) {
   unsigned long loops = html->length() / BUFFER_SIZE;
   for (unsigned long i = 0; i < loops; i++) {
     COMM_TAKE;
-    client.write(&html->buffer()[i * BUFFER_SIZE], BUFFER_SIZE);
+    client->write((const uint8_t*) &html->buffer()[i * BUFFER_SIZE], BUFFER_SIZE);
     COMM_GIVE;
   }
   COMM_TAKE;
-  client.write(&html->buffer()[loops * BUFFER_SIZE], remainder);
+  client->write((const uint8_t*) &html->buffer()[loops * BUFFER_SIZE], remainder);
   COMM_GIVE;
 }
 
 bool ServerModule::clientConnected() {
   COMM_TAKE;
-  bool c = client.connected();
+  bool c = client->connected();
   COMM_GIVE;
   return c;
 }
 
-void ServerModule::pageList() {
-  PORT->println();
+void ServerModule::pageList(Terminal* terminal) {
+  terminal->println();
   if (rootPage)
-    PORT->println(PROMPT, "Root Page is set: " + String(rootPage->getPageName()));
+    terminal->println(PROMPT, "Root Page is set: " + String(rootPage->getPageName()));
   else
-    PORT->println(WARNING, "Root Page is not set.");
+    terminal->println(WARNING, "Root Page is not set.");
   if (upgradePage)
-    PORT->println(PROMPT, "Upgrade Page is set: " + String(upgradePage->getPageName()));
+    terminal->println(PROMPT, "Upgrade Page is set: " + String(upgradePage->getPageName()));
   else
-    PORT->println(WARNING, "Upgrade Page is not set.");
+    terminal->println(WARNING, "Upgrade Page is not set.");
   if (errorPage)
-    PORT->println(PROMPT, "Error Page is set: " + String(errorPage->getPageName()));
+    terminal->println(PROMPT, "Error Page is set: " + String(errorPage->getPageName()));
   else
-    PORT->println(WARNING, "Error Page is not set.");
-  PORT->println(PROMPT, "Basic Pages - " + String(currentPageCount));
-  for (int i = 0; i < currentPageCount; i++) PORT->println(INFO, "Page: " + String(pages[i]->getPageName()));
-  PORT->println(PROMPT, "Process Pages - " + String(currentProcessPageCount));
-  for (int i = 0; i < currentProcessPageCount; i++) PORT->println(INFO, "Page: " + String(processPages[i]->getPageName()));
-  PORT->println(PROMPT, "Upload Pages - " + String(currentUploadPageCount));
-  for (int i = 0; i < currentUploadPageCount; i++) PORT->println(INFO, "Page: " + String(uploadPages[i]->getPageName()));
-  PORT->println(PASSED, "Page List Complete");
-  PORT->prompt();
+    terminal->println(WARNING, "Error Page is not set.");
+  terminal->println(PROMPT, "Basic Pages - " + String(currentPageCount));
+  for (int i = 0; i < currentPageCount; i++) terminal->println(INFO, "Page: " + String(pages[i]->getPageName()));
+  terminal->println(PROMPT, "Process Pages - " + String(currentProcessPageCount));
+  for (int i = 0; i < currentProcessPageCount; i++) terminal->println(INFO, "Page: " + String(processPages[i]->getPageName()));
+  terminal->println(PROMPT, "Upload Pages - " + String(currentUploadPageCount));
+  for (int i = 0; i < currentUploadPageCount; i++) terminal->println(INFO, "Page: " + String(uploadPages[i]->getPageName()));
+  terminal->println(PASSED, "Page List Complete");
+  terminal->prompt();
 }

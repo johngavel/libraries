@@ -16,17 +16,19 @@ void Scan::setup() {
   GPIO->configurePinReserve(GPIO_INTERNAL, ProgramInfo::hardwarewire.pinSDA, "I2C SDA", true);
   GPIO->configurePinReserve(GPIO_INTERNAL, ProgramInfo::hardwarewire.pinSCL, "I2C SCL", true);
 
-  PORT->addCmd("scan", "", "I2c Scanner", Scan::scani2c);
-  PORT->println(PASSED, "I2C Scanner Complete");
+  TERM_CMD->addCmd("scan", "", "I2c Scanner", Scan::scani2c);
+  CONSOLE->println(PASSED, "I2C Scanner Complete");
 }
 
-void Scan::scan() {
+void Scan::scani2c(Terminal* terminal) {
   byte error, address;
   int nDevices;
   String devicesFound[MAX_SCAN_DEVICES];
 
-  PORT->println(INFO, "\nI2C Scanner");
-  PORT->println(INFO, "Scanning...");
+  terminal->println();
+
+  terminal->println(INFO, "\nI2C Scanner");
+  terminal->println(INFO, "Scanning...");
 
   nDevices = 0;
   for (address = 1; address < 127; address++) {
@@ -39,34 +41,29 @@ void Scan::scan() {
     COMM_GIVE;
 
     if (error == 0) {
-      PORT->print(INFO, "I2C device found at address 0x");
-      if (address < 16) PORT->print(INFO, "0");
-      PORT->print(INFO, String(address, HEX));
-      PORT->println(INFO, "  !");
+      terminal->print(INFO, "I2C device found at address 0x");
+      if (address < 16) terminal->print(INFO, "0");
+      terminal->print(INFO, String(address, HEX));
+      terminal->println(INFO, "  !");
 
       if (nDevices < MAX_SCAN_DEVICES) { devicesFound[nDevices] = String(nDevices) + ". 0x" + String(address, HEX); }
 
       nDevices++;
 
     } else if (error == 4) {
-      PORT->print(WARNING, "Unknown error at address 0x");
-      if (address < 16) PORT->print(WARNING, "0");
-      PORT->println(WARNING, String(address, HEX));
+      terminal->print(WARNING, "Unknown error at address 0x");
+      if (address < 16) terminal->print(WARNING, "0");
+      terminal->println(WARNING, String(address, HEX));
     } else {
-      // PORT->print(INFO, "No device found at address 0x");
-      // if (address < 16) PORT->print(INFO, "0");
-      // PORT->println(INFO, String(address, HEX));
+      // terminal->print(INFO, "No device found at address 0x");
+      // if (address < 16) terminal->print(INFO, "0");
+      // terminal->println(INFO, String(address, HEX));
     }
   }
 
   if (nDevices == 0)
-    PORT->println(INFO, "No I2C devices found\n");
+    terminal->println(INFO, "No I2C devices found\n");
   else
-    PORT->println(INFO, "done\n");
-}
-
-void Scan::scani2c() {
-  PORT->println();
-  SCAN->scan();
-  PORT->prompt();
+    terminal->println(INFO, "done\n");
+  terminal->prompt();
 }

@@ -1,6 +1,8 @@
 #ifndef __GAVEL_FILES
 #define __GAVEL_FILES
 
+#include "terminal.h"
+
 #include <Arduino.h>
 #include <LittleFS.h>
 
@@ -12,12 +14,13 @@ class Files {
 public:
   static Files* get();
   void setup();
+  bool format();
   bool verifyFile(String path);
-  bool catFile(String path);
+  bool catFile(String path, Terminal* terminal);
   File getFile(String path);
-  void deleteFile(String path);
+  void deleteFile(String path, Terminal* terminal);
   File writeFile(String path);
-  void printInfo();
+  void printInfo(Terminal* terminal);
   unsigned long availableSpace();
   void UPGRADE_SYSTEM();
 
@@ -25,9 +28,10 @@ private:
   Files(){};
   static Files* files;
 
-  static void deleteCommand();
-  static void printDir();
-  static void catCommand();
+  static void deleteCommand(Terminal* terminal);
+  static void printDir(Terminal* terminal);
+  static void catCommand(Terminal* terminal);
+  static void formatCommand(Terminal* terminal);
 };
 
 #endif

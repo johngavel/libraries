@@ -26,7 +26,7 @@ void Blink::setupTask() {
     setRefreshMilli(50);
     GPIO->configurePinReserve(GPIO_INTERNAL, RP2040_PIN, "Built in LED");
     pixels.begin();
-    PORT->println(PASSED, "Onboard LED Blink for RP2040 Zero Complete");
+    CONSOLE->println(PASSED, "Onboard LED Blink for RP2040 Zero Complete");
 #endif
     break;
   case HW_RASPBERRYPI_PICO:
@@ -34,11 +34,11 @@ void Blink::setupTask() {
     setRefreshMilli(500);
     GPIO->configurePinReserve(GPIO_INTERNAL, LED_BUILTIN, "Built in LED");
     pinMode(LED_BUILTIN, OUTPUT);
-    PORT->println(PASSED, "Onboard LED Blink for Pico Complete");
+    CONSOLE->println(PASSED, "Onboard LED Blink for Pico Complete");
     break;
   default:
     runTimer(false);
-    PORT->println(FAILED, "Onboard LED Blink - Unknown Hardware");
+    CONSOLE->println(FAILED, "Onboard LED Blink - Unknown Hardware");
     break;
   }
 }

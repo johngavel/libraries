@@ -3,6 +3,6 @@
 
 #include "serialport.h"
 
-#define DEBUG(s) PORT->println(TRACE, s)
+#define DEBUG(s) CONSOLE->println(TRACE, s)
 
 #endif

@@ -19,8 +19,8 @@ LicenseManager::LicenseManager() {
 }
 
 void LicenseManager::setup() {
-  PORT->addCmd("license", "[n]", "Prints the License File of the library indicated by n.", LicenseManager::printLicense);
-  PORT->addCmd("library", "", "Prints the libraries used in this build.", LicenseManager::printTable);
+  TERM_CMD->addCmd("license", "[n]", "Prints the License File of the library indicated by n.", LicenseManager::printLicense);
+  TERM_CMD->addCmd("library", "", "Prints the libraries used in this build.", LicenseManager::printTable);
 }
 
 void LicenseManager::addLicense(String libraryName, String version, String link) {
@@ -43,8 +43,8 @@ void LicenseManager::addLicenseToDatabase(String libraryName, String version, St
   if (!found) { licenseList->push(&newLicense); }
 }
 
-void LicenseManager::printTable() {
-  AsciiTable table;
+void LicenseManager::printTable(Terminal* terminal) {
+  AsciiTable table(terminal);
   LicenseFile oldLicense;
   table.addColumn(Cyan, "#", 4);
   table.addColumn(Normal, "Name", 28);
@@ -55,29 +55,29 @@ void LicenseManager::printTable() {
     if (LICENSE->getFile(i, &oldLicense)) { table.printData(String(i + 1), oldLicense.libraryName, oldLicense.version, oldLicense.link); }
   }
   table.printDone("All Libraries");
-  PORT->prompt();
+  terminal->prompt();
 }
 
-void LicenseManager::printLicense() {
+void LicenseManager::printLicense(Terminal* terminal) {
   bool success = false;
   LicenseFile oldLicense;
   char* value;
-  PORT->println();
-  value = PORT->readParameter();
+  terminal->println();
+  value = terminal->readParameter();
   if (value != NULL) {
     unsigned int index = atoi(value) - 1;
     if (index < (LICENSE->count())) {
       LICENSE->getFile(index, &oldLicense);
-      PORT->println(INFO, String(oldLicense.libraryName) + " " + String(oldLicense.version) + "  - License File");
-      PORT->println();
-      if (FILES->catFile("/license/" + String(oldLicense.link))) {
+      terminal->println(INFO, String(oldLicense.libraryName) + " " + String(oldLicense.version) + "  - License File");
+      terminal->println();
+      if (FILES->catFile("/license/" + String(oldLicense.link), terminal)) {
         success = true;
       } else
-        PORT->println(ERROR, "Missing License File.");
+        terminal->println(ERROR, "Missing License File.");
     } else
-      PORT->println(ERROR, "Invalid Index to Library.");
+      terminal->println(ERROR, "Invalid Index to Library.");
   } else
-    PORT->println(ERROR, "Missing Index to Library.");
-  PORT->println((success) ? PASSED : FAILED, "License File Complete");
-  PORT->prompt();
+    terminal->println(ERROR, "Missing Index to Library.");
+  terminal->println((success) ? PASSED : FAILED, "License File Complete");
+  terminal->prompt();
 }

@@ -2,10 +2,15 @@
 
 #include "architecture.h"
 #include "eeprom.h"
-#include "ethernetmodule.h"
 #include "license.h"
 #include "serialport.h"
 #include "watchdog.h"
+
+static IPAddress __commonIpAddress;
+
+void setCommonHTMLIpAddress(IPAddress __ipaddress) {
+  __commonIpAddress = __ipaddress;
+}
 
 void sendPageBegin(HTMLBuilder* html, bool autoRefresh, int seconds) {
   // HTTP headers always start with a response code (e.g. HTTP/1.1 200 OK)
@@ -21,7 +26,7 @@ void sendPageBegin(HTMLBuilder* html, bool autoRefresh, int seconds) {
     html->print("<meta http-equiv=\"refresh\" content=\"");
     html->print(seconds);
     html->print("; url=http://");
-    html->print(ETHERNET->getIPAddress().toString());
+    html->print(__commonIpAddress.toString());
     html->println("/\"; name=\"viewport\" content=\"width=device-width, "
                   "initial-scale=1\" >");
   }
@@ -69,6 +74,25 @@ void sendPageEnd(HTMLBuilder* html) {
   html->brTag()->println("Author: " + String(ProgramInfo::AuthorName))->brTag()->brTag();
   html->closeTag()->closeTag();
   html->println();
+}
+
+HTMLBuilder* SimpleTestPage::getHtml(HTMLBuilder* html) {
+  // HTTP headers always start with a response code (e.g. HTTP/1.1 200 OK)
+  // and a content-type so the client knows what's coming, then a blank line:
+  html->println("HTTP/1.1 200 OK");
+  html->println("Content-type:text/html");
+  html->println("Connection: close");
+  html->println();
+
+  html->println("<html>");
+  html->println("  <head>");
+  html->println("    <title>An Example Page</title>");
+  html->println("  </head>");
+  html->println("  <body>");
+  html->println("    <p>Hello World, this is a very simple HTML document.</p>");
+  html->println("  </body>");
+  html->println("</html>");
+  return html;
 }
 
 HTMLBuilder* ErrorPage::getHtml(HTMLBuilder* html) {
@@ -156,7 +180,7 @@ HTMLBuilder* UploadPage::getHtml(HTMLBuilder* html) {
   html->closeTag("input", "id=\"file\" name=\"file\" type=\"file\"")->println();
   html->openTag("button")->print("Upload")->closeTag()->println();
   html->closeTag()->brTag()->println();
-  html->openTag("a", "href=\"/server\"")->openTag("button", "type=\"button\" class=\"button2 button\"");
+  html->openTag("a", "href=\"/\"")->openTag("button", "type=\"button\" class=\"button2 button\"");
   html->print("Cancel")->closeTag()->closeTag()->brTag()->println();
   sendPageEnd(html);
   return html;
@@ -168,7 +192,7 @@ HTMLBuilder* ExportPage::getHtml(HTMLBuilder* html) {
   html->openTag("h2")->print("Configuration Export")->closeTag()->println();
   html->openTag("a", "href=\"/" + MEMORY_CONFIG_FILE + "\"")->openTag("button", "type=\"button\" class=\"button4 button\"");
   html->print("File")->closeTag()->closeTag()->brTag()->println();
-  html->openTag("a", "href=\"/server\"")->openTag("button", "type=\"button\" class=\"button2 button\"");
+  html->openTag("a", "href=\"/\"")->openTag("button", "type=\"button\" class=\"button2 button\"");
   html->print("Cancel")->closeTag()->closeTag()->brTag()->println();
   sendPageEnd(html);
   return html;
@@ -182,7 +206,7 @@ HTMLBuilder* ImportPage::getHtml(HTMLBuilder* html) {
   html->closeTag("input", "id=\"file\" name=\"file\" type=\"file\"")->println();
   html->openTag("button")->print("Import")->closeTag()->println();
   html->closeTag()->brTag()->println();
-  html->openTag("a", "href=\"/server\"")->openTag("button", "type=\"button\" class=\"button2 button\"");
+  html->openTag("a", "href=\"/\"")->openTag("button", "type=\"button\" class=\"button2 button\"");
   html->print("Cancel")->closeTag()->closeTag()->brTag()->println();
   sendPageEnd(html);
   return html;
@@ -196,7 +220,7 @@ HTMLBuilder* UpgradePage::getHtml(HTMLBuilder* html) {
   html->closeTag("input", "id=\"file\" name=\"file\" type=\"file\"")->println();
   html->openTag("button")->print("Upload")->closeTag()->println();
   html->closeTag()->brTag()->println();
-  html->openTag("a", "href=\"/server\"")->openTag("button", "type=\"button\" class=\"button2 button\"");
+  html->openTag("a", "href=\"/\"")->openTag("button", "type=\"button\" class=\"button2 button\"");
   html->print("Cancel")->closeTag()->closeTag()->brTag()->println();
   sendPageEnd(html);
   return html;
@@ -208,7 +232,7 @@ HTMLBuilder* RebootPage::getHtml(HTMLBuilder* html) {
   html->println("Rebooting.....");
   html->brTag();
   sendPageEnd(html);
-  PORT->println(WARNING, "Reboot in progress.....");
+  CONSOLE->println(WARNING, "Reboot in progress.....");
   WATCHDOG->reboot();
   return html;
 }

@@ -2,7 +2,8 @@
 
 #include "stringutils.h"
 
-AsciiTable::AsciiTable() {
+AsciiTable::AsciiTable(Terminal* __terminal) {
+  terminal = __terminal;
   for (int i = 0; i < MAX_TABLE_COLUMNS; i++) {
     columnColor[i] = Normal;
     columnWidth[i] = 0;
@@ -22,21 +23,21 @@ void AsciiTable::addColumn(COLOR color, String header, unsigned long width) {
 
 static const String dashes = "-------------------------------------------------------------------------------";
 
-static void printCellData(COLOR color, String line, int width) {
+void AsciiTable::printCellData(COLOR color, String line, int width) {
   String cell = line.substring(0, width - 2);
   String data = " " + cell + tab(cell.length(), width - 2) + " |";
-  PORT->print(color, data);
+  terminal->print(color, data);
 }
 
 void AsciiTable::printHeader() {
-  PORT->println();
+  terminal->println();
   for (int i = 0; i < numberOfColumns; i++) { printCellData(columnColor[i], columnHeader[i], columnWidth[i]); }
-  PORT->println();
+  terminal->println();
   for (int i = 0; i < numberOfColumns; i++) {
-    PORT->print(columnColor[i], dashes.substring(0, columnWidth[i]));
-    PORT->print(columnColor[i], "|");
+    terminal->print(columnColor[i], dashes.substring(0, columnWidth[i]));
+    terminal->print(columnColor[i], "|");
   }
-  PORT->println();
+  terminal->println();
 }
 
 void AsciiTable::printData(String line0, String line1, String line2, String line3, String line4, String line5, String line6, String line7, String line8,
@@ -51,10 +52,10 @@ void AsciiTable::printData(String line0, String line1, String line2, String line
   if (numberOfColumns > 7) printCellData(columnColor[7], line7, columnWidth[7]);
   if (numberOfColumns > 8) printCellData(columnColor[8], line8, columnWidth[8]);
   if (numberOfColumns > 9) printCellData(columnColor[9], line9, columnWidth[9]);
-  PORT->println();
+  terminal->println();
 }
 
 void AsciiTable::printDone(String done) {
-  PORT->println();
-  PORT->println(PASSED, done);
+  terminal->println();
+  terminal->println(PASSED, done);
 }

@@ -4,6 +4,9 @@
 #include "html.h"
 #include "servermodule.h"
 
+#include <IPAddress.h>
+
+void setCommonHTMLIpAddress(IPAddress __ipaddress);
 void sendPageBegin(HTMLBuilder* html, bool autoRefresh = false, int seconds = 10);
 void sendPageEnd(HTMLBuilder* html);
 
@@ -16,6 +19,12 @@ public:
     sendPageEnd(html);
     return html;
   }
+};
+
+class SimpleTestPage : public BasicPage {
+public:
+  SimpleTestPage() { setPageName("test-simple"); };
+  HTMLBuilder* getHtml(HTMLBuilder* html);
 };
 
 class ErrorPage : public BasicPage {

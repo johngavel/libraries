@@ -42,11 +42,11 @@ private:
   bool invalidOverallConfiguration;
   bool gpioTypeConfigured[GPIO_MAX_TYPES];
 
-  static void printTable();
-  static void toneCmd();
-  static void pwmCmd();
-  static void pulseCmd();
-  static void statusCmd();
+  static void printTable(Terminal* terminal);
+  static void toneCmd(Terminal* terminal);
+  static void pwmCmd(Terminal* terminal);
+  static void pulseCmd(Terminal* terminal);
+  static void statusCmd(Terminal* terminal);
 };
 
 #endif

@@ -2,6 +2,8 @@
 #define __GAVEL_LICENSE
 
 #include "datastructure.h"
+#include "termcmd.h"
+#include "terminal.h"
 
 #include <Arduino.h>
 
@@ -14,7 +16,7 @@
 #define ADAFRUIT_BUS_LICENSE LICENSE_ADD("Adafruit BusIO", "Ver. 1.16.1", "BusIO_LICENSE")
 #define ADAFRUIT_GFX_LICENSE LICENSE_ADD("Adafruit GFX Library", "Ver. 1.11.9", "GFX_license.txt")
 #define ADAFRUIT_MCP4725_LICENSE LICENSE_ADD("Adafruit MCP4725", "Ver. 2.0.2", "")
-#define ADAFRUIT_PIXEL_LICENSE LICENSE_ADD("Adafruit NeoPixel", "Ver. 1.12.2", "NeoPixel_COPYING")
+#define ADAFRUIT_PIXEL_LICENSE LICENSE_ADD("Adafruit NeoPixel", "Ver. 1.12.3", "NeoPixel_COPYING")
 #define ADAFRUIT_SSD1306_LICENSE LICENSE_ADD("Adafruit SSD1306", "Ver. 2.5.10", "SSD1306_license.txt")
 #define ADAFRUIT_UNIFIED_LICENSE LICENSE_ADD("Adafruit_Unified_Sensor", "", "Sensor_LICENSE.txt")
 #define DHT_LICENSE LICENSE_ADD("DHT sensor library", "Ver. 1.4.6", "DHT_license.txt")
@@ -40,8 +42,8 @@ public:
 
 private:
   static LicenseManager* licenseManager;
-  static void printTable();
-  static void printLicense();
+  static void printTable(Terminal* terminal);
+  static void printLicense(Terminal* terminal);
   LicenseManager();
   void addLicenseToDatabase(String libraryName, String version, String link);
   ClassicQueue* licenseList;

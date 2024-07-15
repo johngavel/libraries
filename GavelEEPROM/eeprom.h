@@ -2,6 +2,7 @@
 #define __GAVEL_EEPROM
 
 #include "architecture.h"
+#include "terminal.h"
 
 #include <I2C_eeprom.h>
 
@@ -11,7 +12,7 @@ class Data {
 public:
   virtual void setup() = 0;
   virtual void initMemory() = 0;
-  virtual void printData() = 0;
+  virtual void printData(Terminal* terminal) = 0;
   virtual unsigned char* getData() = 0;
   virtual unsigned long getLength() = 0;
   virtual void exportMem() = 0;
@@ -64,8 +65,8 @@ private:
   };
   PrivateAppInfo appInfo;
 
-  static void wipe();
-  static void mem();
+  static void wipe(Terminal* terminal);
+  static void mem(Terminal* terminal);
 };
 
 #endif

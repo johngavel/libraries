@@ -21,7 +21,7 @@ HTMLBuilder* HTMLBuilder::print(const char* line) {
     memcpy(&html[index], line, strlen(line));
     index += size;
   } else {
-    PORT->println(ERROR, "Building HTML exceeded buffer length");
+    CONSOLE->println(ERROR, "Building HTML exceeded buffer length");
   }
   return this;
 }
@@ -65,7 +65,7 @@ HTMLBuilder* HTMLBuilder::println(int line) {
 }
 
 char* HTMLBuilder::buffer() {
-  if (!stack.empty()) PORT->println(ERROR, "Closing Tags were not called! " + String(stack.count()));
+  if (!stack.empty()) CONSOLE->println(ERROR, "Closing Tags were not called! " + String(stack.count()));
   stack.clear();
   return html;
 }
@@ -112,7 +112,7 @@ HTMLBuilder* HTMLBuilder::closeTag() {
     stack.pop(line);
     print("</" + String(line) + ">");
   } else {
-    PORT->println(ERROR, "No Closing Tag avaialable!");
+    CONSOLE->println(ERROR, "No Closing Tag avaialable!");
   }
   return this;
 }

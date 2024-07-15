@@ -2,13 +2,14 @@
 #define __GAVEL_WIFI
 
 #include "architecture.h"
+#include "networkinterface.h"
 
 #include <Arduino.h>
 #include <WiFi.h>
 
 #define WIFI WifiModule::get()
 
-class WifiModule : public Task {
+class WifiModule : public Task, public VirtualNetwork, public VirtualServerFactory {
 public:
   static WifiModule* get();
 
@@ -21,6 +22,8 @@ public:
   IPAddress getSubnetMask();
   IPAddress getGateway();
   IPAddress getDNS();
+  bool getDHCP() { return isDHCP; };
+  VirtualServer* getServer(int port);
   bool ipChanged;
   // Only used for initial configuration
   bool isConfigured;
@@ -35,8 +38,22 @@ private:
   // Only used for initial configuration
   String ssid;
   String password;
-  static void wifiStat();
-  static void wifiScan();
+  static void wifiStat(Terminal* terminal);
+  static void wifiScan(Terminal* terminal);
+};
+
+class WifiServer : public VirtualServer {
+public:
+  WifiServer(int __port) : port(__port){};
+  void begin();
+  Client* accept();
+  void closeClient();
+  VirtualNetwork* getNetworkInterface() { return WIFI; };
+
+private:
+  WiFiServer* server;
+  WiFiClient client;
+  int port;
 };
 
 #endif

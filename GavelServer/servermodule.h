@@ -2,11 +2,10 @@
 #define __GAVEL_SERVER
 
 #include "architecture.h"
-#include "ethernetmodule.h"
 #include "files.h"
 #include "html.h"
+#include "networkinterface.h"
 #include "parameter.h"
-
 #define MAX_PAGES 64
 #define PAGE_NAME_LENGTH 16
 
@@ -38,10 +37,12 @@ protected:
 };
 
 #define SERVER ServerModule::get()
+#define NIC SERVER->getServer()->getNetworkInterface()
 
 class ServerModule : public Task {
 public:
   static ServerModule* get();
+  void configure(VirtualServer* __server) { server = __server; };
   void setupTask();
   void executeTask();
   void setRootPage(BasicPage* page);
@@ -50,7 +51,8 @@ public:
   void setUploadPage(FilePage* page);
   void setUpgradePage(FilePage* page);
   void setErrorPage(BasicPage* page);
-  void pageList();
+  void pageList(Terminal* terminal);
+  VirtualServer* getServer() { return server; };
 
 private:
   ServerModule();
@@ -65,8 +67,8 @@ private:
   void clientWrite(HTMLBuilder* html);
   bool clientConnected();
 
-  EthernetServer* server;
-  EthernetClient client;
+  VirtualServer* server;
+  Client* client;
 
   BasicPage* pages[MAX_PAGES];
   int currentPageCount;
@@ -78,7 +80,7 @@ private:
   ProcessPage* processPages[MAX_PAGES];
   int currentProcessPageCount;
 
-  static void pageListCmd() { SERVER->pageList(); };
+  static void pageListCmd(Terminal* terminal) { SERVER->pageList(terminal); };
 };
 
 #endif
