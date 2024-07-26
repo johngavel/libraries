@@ -25,9 +25,7 @@ void Scan::scani2c(Terminal* terminal) {
   int nDevices;
   String devicesFound[MAX_SCAN_DEVICES];
 
-  terminal->println();
-
-  terminal->println(INFO, "\nI2C Scanner");
+  terminal->println(INFO, "I2C Scanner");
   terminal->println(INFO, "Scanning...");
 
   nDevices = 0;

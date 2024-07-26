@@ -135,7 +135,6 @@ void EEpromMemory::writeEEPROM() {
 }
 
 void EEpromMemory::wipe(Terminal* terminal) {
-  terminal->println();
   EEPROM->initMemory();
   if (EEPROM->getData()) EEPROM->initMemory();
   terminal->println((EEPROM->getTimerRun()) ? PASSED : FAILED, "EEPROM Initialize Memory Complete.");
@@ -143,7 +142,6 @@ void EEpromMemory::wipe(Terminal* terminal) {
 }
 
 void EEpromMemory::mem(Terminal* terminal) {
-  terminal->println();
   terminal->println(PROMPT, String(ProgramInfo::AppName) + " Version: " + String(ProgramInfo::MajorVersion) + String(".") + String(ProgramInfo::MinorVersion));
   terminal->println(INFO, "Program: " + String(ProgramInfo::ProgramNumber));
   terminal->println(INFO, "EEPROM Size: " + String(EEPROM->getLength()) + "/" + String(EEPROM->getMemorySize() / 8));

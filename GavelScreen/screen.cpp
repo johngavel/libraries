@@ -128,7 +128,6 @@ void Screen::setScreen(String line1, String line2, String line3, String line4, S
 void Screen::bitmap(Terminal* terminal) {
   char* value;
   StopWatch time;
-  terminal->println();
   value = terminal->readParameter();
   if (value != NULL) {
     BITMAP bitmap = (BITMAP) atoi(value);

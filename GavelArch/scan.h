@@ -3,8 +3,7 @@
 
 #define SCAN Scan::get()
 
-#include "termcmd.h"
-#include "terminal.h"
+#include <Terminal.h>
 
 class Scan {
 public:

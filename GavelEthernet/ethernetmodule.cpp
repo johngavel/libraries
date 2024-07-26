@@ -12,7 +12,7 @@ void WiredServer::begin() {
 }
 
 Client* WiredServer::accept() {
-  client = server->available();
+  client = server->accept();
   return &client;
 }
 
@@ -168,7 +168,6 @@ bool EthernetModule::linkStatus() {
 void EthernetModule::ipStat(Terminal* terminal) {
   IPAddress ipAddress = ETHERNET->getIPAddress();
   bool linked = ETHERNET->linkStatus();
-  terminal->println();
   terminal->print(INFO, "MAC Address:  ");
   terminal->print(INFO, String(ETHERNET->macAddress[0], HEX) + ":");
   terminal->print(INFO, String(ETHERNET->macAddress[1], HEX) + ":");

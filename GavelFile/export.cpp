@@ -1,7 +1,6 @@
 #include "export.h"
 
 #include "serialport.h"
-#include "termcmd.h"
 
 #define PARAMETER_COUNT String("ParameterCount")
 

@@ -1,9 +1,10 @@
 #include "gpio.h"
 
+#include "asciitable.h"
 #include "license.h"
 #include "serialport.h"
-#include "termcmd.h"
-#include "terminal.h"
+
+#include <Terminal.h>
 
 const char* stringHardware(HW_TYPES hw_type);
 const char* stringLocation(GPIO_LOCATION location);
@@ -237,6 +238,26 @@ const char* stringLocation(GPIO_LOCATION location) {
   }
   return locationString;
 }
+
+const char* stringType(GPIO_TYPE type) {
+  const char* typeString;
+  switch (type) {
+  case GPIO_INPUT: typeString = "Input"; break;
+  case GPIO_OUTPUT: typeString = "Output"; break;
+  case GPIO_LED: typeString = "LED"; break;
+  case GPIO_BUTTON: typeString = "Button"; break;
+  case GPIO_PULSE: typeString = "Pulse"; break;
+  case GPIO_PWM: typeString = "PWM"; break;
+  case GPIO_TONE: typeString = "Tone"; break;
+  case GPIO_ADC: typeString = "ADC"; break;
+  case GPIO_RESERVED: typeString = "Reserved"; break;
+  case GPIO_UNACCESSIBLE: typeString = "Unaccessible"; break;
+  case GPIO_UNDEFINED: typeString = "Undefined"; break;
+  default: typeString = "Unknown"; break;
+  }
+  return typeString;
+}
+
 int comp(const void* __lhs, const void* __rhs) {
   int lhs = *((int*) __lhs);
   int rhs = *((int*) __rhs);
@@ -253,13 +274,12 @@ void GPIOManager::printTable(Terminal* terminal) {
   bool verbose = false;
   char* value = terminal->readParameter();
 
-  terminal->println();
-
-  if ((value != NULL) && (strncmp("all", value, 3) == 0))
+  if ((value != NULL) && (strncmp("all", value, 3) == 0)) {
     all = true;
-  else if ((value != NULL) && (strncmp("v", value, 1) == 0))
     verbose = true;
-  else if (value != NULL) {
+  } else if ((value != NULL) && (strncmp("v", value, 1) == 0)) {
+    verbose = true;
+  } else if (value != NULL) {
     terminal->invalidParameter();
     terminal->prompt();
     return;
@@ -275,96 +295,118 @@ void GPIOManager::printTable(Terminal* terminal) {
       terminal->println(INFO,
                         "Expander " + String(i + 1) + " Address: " + String(GPIO->expander[i].address) + ((GPIO->expander[i].valid) ? " Valid" : " Invalid"));
   }
+
+  AsciiTable table(terminal);
+  table.addColumn(Normal, "#", 4);
+  table.addColumn(Normal, "Type", 10);
+  table.addColumn(Normal, "Pin", 5);
+  table.addColumn(Normal, "Location", 10);
+  table.addColumn(Normal, "Index", 7);
+  table.addColumn(Normal, "Value", 7);
+  table.addColumn(Normal, "Note", 30);
+  table.printHeader();
   for (int i = 0; i < MAX_PINS; i++) {
     GPIO_DESCRIPTION* entry = &GPIO->table[sorted[i]];
-    switch (entry->type) {
-    case GPIO_UNACCESSIBLE: break;
-    case GPIO_UNDEFINED:
-      if (all) {
-        terminal->print(INFO, String(i + 1) + ". ");
-        terminal->print(INFO, "UNDEFINED PIN: " + String(entry->pinNumber));
-        terminal->print(INFO, " Location: " + String(stringLocation(entry->location)));
-        terminal->println(INFO, " Note: " + String(entry->description));
-      }
-      break;
-    case GPIO_INPUT:
-      terminal->print(INFO, String(i + 1) + ". ");
-      terminal->print(INFO, "INPUT PIN: " + String(entry->pinNumber));
-      terminal->print(INFO, " Location: " + String(stringLocation(entry->location)));
-      terminal->print(INFO, " Index: " + String(entry->index));
-      terminal->print(INFO, " Value: " + String(entry->getCurrentStatus()));
-      terminal->println(INFO, " Note: " + String(entry->description));
-      break;
-    case GPIO_OUTPUT:
-      terminal->print(INFO, String(i + 1) + ". ");
-      terminal->print(INFO, "OUTPUT PIN: " + String(entry->pinNumber));
-      terminal->print(INFO, " Location: " + String(stringLocation(entry->location)));
-      terminal->print(INFO, " Index: " + String(entry->index));
-      terminal->print(INFO, " Value: " + String(entry->getCurrentStatus()));
-      terminal->println(INFO, " Note: " + String(entry->description));
-      break;
-    case GPIO_LED:
-      terminal->print(INFO, String(i + 1) + ". ");
-      terminal->print(INFO, "LED PIN: " + String(entry->pinNumber));
-      terminal->print(INFO, " Location: " + String(stringLocation(entry->location)));
-      terminal->print(INFO, " Index: " + String(entry->index));
-      terminal->print(INFO, " Flow: " + String((entry->led_type == GPIO_SINK) ? "SINK" : "SOURCE"));
-      terminal->print(INFO, " Value: " + String(entry->getCurrentStatus()));
-      terminal->println(INFO, " Note: " + String(entry->description));
-      break;
-    case GPIO_BUTTON:
-      terminal->print(INFO, String(i + 1) + ". ");
-      terminal->print(INFO, "BUTTON PIN: " + String(entry->pinNumber));
-      terminal->print(INFO, " Location: " + String(stringLocation(entry->location)));
-      terminal->print(INFO, " Index: " + String(entry->index));
-      terminal->print(INFO, " Value: " + String(entry->getCurrentStatus()));
-      terminal->println(INFO, " Note: " + String(entry->description));
-      break;
-    case GPIO_PULSE:
-      terminal->print(INFO, String(i + 1) + ". ");
-      terminal->print(INFO, "PULSE OUTPUT PIN: " + String(entry->pinNumber));
-      terminal->print(INFO, " Location: " + String(stringLocation(entry->location)));
-      terminal->print(INFO, " Index: " + String(entry->index));
-      terminal->println(INFO, " Note: " + String(entry->description));
-      break;
-    case GPIO_PWM:
-      terminal->print(INFO, String(i + 1) + ". ");
-      terminal->print(INFO, "PWM PIN: " + String(entry->pinNumber));
-      terminal->print(INFO, " Location: " + String(stringLocation(entry->location)));
-      terminal->print(INFO, " Index: " + String(entry->index));
-      terminal->print(INFO, " Freq: " + String(entry->getCurrentFreq()));
-      terminal->print(INFO, " Value: " + String(entry->getCurrentValue()));
-      terminal->println(INFO, " Duty Cycle: " + String(entry->description));
-      entry = GPIO->getPin(GPIO_PWM, entry->index);
-      break;
-    case GPIO_TONE:
-      terminal->print(INFO, String(i + 1) + ". ");
-      terminal->print(INFO, "TONE PIN: " + String(entry->pinNumber));
-      terminal->print(INFO, " Location: " + String(stringLocation(entry->location)));
-      terminal->print(INFO, " Index: " + String(entry->index));
-      terminal->print(INFO, " Freq: " + String(entry->getCurrentFreq()));
-      terminal->println(INFO, " Note: " + String(entry->description));
-      entry = GPIO->getPin(GPIO_TONE, entry->index);
-      break;
-    case GPIO_ADC:
-      terminal->print(INFO, String(i + 1) + ". ");
-      terminal->print(INFO, "ADC PIN: " + String(entry->pinNumber));
-      terminal->print(INFO, " Location: " + String(stringLocation(entry->location)));
-      terminal->print(INFO, " Index: " + String(entry->index));
-      terminal->print(INFO, " Value: " + String(entry->getCurrentValue()));
-      terminal->println(INFO, " Note: " + String(entry->description));
-      break;
-    case GPIO_RESERVED:
-      if (all || verbose) {
-        terminal->print(INFO, String(i + 1) + ". ");
-        terminal->print(INFO, "RESERVED PIN: " + String(entry->pinNumber));
-        terminal->print(INFO, " Location: " + String(stringLocation(entry->location)));
-        terminal->println(INFO, " Note: " + String(entry->description));
-      }
-      break;
-    default: break;
-    }
+    bool printPin = true;
+    if (entry->type == GPIO_UNACCESSIBLE) printPin = false;
+    if ((entry->type == GPIO_UNDEFINED) && (all == false)) printPin = false;
+    if ((entry->type == GPIO_RESERVED) && (verbose == false)) printPin = false;
+    if (printPin)
+      table.printData(String(i + 1), String(stringType(entry->type)), String(entry->pinNumber), String(stringLocation(entry->location)), String(entry->index),
+                      String(entry->getCurrentStatus()), String(entry->description));
   }
+  table.printDone("GPIO Table");
+
+  // for (int i = 0; i < MAX_PINS; i++) {
+  //   GPIO_DESCRIPTION* entry = &GPIO->table[sorted[i]];
+  //   switch (entry->type) {
+  //   case GPIO_UNACCESSIBLE: break;
+  //   case GPIO_UNDEFINED:
+  //     if (all) {
+  //       terminal->print(INFO, String(i + 1) + ". ");
+  //       terminal->print(INFO, "UNDEFINED PIN: " + String(entry->pinNumber));
+  //       terminal->print(INFO, " Location: " + String(stringLocation(entry->location)));
+  //       terminal->println(INFO, " Note: " + String(entry->description));
+  //     }
+  //     break;
+  //   case GPIO_INPUT:
+  //     terminal->print(INFO, String(i + 1) + ". ");
+  //     terminal->print(INFO, "INPUT PIN: " + String(entry->pinNumber));
+  //     terminal->print(INFO, " Location: " + String(stringLocation(entry->location)));
+  //     terminal->print(INFO, " Index: " + String(entry->index));
+  //     terminal->print(INFO, " Value: " + String(entry->getCurrentStatus()));
+  //     terminal->println(INFO, " Note: " + String(entry->description));
+  //     break;
+  //   case GPIO_OUTPUT:
+  //     terminal->print(INFO, String(i + 1) + ". ");
+  //     terminal->print(INFO, "OUTPUT PIN: " + String(entry->pinNumber));
+  //     terminal->print(INFO, " Location: " + String(stringLocation(entry->location)));
+  //     terminal->print(INFO, " Index: " + String(entry->index));
+  //     terminal->print(INFO, " Value: " + String(entry->getCurrentStatus()));
+  //     terminal->println(INFO, " Note: " + String(entry->description));
+  //     break;
+  //   case GPIO_LED:
+  //     terminal->print(INFO, String(i + 1) + ". ");
+  //     terminal->print(INFO, "LED PIN: " + String(entry->pinNumber));
+  //     terminal->print(INFO, " Location: " + String(stringLocation(entry->location)));
+  //     terminal->print(INFO, " Index: " + String(entry->index));
+  //     terminal->print(INFO, " Flow: " + String((entry->led_type == GPIO_SINK) ? "SINK" : "SOURCE"));
+  //     terminal->print(INFO, " Value: " + String(entry->getCurrentStatus()));
+  //     terminal->println(INFO, " Note: " + String(entry->description));
+  //     break;
+  //   case GPIO_BUTTON:
+  //     terminal->print(INFO, String(i + 1) + ". ");
+  //     terminal->print(INFO, "BUTTON PIN: " + String(entry->pinNumber));
+  //     terminal->print(INFO, " Location: " + String(stringLocation(entry->location)));
+  //     terminal->print(INFO, " Index: " + String(entry->index));
+  //     terminal->print(INFO, " Value: " + String(entry->getCurrentStatus()));
+  //     terminal->println(INFO, " Note: " + String(entry->description));
+  //     break;
+  //   case GPIO_PULSE:
+  //     terminal->print(INFO, String(i + 1) + ". ");
+  //     terminal->print(INFO, "PULSE OUTPUT PIN: " + String(entry->pinNumber));
+  //     terminal->print(INFO, " Location: " + String(stringLocation(entry->location)));
+  //     terminal->print(INFO, " Index: " + String(entry->index));
+  //     terminal->println(INFO, " Note: " + String(entry->description));
+  //     break;
+  //   case GPIO_PWM:
+  //     terminal->print(INFO, String(i + 1) + ". ");
+  //     terminal->print(INFO, "PWM PIN: " + String(entry->pinNumber));
+  //     terminal->print(INFO, " Location: " + String(stringLocation(entry->location)));
+  //     terminal->print(INFO, " Index: " + String(entry->index));
+  //     terminal->print(INFO, " Freq: " + String(entry->getCurrentFreq()));
+  //     terminal->print(INFO, " Value: " + String(entry->getCurrentValue()));
+  //     terminal->println(INFO, " Duty Cycle: " + String(entry->description));
+  //     entry = GPIO->getPin(GPIO_PWM, entry->index);
+  //     break;
+  //   case GPIO_TONE:
+  //     terminal->print(INFO, String(i + 1) + ". ");
+  //     terminal->print(INFO, "TONE PIN: " + String(entry->pinNumber));
+  //     terminal->print(INFO, " Location: " + String(stringLocation(entry->location)));
+  //     terminal->print(INFO, " Index: " + String(entry->index));
+  //     terminal->print(INFO, " Freq: " + String(entry->getCurrentFreq()));
+  //     terminal->println(INFO, " Note: " + String(entry->description));
+  //     entry = GPIO->getPin(GPIO_TONE, entry->index);
+  //     break;
+  //   case GPIO_ADC:
+  //     terminal->print(INFO, String(i + 1) + ". ");
+  //     terminal->print(INFO, "ADC PIN: " + String(entry->pinNumber));
+  //     terminal->print(INFO, " Location: " + String(stringLocation(entry->location)));
+  //     terminal->print(INFO, " Index: " + String(entry->index));
+  //     terminal->print(INFO, " Value: " + String(entry->getCurrentValue()));
+  //     terminal->println(INFO, " Note: " + String(entry->description));
+  //     break;
+  //   case GPIO_RESERVED:
+  //     if (all || verbose) {
+  //       terminal->print(INFO, String(i + 1) + ". ");
+  //       terminal->print(INFO, "RESERVED PIN: " + String(entry->pinNumber));
+  //       terminal->print(INFO, " Location: " + String(stringLocation(entry->location)));
+  //       terminal->println(INFO, " Note: " + String(entry->description));
+  //     }
+  //     break;
+  //   default: break;
+  //   }
+  // }
   terminal->println();
   terminal->prompt();
 }
@@ -375,7 +417,6 @@ void GPIOManager::toneCmd(Terminal* terminal) {
   GPIO_DESCRIPTION* gpio;
   char* value;
   char* value2;
-  terminal->println();
   value = terminal->readParameter();
   value2 = terminal->readParameter();
   if ((value != NULL) && (value2 != NULL)) {
@@ -402,7 +443,6 @@ void GPIOManager::pwmCmd(Terminal* terminal) {
   char* value;
   char* value2;
   char* value3;
-  terminal->println();
   value = terminal->readParameter();
   value2 = terminal->readParameter();
   value3 = terminal->readParameter();
@@ -428,7 +468,6 @@ void GPIOManager::pulseCmd(Terminal* terminal) {
   unsigned long index;
   GPIO_DESCRIPTION* gpio;
   char* value;
-  terminal->println();
   value = terminal->readParameter();
   if (value != NULL) {
     index = (unsigned long) atoi(value);
@@ -448,7 +487,6 @@ void GPIOManager::statusCmd(Terminal* terminal) {
   unsigned long index;
   GPIO_DESCRIPTION* gpio;
   char* value;
-  terminal->println();
   value = terminal->readParameter();
   if (value != NULL) {
     index = (unsigned long) atoi(value);

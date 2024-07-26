@@ -2,10 +2,10 @@
 #define __GAVEL_TASK
 
 #include <Arduino.h>
+#include <Terminal.h>
 #include <datastructure.h>
 #include <lock.h>
 #include <stopwatch.h>
-#include <terminal.h>
 #include <timer.h>
 
 class Task : public Timer {

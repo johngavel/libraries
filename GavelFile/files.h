@@ -1,10 +1,9 @@
 #ifndef __GAVEL_FILES
 #define __GAVEL_FILES
 
-#include "terminal.h"
-
 #include <Arduino.h>
 #include <LittleFS.h>
+#include <Terminal.h>
 
 #define FILES Files::get()
 #define UPGRADE_FILE_NAME "pico.bin"
@@ -20,6 +19,7 @@ public:
   File getFile(String path);
   void deleteFile(String path, Terminal* terminal);
   File writeFile(String path);
+  void printDirectory(Terminal* terminal, String path);
   void printInfo(Terminal* terminal);
   unsigned long availableSpace();
   void UPGRADE_SYSTEM();
@@ -32,6 +32,7 @@ private:
   static void printDir(Terminal* terminal);
   static void catCommand(Terminal* terminal);
   static void formatCommand(Terminal* terminal);
+  static void runCommand(Terminal* terminal);
 };
 
 #endif

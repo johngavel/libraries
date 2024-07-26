@@ -2,9 +2,9 @@
 #define __GAVEL_EXPORT
 
 #include "files.h"
-#include "terminal.h"
 
 #include <Arduino.h>
+#include <Terminal.h>
 
 class Export {
 public:

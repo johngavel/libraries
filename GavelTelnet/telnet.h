@@ -3,7 +3,8 @@
 
 #include "architecture.h"
 #include "networkinterface.h"
-#include "terminal.h"
+
+#include <Terminal.h>
 
 #define TELNET TelnetModule::get()
 

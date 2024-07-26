@@ -2,7 +2,6 @@
 
 #include "commonhtml.h"
 #include "serialport.h"
-#include "termcmd.h"
 #include "watchdog.h"
 
 #define BUFFER_SIZE 1024
@@ -10,7 +9,7 @@
 
 ServerModule* ServerModule::serverModule = nullptr;
 
-ServerModule::ServerModule() : Task("Server") {
+ServerModule::ServerModule() : Task("HTTPServer") {
   setRefreshMilli(1);
   rootPage = nullptr;
   upgradePage = nullptr;
@@ -183,15 +182,20 @@ void ServerModule::processGet(char* action) {
     }
   }
   if (!foundPage) {
+    bool fileFound = false;
     char* fileName = action;
-    File file = FILES->getFile(fileName);
-    if (file) {
-      sendFile(&file);
-    } else if (errorPage != nullptr) {
+    if (FILES->verifyFile(fileName)) {
+      File file = FILES->getFile(fileName);
+      if (file) {
+        fileFound = true;
+        sendFile(&file);
+        file.close();
+      }
+    }
+    if ((!fileFound) && (errorPage != nullptr)) {
       CONSOLE->println(ERROR, "SERVER: " + String(fileName) + " not found!");
       clientWrite(errorPage->getHtml(&html));
     }
-    file.close();
   }
 }
 
@@ -379,7 +383,7 @@ void ServerModule::executeTask() {
     client->setTimeout(timeoutTime);
     COMM_GIVE;
     while (clientConnected()) { // loop while the client's connected
-      if (client->available()) {
+      if (clientAvailable()) {
         char c = clientRead(); // read a byte
         if ((headerIndex <= 4) || (strncmp("GET  ", headerBuffer, 4) == 0) || (strncmp("POST", headerBuffer, 4) == 0)) {
           if (headerIndex < 5) {
@@ -448,7 +452,6 @@ bool ServerModule::clientConnected() {
 }
 
 void ServerModule::pageList(Terminal* terminal) {
-  terminal->println();
   if (rootPage)
     terminal->println(PROMPT, "Root Page is set: " + String(rootPage->getPageName()));
   else

@@ -4,10 +4,13 @@
 #include "architecture.h"
 #include "helplist.h"
 #include "lock.h"
-#include "terminal.h"
+
+#include <Terminal.h>
 
 #define PORT SerialPort::get()
 #define CONSOLE PORT->terminal
+
+void banner(Terminal* terminal);
 
 class SerialPort : public Task {
 public:

@@ -1,7 +1,7 @@
 #include "files.h"
 
 #include "serialport.h"
-#include "termcmd.h"
+#include "stringutils.h"
 #include "watchdog.h"
 
 #include <PicoOTA.h>
@@ -18,6 +18,7 @@ void Files::setup() {
   TERM_CMD->addCmd("dir", "", "Contents of File System", Files::printDir);
   TERM_CMD->addCmd("cat", "[name]", "Displays the contents of a file", Files::catCommand);
   TERM_CMD->addCmd("format", "", "Formats the File System", Files::formatCommand);
+  TERM_CMD->addCmd("run", "[filename]", "Runs the commands located in the file", Files::runCommand);
   if (LittleFS.begin())
     CONSOLE->println(PASSED, "File System Complete");
   else
@@ -71,9 +72,40 @@ File Files::writeFile(String path) {
   return file;
 }
 
-void Files::printInfo(Terminal* terminal) {
+void Files::printDirectory(Terminal* terminal, String path) {
   int size = 0;
   int count = 0;
+  ClassicQueue queue(10, 32);
+  terminal->println(INFO, "Directory: " + path);
+  Dir dir = LittleFS.openDir(path);
+  while (dir.next()) {
+    if (dir.isFile()) {
+      terminal->print(INFO, dir.fileName());
+      if (dir.fileSize()) {
+        File file = dir.openFile("r");
+        count++;
+        size += file.size();
+        terminal->print(INFO, tab(dir.fileName().length(), 22));
+        terminal->println(INFO, String(file.size()));
+        file.close();
+      }
+    }
+    if (dir.isDirectory()) {
+      String dirPath = path + dir.fileName() + "/";
+      terminal->println(INFO, "<DIR>  " + dir.fileName());
+
+      queue.push((void*) dirPath.c_str());
+    }
+  }
+  String countString = "   " + String(count) + " File(s)";
+  terminal->print(INFO, countString);
+  terminal->print(INFO, tab(countString.length(), 22));
+  terminal->println(INFO, String(size));
+  terminal->println();
+  for (unsigned long i = 0; i < queue.count(); i++) printDirectory(terminal, String((char*) queue.get(i)));
+}
+
+void Files::printInfo(Terminal* terminal) {
   FSInfo info;
   LittleFS.info(info);
 
@@ -91,25 +123,7 @@ void Files::printInfo(Terminal* terminal) {
   terminal->print(INFO, String(info.totalBytes - info.usedBytes));
   terminal->println(INFO, "byte");
   terminal->println();
-
-  Dir dir = LittleFS.openDir("/");
-  while (dir.next()) {
-    if (dir.isFile()) {
-      terminal->print(INFO, dir.fileName());
-      if (dir.fileSize()) {
-        File file = dir.openFile("r");
-        count++;
-        size += file.size();
-        for (int i = dir.fileName().length(); i < 17; i++) terminal->print(INFO, " ");
-        terminal->println(INFO, " " + String(file.size()));
-        file.close();
-      }
-    }
-  }
-  String countString = "   " + String(count) + " File(s)";
-  terminal->print(INFO, countString);
-  for (int i = countString.length(); i < 17; i++) terminal->print(INFO, " ");
-  terminal->println(INFO, " " + String(size));
+  printDirectory(terminal, "/");
 }
 
 unsigned long Files::availableSpace() {
@@ -135,7 +149,6 @@ void Files::UPGRADE_SYSTEM() {
 
 void Files::deleteCommand(Terminal* terminal) {
   char* value;
-  terminal->println();
   value = terminal->readParameter();
   if (value != NULL) {
     FILES->deleteFile(value, terminal);
@@ -146,7 +159,6 @@ void Files::deleteCommand(Terminal* terminal) {
 }
 
 void Files::printDir(Terminal* terminal) {
-  terminal->println();
   FILES->printInfo(terminal);
   terminal->prompt();
 }
@@ -186,7 +198,6 @@ bool Files::catFile(String path, Terminal* terminal) {
 
 void Files::catCommand(Terminal* terminal) {
   char* value;
-  terminal->println();
   value = terminal->readParameter();
   if (value != NULL) {
     if (FILES->verifyFile(value)) {
@@ -201,8 +212,27 @@ void Files::catCommand(Terminal* terminal) {
 }
 
 void Files::formatCommand(Terminal* terminal) {
-  terminal->println();
   bool success = FILES->format();
   terminal->println((success) ? PASSED : FAILED, "Format of Little File System Complete");
+  terminal->prompt();
+}
+
+void Files::runCommand(Terminal* terminal) {
+  char* value;
+  value = terminal->readParameter();
+  if (value != NULL) {
+    if (FILES->verifyFile(value)) {
+      File file = FILES->getFile(value);
+      Terminal runTerminal(&file, terminal->getOutput());
+      runTerminal.configure(terminal);
+      runTerminal.setup();
+      runTerminal.usePrompt(false);
+      while (file.available()) runTerminal.loop();
+    } else {
+      terminal->println(ERROR, "\"" + String(value) + "\" File does not exist!!!");
+    }
+  } else {
+    terminal->invalidParameter();
+  }
   terminal->prompt();
 }

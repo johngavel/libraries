@@ -166,8 +166,9 @@ HTMLBuilder* CodePage::getHtml(HTMLBuilder* html) {
   html->openTag("table", "class=\"center\"")->openTrTag()->println();
   html->openTdTag()->openTag("a", "href=\"/\"")->openTag("button", "type=\"button\" class=\"button2 button\"");
   html->print("Cancel")->closeTag()->closeTag()->closeTag()->closeTag()->println();
-  html->openTrTag()->openTdTag()->openTag("a", "href=\"/code.tar.gz\"")->openTag("button", "class=\"button4 button\"");
-  html->print("Code")->closeTag()->closeTag()->closeTag()->closeTag()->closeTag()->println();
+  // html->openTrTag()->openTdTag()->openTag("a", "href=\"/code.tar.gz\"")->openTag("button", "class=\"button4 button\"");
+  // html->print("Code")->closeTag()->closeTag()->closeTag()->closeTag();
+  html->closeTag()->println();
   sendPageEnd(html);
   return html;
 }

@@ -3,7 +3,6 @@
 #include "asciitable.h"
 #include "serialport.h"
 #include "stringutils.h"
-#include "termcmd.h"
 
 void Task::setup() {
   lock.take();
@@ -48,7 +47,6 @@ void TaskManager::system(Terminal* terminal) {
   Task* task;
   AsciiTable table(terminal);
   double coreUtil[CPU_CORES] = {0.0, 0.0};
-  terminal->println();
   terminal->banner();
   table.addColumn(Green, "Core", 6);
   table.addColumn(Normal, "Task Name", 19);

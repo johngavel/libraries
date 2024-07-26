@@ -10,6 +10,9 @@ const HW_TYPES ProgramInfo::hw_type = HW_RP2040_ZERO;
 #error "This architecture does not support this Hardware!"
 #endif
 
+const char* ProgramInfo::compileDate = __DATE__;
+const char* ProgramInfo::compileTime = __TIME__;
+
 Mutex* Communication::mutex = nullptr;
 
 Mutex* Communication::get() {

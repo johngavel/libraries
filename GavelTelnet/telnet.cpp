@@ -1,7 +1,7 @@
 #include "telnet.h"
 
+#include "license.h"
 #include "serialport.h"
-#include "termcmd.h"
 
 #define BUFFER_SIZE 1024
 #define HEADER_LENGTH 4096
@@ -19,7 +19,9 @@ TelnetModule* TelnetModule::get() {
   if (telnetModule == nullptr) telnetModule = new TelnetModule();
   return telnetModule;
 }
+
 void TelnetModule::setupTask() {
+  TERMINAL_LICENSE;
   COMM_TAKE;
   server->begin();
   COMM_GIVE;
@@ -36,8 +38,10 @@ void TelnetModule::executeTask() {
       clientConnected = true;
       if (terminal == nullptr) {
         terminal = new Terminal(client);
-        terminal->setupTask();
+        terminal->configure(CONSOLE);
+        terminal->setup();
         terminal->setEcho(false);
+        terminal->useBS(true);
       } else {
         terminal->setStream(client);
       }
@@ -52,7 +56,7 @@ void TelnetModule::executeTask() {
     }
   } else {
     if (client->connected()) {
-      terminal->executeTask();
+      terminal->loop();
       COMM_TAKE;
       client->flush();
       COMM_GIVE;
@@ -64,12 +68,10 @@ void TelnetModule::executeTask() {
 
 void TelnetModule::closeTelnet(Terminal* terminal) {
   if (terminal == TELNET->terminal) {
-    terminal->println();
     terminal->println(INFO, "Closing Telnet Session.");
     TELNET->client->flush();
     TELNET->client->stop();
   } else {
-    terminal->println();
     terminal->println(ERROR, "Not supported on this terminal.");
     terminal->prompt();
   }

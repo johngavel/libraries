@@ -2,9 +2,9 @@
 #define __GAVEL_EEPROM
 
 #include "architecture.h"
-#include "terminal.h"
 
 #include <I2C_eeprom.h>
+#include <Terminal.h>
 
 #define MEMORY_CONFIG_FILE (String(ProgramInfo::ShortName) + "_config.txt")
 

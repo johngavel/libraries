@@ -62,7 +62,6 @@ void LicenseManager::printLicense(Terminal* terminal) {
   bool success = false;
   LicenseFile oldLicense;
   char* value;
-  terminal->println();
   value = terminal->readParameter();
   if (value != NULL) {
     unsigned int index = atoi(value) - 1;

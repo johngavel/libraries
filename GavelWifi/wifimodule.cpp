@@ -1,7 +1,6 @@
 #include "wifimodule.h"
 
 #include "serialport.h"
-#include "termcmd.h"
 
 WifiModule* WifiModule::wifiModule = nullptr;
 
@@ -127,7 +126,6 @@ bool WifiModule::linkStatus() {
 void WifiModule::wifiStat(Terminal* terminal) {
   IPAddress ipAddress = WIFI->getIPAddress();
   bool linked = WIFI->linkStatus();
-  terminal->println();
   terminal->println(INFO, "Network: " + WIFI->getSSID() + ((linked) ? " Connected" : " Unconnected"));
   terminal->println(INFO, "  IP Address:  " + String(ipAddress[0]) + String(".") + String(ipAddress[1]) + String(".") + String(ipAddress[2]) + String(".") +
                               String(ipAddress[3]));
@@ -160,7 +158,6 @@ static const char* encToString(uint8_t enc) {
 }
 
 void WifiModule::wifiScan(Terminal* terminal) {
-  terminal->println();
   terminal->println(INFO, "Begining Scan.........");
   auto cnt = WiFi.scanNetworks();
   if (!cnt) {
