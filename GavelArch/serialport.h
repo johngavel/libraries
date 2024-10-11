@@ -19,6 +19,7 @@ public:
   void setupTask();
   void executeTask();
   Terminal* terminal;
+  Terminal* terminalUSB;
 
 private:
   SerialPort() : Task("SerialPort") { serialSetup(); };

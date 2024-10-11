@@ -6,8 +6,10 @@
 class Timer {
 public:
   Timer() : refresh(micros()), timeout(100), run(true){};
-  void setRefreshMilli(unsigned long time) { timeout = (unsigned long) (time * 1000.0); };
+  void setRefreshSeconds(unsigned long time) { timeout = (unsigned long) (time * 1000000); };
+  void setRefreshMilli(unsigned long time) { timeout = (unsigned long) (time * 1000); };
   void setRefreshMicro(unsigned long time) { timeout = time; };
+  unsigned long getRefreshSeconds() { return (timeout / 1000000); };
   unsigned long getRefreshMilli() { return (timeout / 1000); };
   unsigned long getRefreshMicro() { return (timeout); };
   void runTimer(bool __run, unsigned long __refresh = micros()) {

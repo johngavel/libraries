@@ -48,6 +48,7 @@ void TaskManager::system(Terminal* terminal) {
   AsciiTable table(terminal);
   double coreUtil[CPU_CORES] = {0.0, 0.0};
   terminal->banner();
+  terminal->println(HELP, "Available Help Commands: ", String(TERM_CMD->getCmdCount()));
   table.addColumn(Green, "Core", 6);
   table.addColumn(Normal, "Task Name", 19);
   table.addColumn(Yellow, "Time(ms)", 10);

@@ -32,7 +32,7 @@ private:
   static void printDir(Terminal* terminal);
   static void catCommand(Terminal* terminal);
   static void formatCommand(Terminal* terminal);
-  static void runCommand(Terminal* terminal);
+  static void copyconCommand(Terminal* terminal);
 };
 
 #endif

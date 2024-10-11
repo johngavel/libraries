@@ -9,11 +9,11 @@
 
 typedef enum { HW_UNKNOWN, HW_RP2040_ZERO, HW_RASPBERRYPI_PICO, HW_RASPBERRYPI_PICOW } HW_TYPES;
 
-#define HARDWARE_PORT ((SerialUART*) ProgramInfo::hardwareserial.serial)
 class HardwareSerialPort {
 public:
-  HardwareSerialPort(SerialUART* __serial, unsigned long __pintx, unsigned long __pinrx) : serial(__serial), pintx(__pintx), pinrx(__pinrx){};
-  SerialUART* serial;
+  HardwareSerialPort(SerialUART* __serial, unsigned long __pintx, unsigned long __pinrx) : serialUART(__serial), pintx(__pintx), pinrx(__pinrx){};
+  HardwareSerialPort() : serialUART(nullptr), pintx(-1), pinrx(-1){};
+  SerialUART* serialUART;
   unsigned long pintx;
   unsigned long pinrx;
 };

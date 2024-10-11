@@ -45,8 +45,17 @@ void WifiModule::setupTask() {
       wifiStatus = WiFi.status();
       switch (wifiStatus) {
       case WL_NO_MODULE:
+        CONSOLE->println(ERROR, "Wifi Module Failed to Connect - No Module");
+        initializing = false;
+        status = false;
+        break;
       case WL_NO_SSID_AVAIL:
+        CONSOLE->println(ERROR, "Wifi Module Failed to Connect - No SSID Available");
+        initializing = false;
+        status = false;
+        break;
       case WL_CONNECT_FAILED:
+        CONSOLE->println(ERROR, "Wifi Module Failed to Connect - Connection Failed");
         initializing = false;
         status = false;
         break;

@@ -16,14 +16,28 @@ SerialPort* SerialPort::get() {
 }
 
 void SerialPort::serialSetup() {
-  HARDWARE_PORT->setRX(ProgramInfo::hardwareserial.pinrx);
-  HARDWARE_PORT->setTX(ProgramInfo::hardwareserial.pintx);
-  HARDWARE_PORT->begin(115200);
-  terminal = new Terminal(HARDWARE_PORT);
-  terminal->setup();
-  terminal->useColor(true);
-  terminal->setPrompt(String(ProgramInfo::ShortName) + ":\\>");
-  terminal->setBannerFunction(banner);
+  if (ProgramInfo::hardwareserial.serialUART != nullptr) {
+    ProgramInfo::hardwareserial.serialUART->setRX(ProgramInfo::hardwareserial.pinrx);
+    ProgramInfo::hardwareserial.serialUART->setTX(ProgramInfo::hardwareserial.pintx);
+    ProgramInfo::hardwareserial.serialUART->begin(115200);
+    terminal = new Terminal(ProgramInfo::hardwareserial.serialUART);
+    terminal->setup();
+    terminal->useColor(true);
+    terminal->setPrompt(String(ProgramInfo::ShortName) + ":\\>");
+    terminal->setBannerFunction(banner);
+    Serial.begin();
+    terminalUSB = new Terminal(&Serial);
+    terminalUSB->setup();
+    terminalUSB->configure(terminal);
+  } else {
+    Serial.begin();
+    terminal = new Terminal(&Serial);
+    terminal->setup();
+    terminal->useColor(true);
+    terminal->setPrompt(String(ProgramInfo::ShortName) + ":\\>");
+    terminal->setBannerFunction(banner);
+    terminalUSB = nullptr;
+  }
 }
 
 void SerialPort::setupTask() {
@@ -38,7 +52,8 @@ void SerialPort::setupTask() {
 }
 
 void SerialPort::executeTask() {
-  terminal->loop();
+  if (terminal != nullptr) terminal->loop();
+  if (terminalUSB != nullptr) terminalUSB->loop();
 }
 
 void rebootPico(Terminal* terminal) {

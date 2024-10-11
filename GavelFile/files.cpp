@@ -1,5 +1,6 @@
 #include "files.h"
 
+#include "batch.h"
 #include "serialport.h"
 #include "stringutils.h"
 #include "watchdog.h"
@@ -18,7 +19,8 @@ void Files::setup() {
   TERM_CMD->addCmd("dir", "", "Contents of File System", Files::printDir);
   TERM_CMD->addCmd("cat", "[name]", "Displays the contents of a file", Files::catCommand);
   TERM_CMD->addCmd("format", "", "Formats the File System", Files::formatCommand);
-  TERM_CMD->addCmd("run", "[filename]", "Runs the commands located in the file", Files::runCommand);
+  TERM_CMD->addCmd("copycon", "[name]", "Writes a File (CTRL^z to exit)", Files::copyconCommand);
+  addBatchTerminalCommands();
   if (LittleFS.begin())
     CONSOLE->println(PASSED, "File System Complete");
   else
@@ -112,15 +114,15 @@ void Files::printInfo(Terminal* terminal) {
   terminal->println(INFO, "File system info:");
 
   terminal->print(INFO, "Total space:      ");
-  terminal->print(INFO, String(info.totalBytes));
+  terminal->print(INFO, String((unsigned long) info.totalBytes));
   terminal->println(INFO, "byte");
 
   terminal->print(INFO, "Total space used: ");
-  terminal->print(INFO, String(info.usedBytes));
+  terminal->print(INFO, String((unsigned long) info.usedBytes));
   terminal->println(INFO, "byte");
 
   terminal->print(INFO, "Total space free: ");
-  terminal->print(INFO, String(info.totalBytes - info.usedBytes));
+  terminal->print(INFO, String((unsigned long) (info.totalBytes - info.usedBytes)));
   terminal->println(INFO, "byte");
   terminal->println();
   printDirectory(terminal, "/");
@@ -217,19 +219,45 @@ void Files::formatCommand(Terminal* terminal) {
   terminal->prompt();
 }
 
-void Files::runCommand(Terminal* terminal) {
+void Files::copyconCommand(Terminal* terminal) {
   char* value;
+  bool exit = false;
+  char readChar[3];
+  int available = 0;
+  File writeFile;
+
   value = terminal->readParameter();
   if (value != NULL) {
     if (FILES->verifyFile(value)) {
-      File file = FILES->getFile(value);
-      Terminal runTerminal(&file, terminal->getOutput());
-      runTerminal.configure(terminal);
-      runTerminal.setup();
-      runTerminal.usePrompt(false);
-      while (file.available()) runTerminal.loop();
+      terminal->println(ERROR, "\"" + String(value) + "\" File already exists!!!");
     } else {
-      terminal->println(ERROR, "\"" + String(value) + "\" File does not exist!!!");
+      writeFile = FILES->writeFile(value);
+      if (writeFile) {
+        terminal->println(INFO, "\"" + String(value) + "\" File open for writing.");
+        terminal->println(INFO, "All keystrokes will be written to the file.");
+        terminal->println(INFO, "Enter CTRL^z to exit.");
+        while (!exit) {
+          available = terminal->getInput()->available();
+          if (available > 0) {
+            terminal->getInput()->readBytes(&readChar[0], 1);
+            if (isPrintable(readChar[0])) {
+              if (terminal->getEcho()) terminal->getOutput()->print(readChar[0]);
+              writeFile.write(readChar, 1);
+            } else if (readChar[0] == 0x1A)
+              exit = true;
+            else if (readChar[0] == 0x0D) {
+              if (terminal->getEcho()) terminal->getOutput()->print("\r\n");
+              writeFile.write("\r\n", 2);
+            }
+          }
+          delay(20);
+          WATCHDOG->petWatchdog();
+        }
+        writeFile.close();
+        terminal->println(PASSED, "File Written.");
+      } else {
+        terminal->println(ERROR, "Unknown Error");
+      }
     }
   } else {
     terminal->invalidParameter();

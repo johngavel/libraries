@@ -19,6 +19,7 @@ void Screen::setupTask() {
   TERM_CMD->addCmd("bitmap", "[n]", "Displays an image on the screen", Screen::bitmap);
   GPIO->configurePinReserve(GPIO_INTERNAL, ProgramInfo::hardwarewire.pinSDA, "I2C SDA", true);
   GPIO->configurePinReserve(GPIO_INTERNAL, ProgramInfo::hardwarewire.pinSCL, "I2C SCL", true);
+
   COMM_TAKE;
 
   WIRE->beginTransmission(SCREEN_ADDRESS);
