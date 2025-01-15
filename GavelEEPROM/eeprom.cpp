@@ -4,8 +4,8 @@
 #include "license.h"
 #include "serialport.h"
 
-//#define FULL_DATA_SIZE I2C_DEVICESIZE_24LC16 / 8
-//#define FULL_DATA_SIZE I2C_DEVICESIZE_24LC256 / 8
+// #define FULL_DATA_SIZE I2C_DEVICESIZE_24LC16 / 8
+// #define FULL_DATA_SIZE I2C_DEVICESIZE_24LC256 / 8
 
 EEpromMemory* EEpromMemory::eeprom = nullptr;
 

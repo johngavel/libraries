@@ -53,7 +53,7 @@ public:
   unsigned long count();
   unsigned long highWaterMark() { return 0; };
   bool error() { return (memError & queueError); };
-  void clear(){};
+  void clear() {};
 
 private:
   StaticMessageBuffer_t xMessageBufferStruct;

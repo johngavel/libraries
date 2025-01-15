@@ -10,7 +10,7 @@ public:
   static Watchdog* get();
   void setupTask();
   void loop();
-  void executeTask(){};
+  void executeTask() {};
   void petWatchdog();
   void reboot();
   void monitor(unsigned long core, bool monitor);

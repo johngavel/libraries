@@ -1,7 +1,7 @@
 #ifndef __GAVEL_SCREEN
 #define __GAVEL_SCREEN
 
-//#define SSD1306_NO_SPLASH
+// #define SSD1306_NO_SPLASH
 #include "architecture.h"
 
 #include <Adafruit_SSD1306.h>
