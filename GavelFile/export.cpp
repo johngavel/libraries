@@ -4,8 +4,7 @@
 
 #define PARAMETER_COUNT String("ParameterCount")
 
-Export::Export(String __filename) {
-  filename = "/" + __filename;
+Export::Export(String __filename) : filename("/" + __filename) {
   if (verifyFile()) FILES->deleteFile(filename, CONSOLE);
   exportFile = FILES->writeFile(filename);
 }
@@ -50,8 +49,7 @@ bool Export::exportData(String parameter, bool value) {
   return exportData(parameter, String(value));
 }
 
-Import::Import(String __filename) {
-  filename = "/" + __filename;
+Import::Import(String __filename) : filename("/" + __filename) {
   exists = verifyFile();
   if (exists) importFile = FILES->getFile(filename);
 }

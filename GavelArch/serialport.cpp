@@ -72,7 +72,8 @@ extern const char* stringHardware(HW_TYPES hw_type);
 
 void banner(Terminal* terminal) {
   terminal->println();
-  terminal->println(PROMPT, String(ProgramInfo::AppName) + " Version: " + String(ProgramInfo::MajorVersion) + String(".") + String(ProgramInfo::MinorVersion));
+  terminal->println(PROMPT, String(ProgramInfo::AppName) + " Version: " + String(ProgramInfo::MajorVersion) + String(".") + String(ProgramInfo::MinorVersion) +
+                                String(".") + String(ProgramInfo::BuildVersion));
   terminal->println(INFO, "Program: " + String(ProgramInfo::ProgramNumber));
   terminal->println(INFO, "Build Date: " + String(ProgramInfo::compileDate) + " Time: " + String(ProgramInfo::compileTime));
   terminal->println();

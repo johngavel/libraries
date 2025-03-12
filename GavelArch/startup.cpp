@@ -15,7 +15,8 @@ void setup0Start() {
 
   CONSOLE->println();
   CONSOLE->println(PROMPT, "************************************************************");
-  CONSOLE->println(INFO, String(ProgramInfo::AppName) + " Version: " + String(ProgramInfo::MajorVersion) + String(".") + String(ProgramInfo::MinorVersion));
+  CONSOLE->println(INFO, String(ProgramInfo::AppName) + " Version: " + String(ProgramInfo::MajorVersion) + String(".") + String(ProgramInfo::MinorVersion) +
+                             String(".") + String(ProgramInfo::BuildVersion));
 }
 
 void setup1Start() {

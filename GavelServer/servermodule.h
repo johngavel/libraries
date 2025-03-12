@@ -11,6 +11,7 @@
 
 class BasicPage {
 public:
+  BasicPage() { memset(pageName, 0, PAGE_NAME_LENGTH); };
   virtual HTMLBuilder* getHtml(HTMLBuilder* html) = 0;
   char* getPageName() { return pageName; };
   void setPageName(const char* name) { strncpy(pageName, name, PAGE_NAME_LENGTH - 1); };
@@ -33,7 +34,7 @@ public:
   void setSuccess(bool __success) { success = __success; };
 
 protected:
-  bool success;
+  bool success = false;
 };
 
 #define SERVER ServerModule::get()
@@ -67,8 +68,8 @@ private:
   void clientWrite(HTMLBuilder* html);
   bool clientConnected();
 
-  VirtualServer* server;
-  Client* client;
+  VirtualServer* server = nullptr;
+  Client* client = nullptr;
 
   BasicPage* pages[MAX_PAGES];
   int currentPageCount;

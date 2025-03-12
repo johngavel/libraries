@@ -5,17 +5,11 @@
 #include "serialport.h"
 #include "stringutils.h"
 
-#define MAX_LICENSES 20
-
 LicenseManager* LicenseManager::licenseManager = nullptr;
 
 LicenseManager* LicenseManager::get() {
   if (licenseManager == nullptr) licenseManager = new LicenseManager();
   return licenseManager;
-}
-
-LicenseManager::LicenseManager() {
-  licenseList = new ClassicQueue(MAX_LICENSES, sizeof(LicenseFile));
 }
 
 void LicenseManager::setup() {
@@ -35,12 +29,12 @@ void LicenseManager::addLicenseToDatabase(String libraryName, String version, St
   strncpy(newLicense.libraryName, libraryName.c_str(), 39);
   strncpy(newLicense.version, version.c_str(), 19);
   strncpy(newLicense.link, link.c_str(), 79);
-  for (unsigned long i = 0; i < licenseList->count(); i++) {
-    if (licenseList->get(i, &oldLicense)) {
+  for (unsigned long i = 0; i < licenseList.count(); i++) {
+    if (licenseList.get(i, &oldLicense)) {
       if (strncmp(newLicense.libraryName, oldLicense.libraryName, 40) == 0) { found = true; }
     }
   }
-  if (!found) { licenseList->push(&newLicense); }
+  if (!found) { licenseList.push(&newLicense); }
 }
 
 void LicenseManager::printTable(Terminal* terminal) {

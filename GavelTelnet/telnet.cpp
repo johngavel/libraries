@@ -13,6 +13,7 @@ TelnetModule::TelnetModule() : Task("Telnet") {
   client = nullptr;
   terminal = nullptr;
   clientConnected = false;
+  server = nullptr;
 }
 
 TelnetModule* TelnetModule::get() {

@@ -24,11 +24,11 @@ public:
   IPAddress getDNS();
   bool getDHCP() { return isDHCP; };
   VirtualServer* getServer(int port);
-  bool ipChanged;
+  bool ipChanged = false;
   // Only used for initial configuration
-  bool isConfigured;
-  byte* macAddress;
-  bool isDHCP;
+  bool isConfigured = false;
+  byte* macAddress = nullptr;
+  bool isDHCP = false;
 
 private:
   EthernetModule() : Task("EthernetModule"), ipChanged(false){};
@@ -38,10 +38,10 @@ private:
   bool setupW5500();
 
   // Only used for initial configuration
-  byte* ipAddress;
-  byte* dnsAddress;
-  byte* subnetMask;
-  byte* gatewayAddress;
+  byte* ipAddress = nullptr;
+  byte* dnsAddress = nullptr;
+  byte* subnetMask = nullptr;
+  byte* gatewayAddress = nullptr;
 
   static void ipStat(Terminal* terminal);
 };
@@ -55,7 +55,7 @@ public:
   VirtualNetwork* getNetworkInterface() { return ETHERNET; };
 
 private:
-  EthernetServer* server;
+  EthernetServer* server = nullptr;
   EthernetClient client;
   int port;
 };

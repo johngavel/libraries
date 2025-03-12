@@ -18,7 +18,7 @@ public:
   const int getTemperature();
 
 private:
-  Temperature() : Task("Temperature"), temp(0), validTemp(false), dht(nullptr), configured(false){};
+  Temperature() : Task("Temperature"), temp(0), validTemp(false), dht(nullptr), configured(false), pin(0), drift(0){};
   static Temperature* temperature;
   int temp;
   bool validTemp;

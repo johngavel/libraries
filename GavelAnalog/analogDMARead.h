@@ -27,7 +27,7 @@ public:
 
 class AnalogDmaRead : public Task {
 public:
-  AnalogDmaRead() : Task("AnalogDmaRead"){};
+  AnalogDmaRead() : Task("AnalogDmaRead") { memset(buffer, 0, CAPTURE_PINS * sizeof(ADC_BUFFER)); };
   void setTransfer(TransferCapture* __transfer) { transfer = __transfer; };
   void setupTask();
   void executeTask();

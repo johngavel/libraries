@@ -14,7 +14,7 @@ public:
 
 class Mutex : public Lock {
 public:
-  Mutex();
+  Mutex() : mutex(xSemaphoreCreateMutex()){};
   void take();
   void give();
 

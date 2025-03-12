@@ -50,18 +50,18 @@ private:
   static EEpromMemory* eeprom;
   void readEEPROM();
   void writeEEPROM();
-  bool seal;
+  bool seal = false;
   byte readEEPROMbyte(unsigned long address);
   void writeEEPROMbyte(unsigned long address, byte value);
-  I2C_eeprom* i2c_eeprom;
+  I2C_eeprom* i2c_eeprom = nullptr;
   Data* data = nullptr;
   unsigned int memorySize = 0;
   unsigned int dataSize = 0;
 
   struct PrivateAppInfo {
-    unsigned char ProgramNumber;
-    unsigned char MajorVersion;
-    unsigned char MinorVersion;
+    unsigned char ProgramNumber = 0;
+    unsigned char MajorVersion = 0;
+    unsigned char MinorVersion = 0;
   };
   PrivateAppInfo appInfo;
 

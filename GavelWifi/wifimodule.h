@@ -22,16 +22,15 @@ public:
   IPAddress getSubnetMask();
   IPAddress getGateway();
   IPAddress getDNS();
-  bool getDHCP() { return isDHCP; };
+  bool getDHCP() { return false; };
   VirtualServer* getServer(int port);
   bool ipChanged;
   // Only used for initial configuration
   bool isConfigured;
   byte* macAddress;
-  bool isDHCP;
 
 private:
-  WifiModule() : Task("WifiModule"), ipChanged(false){};
+  WifiModule() : Task("WifiModule"), ipChanged(false), isConfigured(false), macAddress(nullptr){};
   static WifiModule* wifiModule;
   bool setupWifi();
 
@@ -44,7 +43,7 @@ private:
 
 class WifiServer : public VirtualServer {
 public:
-  WifiServer(int __port) : port(__port){};
+  WifiServer(int __port) : server(nullptr), port(__port){};
   void begin();
   Client* accept();
   void closeClient();

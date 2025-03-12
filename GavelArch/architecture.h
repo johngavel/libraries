@@ -37,10 +37,17 @@ public:
   static const unsigned char ProgramNumber;
   static const unsigned char MajorVersion;
   static const unsigned char MinorVersion;
+  static const unsigned long BuildVersion;
   static const char* AuthorName;
   static const HardwareWire hardwarewire;
   static const HardwareSerialPort hardwareserial;
 };
+
+#ifdef GAVEL_VER
+#define GAVEL_VERSION GAVEL_VER
+#else
+#define GAVEL_VERSION 65535
+#endif
 
 #define COMM Communication::get()
 #define COMM_TAKE COMM->take()

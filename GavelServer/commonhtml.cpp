@@ -65,7 +65,8 @@ void sendPageBegin(HTMLBuilder* html, bool autoRefresh, int seconds) {
 }
 
 void sendPageEnd(HTMLBuilder* html) {
-  String versionString = "Ver. " + String(ProgramInfo::MajorVersion) + String(".") + String(ProgramInfo::MinorVersion);
+  String versionString =
+      "Ver. " + String(ProgramInfo::MajorVersion) + String(".") + String(ProgramInfo::MinorVersion) + String(".") + String(ProgramInfo::BuildVersion);
 
   html->hrTag()->closeTag()->println()->openTag("footer")->brTag();
   html->println(ProgramInfo::AppName);

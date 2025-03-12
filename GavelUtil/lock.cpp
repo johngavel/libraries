@@ -1,9 +1,5 @@
 #include "lock.h"
 
-Mutex::Mutex() {
-  mutex = xSemaphoreCreateMutex();
-}
-
 void Mutex::take() {
   xSemaphoreTake(mutex, portMAX_DELAY);
 }
