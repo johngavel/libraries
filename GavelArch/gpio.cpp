@@ -49,6 +49,34 @@ void GPIOManager::configureHW() {
     configurePinUndefined(24);
     configurePinUndefined(25);
     break;
+  case (HW_GAVEL_MINI_PICO_ETH):
+    invalidOverallConfiguration = false;
+    configurePinUndefined(2);
+    configurePinUndefined(3);
+    configurePinUndefined(6);
+    configurePinUndefined(7);
+    configurePinUndefined(8);
+    configurePinUndefined(9);
+    configurePinUndefined(10);
+    configurePinUndefined(11);
+    configurePinUndefined(12);
+    configurePinUndefined(13);
+    configurePinUndefined(14);
+    configurePinUndefined(15);
+    configurePinUndefined(16);
+    configurePinUndefined(17);
+    configurePinUndefined(18);
+    configurePinUndefined(19);
+    configurePinUndefined(20);
+    configurePinUndefined(21);
+    configurePinUndefined(22);
+    configurePinUndefined(23);
+    configurePinUndefined(24);
+    configurePinUndefined(26);
+    configurePinUndefined(27);
+    configurePinUndefined(28);
+    configurePinUndefined(29);
+    break;
   default: CONSOLE->println(ERROR, "GPIO Invalid configure of Hardware Type"); break;
   }
 }
@@ -223,6 +251,7 @@ const char* stringHardware(HW_TYPES hw_type) {
   case HW_RP2040_ZERO: hwString = "Waveshare RP2040 Zero"; break;
   case HW_RASPBERRYPI_PICO: hwString = "Raspberry Pi Pico"; break;
   case HW_RASPBERRYPI_PICOW: hwString = "Raspberry Pi Pico W"; break;
+  case HW_GAVEL_MINI_PICO_ETH: hwString = "Gavel Mini Pico - Ethernet"; break;
   default: hwString = "Unknown"; break;
   }
   return hwString;

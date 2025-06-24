@@ -6,6 +6,8 @@ const HW_TYPES ProgramInfo::hw_type = HW_RASPBERRYPI_PICO;
 const HW_TYPES ProgramInfo::hw_type = HW_RASPBERRYPI_PICOW;
 #elif defined ARDUINO_WAVESHARE_RP2040_ZERO
 const HW_TYPES ProgramInfo::hw_type = HW_RP2040_ZERO;
+#elif defined ARDUINO_GENERIC_RP2040
+const HW_TYPES ProgramInfo::hw_type = HW_GAVEL_MINI_PICO_ETH;
 #else
 #error "This architecture does not support this Hardware!"
 #endif

@@ -8,8 +8,9 @@
 class Watchdog : public Task {
 public:
   static Watchdog* get();
+  void tickle(); // This function runs on both cores unlike tasks which run 1 per cycle.
   void setupTask();
-  void executeTask();
+  void executeTask() {};
   void petWatchdog();
   void reboot();
   void monitor(unsigned long core, bool monitor);

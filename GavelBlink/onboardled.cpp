@@ -29,6 +29,7 @@ void Blink::setupTask() {
     CONSOLE->println(PASSED, "Onboard LED Blink for RP2040 Zero Complete");
 #endif
     break;
+  case HW_GAVEL_MINI_PICO_ETH:
   case HW_RASPBERRYPI_PICO:
   case HW_RASPBERRYPI_PICOW:
     setRefreshMilli(500);
@@ -75,6 +76,7 @@ void Blink::executeTask() {
     pixels.show();
 #endif
     break;
+  case HW_GAVEL_MINI_PICO_ETH:
   case HW_RASPBERRYPI_PICO:
   case HW_RASPBERRYPI_PICOW:
     state = !state;

@@ -31,7 +31,6 @@ void EEpromMemory::setupTask() {
   TERM_CMD->addCmd("wipe", "", "Wipe and Initialize EEPROM Memory", EEpromMemory::wipe);
   TERM_CMD->addCmd("mem", "", "Contents of Flash Memory", EEpromMemory::mem);
   setRefreshMilli(1000);
-  memset(&appInfo, 0, sizeof(PrivateAppInfo));
   dataSize = sizeof(PrivateAppInfo) + ((getData()) ? getData()->getLength() : 0);
   if (memorySize == 0) { CONSOLE->println(ERROR, "EEPROM Memory Chip Unconfigured. "); }
   if (dataSize > fullDataSize) {

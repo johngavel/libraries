@@ -18,10 +18,12 @@ void Watchdog::setupTask() {
   CONSOLE->println(PASSED, "Watchdog Complete");
 }
 
-void Watchdog::executeTask() {
+void Watchdog::tickle() {
   static int lastCore = 0;
   int nextCore;
   core = rp2040.cpuid();
+  lock.take();
+  execution.start();
   if ((lastCore == 0) && (monitorCore[1] == true))
     nextCore = 1;
   else if ((lastCore == 1) && (monitorCore[0] == true))
@@ -32,6 +34,8 @@ void Watchdog::executeTask() {
     lastCore = core;
     petWatchdog();
   }
+  execution.stop();
+  lock.give();
 }
 
 void Watchdog::petWatchdog() {
