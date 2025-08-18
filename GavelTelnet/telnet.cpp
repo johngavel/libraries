@@ -41,12 +41,13 @@ void TelnetModule::executeTask() {
         terminal = new Terminal(client);
         terminal->configure(CONSOLE);
         terminal->setup();
-        terminal->setEcho(false);
-        terminal->useBS(true);
+        terminal->setEcho(true);
       } else {
         terminal->setStream(client);
       }
       COMM_TAKE;
+      client->print("\x1B[?25h");
+      client->print("\xFF\xFB\x01");
       client->println("Starting Telnet Session.");
       COMM_GIVE;
       terminal->banner();
