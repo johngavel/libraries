@@ -1,0 +1,8 @@
+
+
+# Ignore all top-level directories
+/*/
+
+# But keep the Project directory
+!/Gavel*/
+
