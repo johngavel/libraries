@@ -59,7 +59,7 @@ int Temperature::readTemperature() {
   return temp;
 }
 
-const int Temperature::getTemperature() {
+int Temperature::getTemperature() {
   return temp;
 }
 

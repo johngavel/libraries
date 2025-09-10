@@ -15,7 +15,7 @@ public:
   void executeTask();
   bool validTemperature();
   bool isConfigured() { return configured; };
-  const int getTemperature();
+  int getTemperature();
 
 private:
   Temperature() : Task("Temperature"), temp(0), validTemp(false), dht(nullptr), configured(false), pin(0), drift(0){};
