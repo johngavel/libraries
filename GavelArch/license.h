@@ -14,7 +14,7 @@
 
 #define ARDUINO_IDE_LICENSE LICENSE_ADD("Arduino IDE", "Ver. 2.3.6", "")
 #define RASPBERRY_PICO_LICENSE LICENSE_ADD("Arduino-Pico", "Ver. 5.1.0", "Pico_LICENSE")
-#define ADAFRUIT_BUS_LICENSE LICENSE_ADD("Adafruit BusIO", "Ver. 1.17.2", "BusIO_LICENSE")
+#define ADAFRUIT_BUS_LICENSE LICENSE_ADD("Adafruit BusIO", "Ver. 1.17.3", "BusIO_LICENSE")
 #define ADAFRUIT_GFX_LICENSE LICENSE_ADD("Adafruit GFX Library", "Ver. 1.12.2", "GFX_license.txt")
 #define ADAFRUIT_MCP4725_LICENSE LICENSE_ADD("Adafruit MCP4725", "Ver. 2.0.2", "")
 #define ADAFRUIT_PIXEL_LICENSE LICENSE_ADD("Adafruit NeoPixel", "Ver. 1.15.1", "NeoPixel_COPYING")
