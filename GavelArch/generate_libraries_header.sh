@@ -83,6 +83,8 @@ sort "$TMP_FILE" -o "$TMP_FILE"
         index=$((index + 1))
     done < "$TMP_FILE"
 
+    PLATFORM_VERSION=$(arduino-cli board details -b rp2040:rp2040:rpipico | grep "Board version" | grep -oE '[0-9]+\.[0-9]+\.[0-9]+')
+    echo "#define RASPBERRY_PICO_LICENSE LICENSE_ADD(\"Arduino-Pico\", \"${PLATFORM_VERSION}\", \"Pico_LICENSE\")"
     echo
     echo "#endif /* LIBRARIES_H */"
 } > "$TMP_HEADER"

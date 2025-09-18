@@ -14,7 +14,6 @@
 #define LICENSE_AVAILABLE LicenseManager::initialized()
 
 #define ARDUINO_IDE_LICENSE LICENSE_ADD("Arduino IDE", "2.3.6", "")
-#define RASPBERRY_PICO_LICENSE LICENSE_ADD("Arduino-Pico", " 5.1.0", "Pico_LICENSE")
 
 struct LicenseFile {
   char libraryName[40];
