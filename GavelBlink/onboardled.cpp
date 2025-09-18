@@ -22,7 +22,7 @@ void Blink::setupTask() {
   switch (ProgramInfo::hw_type) {
   case HW_RP2040_ZERO:
 #ifdef ARDUINO_WAVESHARE_RP2040_ZERO
-    ADAFRUIT_PIXEL_LICENSE;
+    ADAFRUIT_NEOPIXEL_LICENSE;
     setRefreshMilli(50);
     GPIO->configurePinReserve(GPIO_INTERNAL, RP2040_PIN, "Built in LED");
     pixels.begin();

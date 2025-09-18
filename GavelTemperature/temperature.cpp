@@ -21,8 +21,8 @@ void Temperature::configure(int __pin, int __drift) {
 }
 
 void Temperature::setupTask() {
-  DHT_LICENSE;
-  ADAFRUIT_UNIFIED_LICENSE;
+  DHT_SENSOR_LIBRARY_LICENSE;
+  ADAFRUIT_UNIFIED_SENSOR_LICENSE;
   if (configured) {
     GPIO->configurePinReserve(GPIO_INTERNAL, pin, "Temperature Sensor");
     TERM_CMD->addCmd("temp", "", "Temperature Status", Temperature::temperatureStatus);

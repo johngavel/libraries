@@ -21,6 +21,10 @@ void LicenseManager::addLicense(String libraryName, String version, String link)
   if (initialized()) { get()->addLicenseToDatabase(libraryName, version, link); }
 }
 
+void LicenseManager::addLicense(LibraryInfo libraryInfo) {
+  addLicense(String(libraryInfo.name), String(libraryInfo.version), String(libraryInfo.license_file));
+}
+
 void LicenseManager::addLicenseToDatabase(String libraryName, String version, String link) {
   bool found = false;
   LicenseFile newLicense;

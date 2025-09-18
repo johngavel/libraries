@@ -14,8 +14,8 @@ Screen* Screen::get() {
 
 void Screen::setupTask() {
   ADAFRUIT_SSD1306_LICENSE;
-  ADAFRUIT_GFX_LICENSE;
-  ADAFRUIT_BUS_LICENSE;
+  ADAFRUIT_GFX_LIBRARY_LICENSE;
+  ADAFRUIT_BUSIO_LICENSE;
   TERM_CMD->addCmd("bitmap", "[n]", "Displays an image on the screen", Screen::bitmap);
   GPIO->configurePinReserve(GPIO_INTERNAL, ProgramInfo::hardwarewire.pinSDA, "I2C SDA", true);
   GPIO->configurePinReserve(GPIO_INTERNAL, ProgramInfo::hardwarewire.pinSCL, "I2C SCL", true);
