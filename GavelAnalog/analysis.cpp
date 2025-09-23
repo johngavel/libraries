@@ -54,7 +54,7 @@ void Analysis::sampleReceived(RawSample* sample) {
       lastSample.signal[channel] = RISING_EDGE;
       currentSignalState[channel] = HIGH_SIGNAL;
       diffTime = sample->timestamp - timestampLastRisingSignal[channel];
-      averageRisingEdgeTime[channel].setFactor(determineFactor(diffTime));
+      averageRisingEdgeTime[channel].setWindowSize(determineFactor(diffTime));
       averageRisingEdgeTime[channel].sample(diffTime);
       timestampLastRisingSignal[channel] = sample->timestamp;
     }
@@ -62,7 +62,7 @@ void Analysis::sampleReceived(RawSample* sample) {
       lastSample.signal[channel] = FALLING_EDGE;
       currentSignalState[channel] = LOW_SIGNAL;
       diffTime = sample->timestamp - timestampLastRisingSignal[channel];
-      averageHighSignalTime[channel].setFactor(determineFactor(averageRisingEdgeTime[channel].getAverage()));
+      averageHighSignalTime[channel].setWindowSize(determineFactor(averageRisingEdgeTime[channel].getAverage()));
       averageHighSignalTime[channel].sample(diffTime);
     }
   }

@@ -54,9 +54,9 @@ sort "$TMP_FILE" -o "$TMP_FILE"
     echo "#define LIBRARIES_H"
     echo
     echo "typedef struct {"
-    echo "    const char *name;"
-    echo "    const char *version;"
-    echo "    const char *license_file;"
+    echo "  const char* name;"
+    echo "  const char* version;"
+    echo "  const char* license_file;"
     echo "} LibraryInfo;"
     echo
     echo "static const LibraryInfo libraries[] = {"
@@ -73,7 +73,7 @@ sort "$TMP_FILE" -o "$TMP_FILE"
 
     echo "};"
     echo
-    echo "#define LIBRARY_COUNT (sizeof(libraries)/sizeof(libraries[0]))"
+    echo "#define LIBRARY_COUNT (sizeof(libraries) / sizeof(libraries[0]))"
     echo
     echo "/* Individual library macros */"
     index=0

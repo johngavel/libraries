@@ -3,9 +3,9 @@
 #define LIBRARIES_H
 
 typedef struct {
-    const char *name;
-    const char *version;
-    const char *license_file;
+  const char* name;
+  const char* version;
+  const char* license_file;
 } LibraryInfo;
 
 static const LibraryInfo libraries[] = {
@@ -22,7 +22,7 @@ static const LibraryInfo libraries[] = {
     {"Terminal", "1.0.8", "Terminal_license.txt"},
 };
 
-#define LIBRARY_COUNT (sizeof(libraries)/sizeof(libraries[0]))
+#define LIBRARY_COUNT (sizeof(libraries) / sizeof(libraries[0]))
 
 /* Individual library macros */
 #define ADAFRUIT_BUSIO_LICENSE LICENSE_ADD(libraries[0])

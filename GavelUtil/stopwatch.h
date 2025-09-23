@@ -19,7 +19,7 @@ private:
 
 class AvgStopWatch : public StopWatch {
 public:
-  AvgStopWatch(unsigned long factor = 20) { average.setFactor(factor); };
+  AvgStopWatch(unsigned long factor = 20) { average.setWindowSize(factor); };
   void stop() {
     StopWatch::stop();
     lwm = min(StopWatch::time(), lwm);
