@@ -10,7 +10,7 @@ typedef struct {
 
 static const LibraryInfo libraries[] = {
     {"Adafruit BusIO", "1.17.4", "Adafruit_BusIO_LICENSE"},
-    {"Adafruit GFX Library", "1.12.2", "Adafruit_GFX_Library_license.txt"},
+    {"Adafruit GFX Library", "1.12.3", "Adafruit_GFX_Library_license.txt"},
     {"Adafruit MCP4725", "2.0.2", "Adafruit_MCP4725_license.txt"},
     {"Adafruit NeoPixel", "1.15.1", "Adafruit_NeoPixel_COPYING"},
     {"Adafruit SSD1306", "2.5.15", "Adafruit_SSD1306_license.txt"},
