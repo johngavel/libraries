@@ -1,6 +1,5 @@
 #include "watchdog.h"
 
-#include "eeprom.h"
 #include "serialport.h"
 
 Watchdog* Watchdog::watchdog = nullptr;
@@ -46,7 +45,8 @@ void Watchdog::petWatchdog() {
 }
 
 void Watchdog::reboot() {
-  EEPROM_FORCE;
+  void (*cmd)() = (void (*)()) rebootCallback;
+  if (rebootCallback) (*cmd)();
   if (!watchdogRunning) { rp2040.reboot(); }
   lock.take();
   petWatchdog();
