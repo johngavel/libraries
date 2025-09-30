@@ -2,7 +2,6 @@
 #define __GAVEL_SERIAL
 
 #include "architecture.h"
-#include "helplist.h"
 #include "lock.h"
 
 #include <Terminal.h>
