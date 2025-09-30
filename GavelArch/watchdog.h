@@ -14,6 +14,7 @@ public:
   void petWatchdog();
   void reboot();
   void monitor(unsigned long core, bool monitor);
+  void setRebootCallback(void function());
 
 private:
   Watchdog(uint32_t timeout = 8300, uint32_t petCycle = 1000)
@@ -29,6 +30,7 @@ private:
   Timer rebootTimer;
   bool monitorCore[CPU_CORES];
   bool watchdogRunning;
+  void* rebootCallback;
 };
 
 #endif
