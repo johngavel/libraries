@@ -8,6 +8,7 @@
 
 #define PORT SerialPort::get()
 #define CONSOLE PORT->terminal
+#define DEBUG(s) CONSOLE->println(TRACE, s)
 
 void banner(Terminal* terminal);
 
