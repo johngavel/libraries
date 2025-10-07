@@ -28,7 +28,7 @@ GPIO_DESCRIPTION::GPIO_DESCRIPTION() {
 bool GPIO_DESCRIPTION::getCurrentStatus() {
   bool returnBool = currentStatus;
   if (type == GPIO_BUTTON) {
-    returnBool = buttonStatus; 
+    returnBool = buttonStatus;
     buttonStatus = false;
   }
   return returnBool;
@@ -64,7 +64,10 @@ bool GPIO_DESCRIPTION::setup() {
   if (location == GPIO_INTERNAL) {
     switch (type) {
     case GPIO_INPUT:
-    case GPIO_BUTTON: pinMode(pinNumber, INPUT); setCurrentStatus(false); break;
+    case GPIO_BUTTON:
+      pinMode(pinNumber, INPUT);
+      setCurrentStatus(false);
+      break;
     case GPIO_ADC:
       analogReadResolution(12);
       pinMode(pinNumber, INPUT);
