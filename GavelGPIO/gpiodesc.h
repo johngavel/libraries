@@ -50,6 +50,7 @@ public:
 
 private:
   bool currentStatus;
+  bool buttonStatus;
   unsigned long currentValue;
   unsigned long currentFreq;
   bool valueChanged;

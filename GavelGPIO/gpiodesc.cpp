@@ -3,7 +3,7 @@
 #include "gpio.h"
 #include "serialport.h"
 
-#define DEBOUNCE_TIMER 50
+#define DEBOUNCE_TIMER 100
 #define PULSE_TIMER 100
 
 const char* stringLocation(GPIO_LOCATION location);
@@ -15,6 +15,7 @@ GPIO_DESCRIPTION::GPIO_DESCRIPTION() {
   location = GPIO_UNKNOWN_LOCATION;
   led_type = GPIO_NOT_APPLICABLE;
   currentStatus = false;
+  buttonStatus = false;
   currentValue = 0;
   currentFreq = 0;
   validExecute = true;
@@ -26,7 +27,10 @@ GPIO_DESCRIPTION::GPIO_DESCRIPTION() {
 
 bool GPIO_DESCRIPTION::getCurrentStatus() {
   bool returnBool = currentStatus;
-  if (type == GPIO_BUTTON) currentStatus = false;
+  if (type == GPIO_BUTTON) {
+    returnBool = buttonStatus; 
+    buttonStatus = false;
+  }
   return returnBool;
 }
 
@@ -60,7 +64,7 @@ bool GPIO_DESCRIPTION::setup() {
   if (location == GPIO_INTERNAL) {
     switch (type) {
     case GPIO_INPUT:
-    case GPIO_BUTTON: pinMode(pinNumber, INPUT); break;
+    case GPIO_BUTTON: pinMode(pinNumber, INPUT); setCurrentStatus(false); break;
     case GPIO_ADC:
       analogReadResolution(12);
       pinMode(pinNumber, INPUT);
@@ -130,7 +134,6 @@ bool GPIO_DESCRIPTION::setup() {
 }
 
 unsigned long GPIO_DESCRIPTION::execute() {
-  bool status = false;
   unsigned long returnValue = 0;
   mutex.take();
   switch (type) {
@@ -140,14 +143,14 @@ unsigned long GPIO_DESCRIPTION::execute() {
     break;
   case GPIO_BUTTON:
     readDigital();
-    if ((currentStatus == false) && (status == true) && (!timer.getTimerRun())) {
+    if ((currentStatus == false) && (buttonStatus == false) && (!timer.getTimerRun())) {
       timer.setRefreshMilli(DEBOUNCE_TIMER);
       timer.runTimer(true);
-    } else if ((currentStatus == false) && (status == true) && (timer.expired())) {
-      setCurrentStatus(true);
+    } else if ((currentStatus == true) && (buttonStatus == false) && (timer.getTimerRun()) && (timer.expired())) {
+      buttonStatus = true;
       timer.runTimer(false);
-    } else if (status == false) {
-      setCurrentStatus(false);
+    } else if (currentStatus == true) {
+      timer.runTimer(false);
     }
     returnValue = currentStatus;
     break;

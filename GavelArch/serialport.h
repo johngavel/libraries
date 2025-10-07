@@ -7,7 +7,7 @@
 #include <Terminal.h>
 
 #define PORT SerialPort::get()
-#define CONSOLE PORT->terminal
+#define CONSOLE ((PORT->terminal)?(PORT->terminal):(PORT->terminalUSB))
 #define DEBUG(s) CONSOLE->println(TRACE, s)
 
 void banner(Terminal* terminal);
