@@ -1,7 +1,7 @@
 #include "analysis.h"
 
 unsigned long determineFactor(unsigned long risingEdge) {
-  return 100;
+//  return 100;
   if (risingEdge > 110000) return 10;
   if (risingEdge > 11000) return 500;
   if (risingEdge > 1100) return 1000;
