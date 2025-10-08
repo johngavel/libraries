@@ -1,8 +1,7 @@
 #include "analogDMARead.h"
 
-#include "hardware/adc.h"
-
 #include <Arduino.h>
+#include <hardware/adc.h>
 
 // set this to determine sample rate of 1 channel
 // Divide by the number of channels

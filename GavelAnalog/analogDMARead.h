@@ -1,8 +1,6 @@
 #ifndef __GAVEL_ANALOG_DMA_READ
 #define __GAVEL_ANALOG_DMA_READ
 
-#include "hardware/dma.h"
-
 #include <architecture.h>
 #include <stopwatch.h>
 

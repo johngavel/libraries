@@ -1,6 +1,8 @@
 #ifndef __GAVEL_STOP_WATCH
 #define __GAVEL_STOP_WATCH
 
+#include "average.h"
+
 #include <Arduino.h>
 
 class StopWatch {
@@ -14,8 +16,6 @@ private:
   unsigned long startTime;
   unsigned long finishTime;
 };
-
-#include "average.h"
 
 class AvgStopWatch : public StopWatch {
 public:
