@@ -62,11 +62,6 @@ void GPIOManager::configureHW() {
     configurePinUndefined(12);
     configurePinUndefined(13);
     configurePinUndefined(14);
-    configurePinUndefined(15);
-    configurePinUndefined(16);
-    configurePinUndefined(17);
-    configurePinUndefined(18);
-    configurePinUndefined(19);
     configurePinUndefined(20);
     configurePinUndefined(21);
     configurePinUndefined(22);
