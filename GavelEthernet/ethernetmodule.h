@@ -15,6 +15,7 @@ public:
   static EthernetModule* get();
 
   void configure(byte* __macAddress, bool __isDHCP, byte* __ipAddress, byte* __dnsAddress, byte* __subnetMask, byte* __gatewayAddress);
+  void configure(byte* __macAddress, bool __isDHCP) { configure(__macAddress, __isDHCP, nullptr, nullptr, nullptr, nullptr); };
   void setupTask();
   void executeTask();
   bool linkStatus();

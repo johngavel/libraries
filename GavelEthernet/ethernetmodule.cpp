@@ -67,9 +67,11 @@ bool EthernetModule::setupW5500() {
     COMM_GIVE;
     ipChanged = true;
   } else {
-    COMM_TAKE;
-    Ethernet.begin(macAddress, ipAddress, dnsAddress, gatewayAddress, subnetMask);
-    COMM_GIVE;
+    if ((macAddress != nullptr) && (ipAddress != nullptr) && (dnsAddress != nullptr) && (gatewayAddress != nullptr) && (subnetMask != nullptr)) {
+      COMM_TAKE;
+      Ethernet.begin(macAddress, ipAddress, dnsAddress, gatewayAddress, subnetMask);
+      COMM_GIVE;
+    }
   }
   COMM_TAKE;
   int hardwareStatus = Ethernet.hardwareStatus();
