@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Linux-like Terminal</title>
+  <style>
+    body {
+      background-color: #1e1e1e;
+      color: #ffffff;
+      font-family: monospace;
+      padding: 20px;
+    }
+    #status {
+      color: lightgray;
+      margin-bottom: 10px;
+      font-size: 14px;
+    }
+    #terminal {
+      height: 400px;
+      overflow-y: auto;
+      border: 1px solid #333;
+      padding: 10px;
+      background-color: #000;
+      margin-bottom: 10px;
+      white-space: pre-wrap; /* ✅ Preserve spaces and line breaks */
+    }
+    #input {
+      width: 100%;
+      background-color: #1e1e1e;
+      color: #ffffff;
+      border: none;
+      font-family: monospace;
+      font-size: 16px;
+      outline: none;
+    }
+    .error { color: red; }
+    .warning { color: orange; }
+  </style>
+</head>
+<body>
+  <div id="status">Startup...</div>
+  <div id="terminal"></div>
+  <input type="text" id="input" placeholder="Enter a command ('?' or 'help')..." autofocus />
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      console.log('✅ Script loaded and DOM ready');
+
+      const terminal = document.getElementById('terminal');
+      const input = document.getElementById('input');
+      const status = document.getElementById('status');
+
+      let eventSource;
+      let lastHeartbeat = Date.now();
+      const heartbeatTimeout = 30000; // 30s
+      const sseURL = `${window.location.origin}/sse_events`;
+
+      function updateStatus(text, color = 'lightgray') {
+        status.textContent = text;
+        status.style.color = color;
+      }
+
+      // ✅ ANSI Parsing Function
+      function parseANSI(text) {
+        const ansiRegex = /\x1b\[(\d+(;\d+)*)m/g;
+        const span = document.createElement('span');
+        let lastIndex = 0;
+        let match;
+        let currentColor = '';
+
+        while ((match = ansiRegex.exec(text)) !== null) {
+          const chunk = text.slice(lastIndex, match.index);
+          if (chunk) {
+            const part = document.createElement('span');
+            if (currentColor) part.style.color = currentColor;
+            part.textContent = chunk;
+            span.appendChild(part);
+          }
+
+          const codes = match[1].split(';').map(Number);
+          codes.forEach(code => {
+            switch (code) {
+              case 30: currentColor = 'black'; break;
+              case 31: currentColor = 'red'; break;
+              case 32: currentColor = 'limegreen'; break;
+              case 33: currentColor = 'yellow'; break;
+              case 34: currentColor = 'blue'; break;
+              case 35: currentColor = 'magenta'; break;
+              case 36: currentColor = 'cyan'; break;
+              case 37: currentColor = 'white'; break;
+              case 0: currentColor = ''; break; // Reset
+            }
+          });
+
+          lastIndex = ansiRegex.lastIndex;
+        }
+
+        const remaining = text.slice(lastIndex);
+        if (remaining) {
+          const part = document.createElement('span');
+          if (currentColor) part.style.color = currentColor;
+          part.textContent = remaining;
+          span.appendChild(part);
+        }
+
+        return span;
+      }
+
+      // ✅ Updated appendMessage
+      function appendMessage(text, cssClass = '') {
+        const message = document.createElement('div');
+        if (cssClass) message.className = cssClass;
+
+        message.appendChild(parseANSI(text)); // Parse ANSI colors
+        terminal.appendChild(message);
+
+        while (terminal.children.length > 500) {
+          terminal.removeChild(terminal.firstChild);
+        }
+        terminal.scrollTop = terminal.scrollHeight;
+      }
+
+      function connectSSE() {
+        updateStatus('Connecting...', 'orange');
+        console.log('Connecting to SSE:', sseURL);
+        eventSource = new EventSource(sseURL);
+
+        eventSource.onopen = () => updateStatus('Connected', 'limegreen');
+        eventSource.onmessage = (event) => appendMessage(event.data);
+        eventSource.addEventListener('heartbeat', () => {
+          lastHeartbeat = Date.now();
+          console.log('Heartbeat received');
+        });
+
+        eventSource.onerror = () => {
+          updateStatus('Connection lost. Retrying...', 'orange');
+          appendMessage('[Warning] Connection lost. Retrying...', 'warning');
+          eventSource.close();
+          setTimeout(connectSSE, 2000);
+        };
+      }
+
+      // Heartbeat watchdog
+      setInterval(() => {
+        if (Date.now() - lastHeartbeat > heartbeatTimeout) {
+          updateStatus('No heartbeat. Reconnecting...', 'red');
+          appendMessage('[Warning] No heartbeat detected. Reconnecting...', 'warning');
+          try { eventSource && eventSource.close(); } catch (_) {}
+          connectSSE();
+        }
+      }, 10000);
+
+      // Command input
+      input.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+          const command = input.value.trim();
+          if (!command) return;
+
+          fetch(`${window.location.origin}/sse_command`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ command })
+          })
+          .then(response => {
+            if (!response.ok) appendMessage(`[Error] Server responded with ${response.status}`, 'error');
+          })
+          .catch(error => appendMessage(`[Error] ${error.message}`, 'error'));
+
+          input.value = '';
+        }
+      });
+
+      connectSSE();
+    });
+  </script>
+</body>
+</html>

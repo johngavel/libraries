@@ -6,19 +6,23 @@
 
 EthernetModule* EthernetModule::ethernetModule = nullptr;
 
+Client* WiredClientManager::setClient(EthernetClient __client) {
+  for (unsigned int i = 0; i < MAX_CLIENTS; i++) {
+    if (!client[i].connected()) {
+      client[i] = __client;
+      return &client[i];
+    }
+  }
+  return (&errorClient);
+}
+
 void WiredServer::begin() {
   server = new EthernetServer(port);
   server->begin();
 }
 
 Client* WiredServer::accept() {
-  client = server->accept();
-  return &client;
-}
-
-void WiredServer::closeClient() {
-  client.flush();
-  client.stop();
+  return clientManager.setClient(server->accept());
 }
 
 EthernetModule* EthernetModule::get() {

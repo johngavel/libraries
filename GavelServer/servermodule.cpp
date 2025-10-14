@@ -1,19 +1,20 @@
 #include "servermodule.h"
 
 #include "commonhtml.h"
+#include "debug.h"
 #include "serialport.h"
 #include "watchdog.h"
 
-#define BUFFER_SIZE 1024
 #define HEADER_LENGTH 4096
 
 ServerModule* ServerModule::serverModule = nullptr;
 
 ServerModule::ServerModule() : Task("HTTPServer") {
-  setRefreshMilli(1);
+  setRefreshMilli(10);
   rootPage = nullptr;
   upgradePage = nullptr;
   errorPage = nullptr;
+  sseclient = nullptr;
   currentPageCount = 0;
   currentUploadPageCount = 0;
   currentProcessPageCount = 0;
@@ -85,6 +86,13 @@ void ServerModule::setErrorPage(BasicPage* page) {
     CONSOLE->println(ERROR, "Only one Error page allowed.");
 }
 
+void ServerModule::setSSEClient(SSEClient* client) {
+  if (sseclient == nullptr)
+    sseclient = client;
+  else
+    CONSOLE->println(ERROR, "Only one SSE Client allowed.");
+}
+
 static char fileBuffer[BUFFER_SIZE];
 void ServerModule::sendFile(File* file) {
   memset(fileBuffer, 0, BUFFER_SIZE);
@@ -93,15 +101,11 @@ void ServerModule::sendFile(File* file) {
   unsigned long bytes = 0;
   for (unsigned long i = 0; i < loops; i++) {
     bytes = file->readBytes(fileBuffer, BUFFER_SIZE);
-    COMM_TAKE;
-    bytes = client->write((const uint8_t*) fileBuffer, bytes);
-    COMM_GIVE;
+    clientWrite(client, fileBuffer, bytes);
     memset(fileBuffer, 0, BUFFER_SIZE);
   }
   bytes = file->readBytes(fileBuffer, remainder);
-  COMM_TAKE;
-  bytes = client->write((const uint8_t*) fileBuffer, bytes);
-  COMM_GIVE;
+  bytes = clientWrite(client, fileBuffer, bytes);
 }
 
 bool ServerModule::receiveFile(File* file, unsigned long bytes) {
@@ -112,9 +116,7 @@ bool ServerModule::receiveFile(File* file, unsigned long bytes) {
   memset(fileBuffer, 0, BUFFER_SIZE);
   unsigned long receivedBytes = 0;
   while ((total < bytes) && !timeout.expired()) {
-    COMM_TAKE;
-    receivedBytes = client->read((uint8_t*) fileBuffer, BUFFER_SIZE);
-    COMM_GIVE;
+    receivedBytes = clientRead(client, fileBuffer, BUFFER_SIZE);
     if ((total + receivedBytes) > bytes) receivedBytes = bytes - total;
     receivedBytes = file->write(fileBuffer, receivedBytes);
     total += receivedBytes;
@@ -140,21 +142,32 @@ static char* subStringAfterQuestion(char* action) {
   return returnString;
 }
 
-void ServerModule::processGet(char* action) {
+bool ServerModule::processGet(char* action) {
   bool foundPage = false;
+  bool closeClient = true;
   HTMLBuilder html;
 
   if (action[0] == 0) {
-    clientWrite(rootPage->getHtml(&html));
+    clientWrite(client, rootPage->getHtml(&html));
     foundPage = true;
   } else {
     if (isProcessPage(action) == false) {
-      for (int i = 0; i < currentPageCount; i++) {
-        BasicPage* page = pages[i];
-        int pageNameLength = strlen(page->getPageName());
-        if (strncmp(page->getPageName(), action, pageNameLength) == 0) {
-          clientWrite(page->getHtml(&html));
+      if (sseclient != nullptr) {
+        int nameLength = strlen(sseclient->getSSEEventName());
+        if (strncmp(sseclient->getSSEEventName(), action, nameLength) == 0) {
+          processSSEClient();
           foundPage = true;
+          closeClient = false;
+        }
+      }
+      if (foundPage == false) {
+        for (int i = 0; i < currentPageCount; i++) {
+          BasicPage* page = pages[i];
+          int pageNameLength = strlen(page->getPageName());
+          if (strncmp(page->getPageName(), action, pageNameLength) == 0) {
+            clientWrite(client, page->getHtml(&html));
+            foundPage = true;
+          }
         }
       }
     } else {
@@ -175,7 +188,7 @@ void ServerModule::processGet(char* action) {
             parameter = strtok_r(NULL, "=&", &processStringSave);
           }
           page->processParameterList();
-          clientWrite(page->getHtml(&html));
+          clientWrite(client, page->getHtml(&html));
           foundPage = true;
         }
       }
@@ -184,19 +197,22 @@ void ServerModule::processGet(char* action) {
   if (!foundPage) {
     bool fileFound = false;
     char* fileName = action;
-    if (FILES->verifyFile(fileName)) {
-      File file = FILES->getFile(fileName);
-      if (file) {
-        fileFound = true;
-        sendFile(&file);
-        file.close();
+    if (FILES->initialized()) {
+      if (FILES->verifyFile(fileName)) {
+        File file = FILES->getFile(fileName);
+        if (file) {
+          fileFound = true;
+          sendFile(&file);
+          file.close();
+        }
       }
     }
     if ((!fileFound) && (errorPage != nullptr)) {
-      CONSOLE->println(ERROR, "SERVER: " + String(fileName) + " not found!");
-      clientWrite(errorPage->getHtml(&html));
+      CONSOLE->println(ERROR, "SERVER Get: " + String(fileName) + " not found!");
+      clientWrite(client, errorPage->getHtml(&html));
     }
   }
+  return closeClient;
 }
 
 static const char* contentLength = "Content-Length: ";
@@ -209,9 +225,16 @@ typedef enum { POST_UPLOAD, CHECK_BOUNDARY, FORM_DISP, STRING1, STRING2, FILE_CO
 static char postBuffer[HEADER_LENGTH];
 #define WORKING_LENGTH 128
 
-void ServerModule::processPost(char* action) {
+bool ServerModule::processPost(char* action) {
   HTMLBuilder html;
+  bool closeClient = true;
   bool upgradeFileFlag = false;
+
+  if (sseclient != nullptr) {
+    int nameLength = strlen(sseclient->getSSECommandName());
+    if (strncmp(sseclient->getSSECommandName(), action, nameLength) == 0) { sseclient->processPost(client); }
+  }
+
   if (upgradePage != nullptr) {
     int pageNameLength = strlen(upgradePage->getPageName());
     upgradeFileFlag = strncmp(action, upgradePage->getPageName(), pageNameLength) == 0;
@@ -240,10 +263,10 @@ void ServerModule::processPost(char* action) {
     memset(boundary, 0, WORKING_LENGTH);
     memset(fileName, 0, WORKING_LENGTH);
 
-    while (clientAvailable() && (state != UPLOAD_DONE)) {
+    while (clientAvailable(client) && (state != UPLOAD_DONE)) {
       switch (state) {
       case POST_UPLOAD:
-        c = clientRead();
+        c = clientRead(client);
         if (c == '\n') {
           if (strncmp(postBuffer, contentLength, strlen(contentLength)) == 0) {
             fileLength = atoi(&postBuffer[strlen(contentLength)]);
@@ -260,7 +283,7 @@ void ServerModule::processPost(char* action) {
         }
         break;
       case CHECK_BOUNDARY:
-        c = clientRead();
+        c = clientRead(client);
         if (c == '\n') {
           if (strncmp(&postBuffer[6], boundary, strlen(boundary)) == 0) {
             fileLength = fileLength - ((strlen(postBuffer) * 2) + 4);
@@ -275,7 +298,7 @@ void ServerModule::processPost(char* action) {
         }
         break;
       case FORM_DISP:
-        c = clientRead();
+        c = clientRead(client);
         if (c == '\n') {
           if (strncmp(postBuffer, contentDisposition, strlen(contentDisposition)) == 0) {
             char* postBufferSave;
@@ -303,7 +326,7 @@ void ServerModule::processPost(char* action) {
         }
         break;
       case STRING1:
-        c = clientRead();
+        c = clientRead(client);
         if (c == '\n') {
           fileLength = fileLength - strlen(postBuffer) - 1;
           state = STRING2;
@@ -316,23 +339,25 @@ void ServerModule::processPost(char* action) {
         }
         break;
       case STRING2:
-        c = clientRead();
+        c = clientRead(client);
         if (c == '\n') {
           fileLength = fileLength - strlen(postBuffer) - 3;
-          if (fileLength < FILES->availableSpace()) {
-            if (upgradeFileFlag)
-              uploadFile = FILES->writeFile(UPGRADE_FILE_NAME);
-            else
-              uploadFile = FILES->writeFile(fileName);
-            if (uploadFile) {
-              state = FILE_CONTENTS;
+          if (FILES->initialized()) {
+            if (fileLength < FILES->availableSpace()) {
+              if (upgradeFileFlag)
+                uploadFile = FILES->writeFile(UPGRADE_FILE_NAME);
+              else
+                uploadFile = FILES->writeFile(fileName);
+              if (uploadFile) {
+                state = FILE_CONTENTS;
+              } else {
+                state = ERROR_STATE;
+              }
             } else {
+              CONSOLE->println(WARNING, "NOT ENOUGH SPACE FOR FILE: " + String(fileName) + String(" Size: ") + String(fileLength) + String("/") +
+                                            String(FILES->availableSpace()));
               state = ERROR_STATE;
             }
-          } else {
-            CONSOLE->println(WARNING, "NOT ENOUGH SPACE FOR FILE: " + String(fileName) + String(" Size: ") + String(fileLength) + String("/") +
-                                          String(FILES->availableSpace()));
-            state = ERROR_STATE;
           }
           memset(postBuffer, 0, HEADER_LENGTH);
           count = 0;
@@ -350,21 +375,26 @@ void ServerModule::processPost(char* action) {
         uploadFile.close();
         break;
       case ERROR_STATE:
-      default: c = clientRead(); break;
+      default: c = clientRead(client); break;
       }
     }
     HTMLBuilder html;
     if (uploadFileFlag) {
       upload->setSuccess(state == UPLOAD_DONE);
-      clientWrite(upload->getHtml(&html));
+      clientWrite(client, upload->getHtml(&html));
     } else if (upgradeFileFlag) {
       upgradePage->setSuccess(state == UPLOAD_DONE);
-      clientWrite(upgradePage->getHtml(&html));
-      if (state == UPLOAD_DONE) { FILES->UPGRADE_SYSTEM(); }
+      clientWrite(client, upgradePage->getHtml(&html));
+      if ((FILES->initialized()) && (state == UPLOAD_DONE)) { FILES->UPGRADE_SYSTEM(); }
     } else {
-      clientWrite(errorPage->getHtml(&html));
+      clientWrite(client, errorPage->getHtml(&html));
     }
   }
+  return closeClient;
+}
+
+void ServerModule::processSSEClient() {
+  if (sseclient != nullptr) { sseclient->connect(client); }
 }
 
 static char headerBuffer[HEADER_LENGTH];
@@ -375,16 +405,17 @@ void ServerModule::executeTask() {
 
   memset(headerBuffer, 0, HEADER_LENGTH);
   unsigned long headerIndex = 0;
+  bool closeClient = true;
   COMM_TAKE;
   client = server->accept();
   COMM_GIVE;
-  if (clientConnected()) { // If a new client connects,
+  if (clientConnected(client)) { // If a new client connects,
     COMM_TAKE;
     client->setTimeout(timeoutTime);
     COMM_GIVE;
-    while (clientConnected()) { // loop while the client's connected
-      if (clientAvailable()) {
-        char c = clientRead(); // read a byte
+    while (clientConnected(client)) { // loop while the client's connected
+      if (clientAvailable(client)) {
+        char c = clientRead(client); // read a byte
         if ((headerIndex <= 4) || (strncmp("GET  ", headerBuffer, 4) == 0) || (strncmp("POST", headerBuffer, 4) == 0)) {
           if (headerIndex < 5) {
             headerBuffer[headerIndex++] = c;
@@ -396,59 +427,20 @@ void ServerModule::executeTask() {
           }
         }
 
-        if ((c == '\n') && (strncmp("GET /", headerBuffer, 5) == 0)) { // if the byte is a newline character
-          processGet(&headerBuffer[5]);
-          break;
-        }
-        if ((c == '\n') && (strncmp("POST  /", headerBuffer, 4) == 0)) { // if the byte is a newline character
-          processPost(&headerBuffer[6]);
-          break;
-        }
         if (c == '\n') {
-          // Close the connection
+          if (strncmp("GET /", headerBuffer, 5) == 0) { // if the byte is a newline character
+            closeClient = processGet(&headerBuffer[5]);
+          } else if (strncmp("POST  /", headerBuffer, 4) == 0) { // if the byte is a newline character
+            closeClient = processPost(&headerBuffer[6]);
+          }
           break;
         }
       } else
         delay(5);
     }
-    COMM_TAKE;
-    server->closeClient();
-    COMM_GIVE;
+    if (closeClient) { clientClose(client); }
   }
-}
-
-char ServerModule::clientRead() {
-  COMM_TAKE;               // if there's bytes to read from the client,
-  char c = client->read(); // read a byte
-  COMM_GIVE;
-  return c;
-}
-
-bool ServerModule::clientAvailable() {
-  COMM_TAKE;
-  bool a = client->available();
-  COMM_GIVE;
-  return a;
-}
-
-void ServerModule::clientWrite(HTMLBuilder* html) {
-  unsigned long remainder = html->length() % BUFFER_SIZE;
-  unsigned long loops = html->length() / BUFFER_SIZE;
-  for (unsigned long i = 0; i < loops; i++) {
-    COMM_TAKE;
-    client->write((const uint8_t*) &html->buffer()[i * BUFFER_SIZE], BUFFER_SIZE);
-    COMM_GIVE;
-  }
-  COMM_TAKE;
-  client->write((const uint8_t*) &html->buffer()[loops * BUFFER_SIZE], remainder);
-  COMM_GIVE;
-}
-
-bool ServerModule::clientConnected() {
-  COMM_TAKE;
-  bool c = client->connected();
-  COMM_GIVE;
-  return c;
+  if (sseclient != nullptr) sseclient->executeTask();
 }
 
 void ServerModule::pageList(Terminal* terminal) {
@@ -470,6 +462,11 @@ void ServerModule::pageList(Terminal* terminal) {
   for (int i = 0; i < currentProcessPageCount; i++) terminal->println(INFO, "Page: " + String(processPages[i]->getPageName()));
   terminal->println(PROMPT, "Upload Pages - " + String(currentUploadPageCount));
   for (int i = 0; i < currentUploadPageCount; i++) terminal->println(INFO, "Page: " + String(uploadPages[i]->getPageName()));
+  if (sseclient) {
+    terminal->println(PROMPT, "SSE Client is set: " + String(sseclient->getSSEEventName()));
+    terminal->println(PROMPT, "                   " + String(sseclient->getSSECommandName()));
+  } else
+    terminal->println(WARNING, "SSE Client is not set.");
   terminal->println(PASSED, "Page List Complete");
   terminal->prompt();
 }

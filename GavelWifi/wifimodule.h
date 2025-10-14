@@ -41,17 +41,26 @@ private:
   static void wifiScan(Terminal* terminal);
 };
 
+class WirelessClientManager {
+public:
+  WirelessClientManager(){};
+  Client* setClient(WiFiClient __client);
+
+private:
+  WiFiClient client[MAX_CLIENTS];
+  WiFiClient errorClient;
+};
+
 class WifiServer : public VirtualServer {
 public:
   WifiServer(int __port) : server(nullptr), port(__port){};
   void begin();
   Client* accept();
-  void closeClient();
   VirtualNetwork* getNetworkInterface() { return WIFI; };
 
 private:
-  WiFiServer* server;
-  WiFiClient client;
+  WiFiServer* server = nullptr;
+  WirelessClientManager clientManager;
   int port;
 };
 

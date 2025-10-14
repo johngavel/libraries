@@ -47,17 +47,26 @@ private:
   static void ipStat(Terminal* terminal);
 };
 
+class WiredClientManager {
+public:
+  WiredClientManager(){};
+  Client* setClient(EthernetClient __client);
+
+private:
+  EthernetClient client[MAX_CLIENTS];
+  EthernetClient errorClient;
+};
+
 class WiredServer : public VirtualServer {
 public:
   WiredServer(int __port) : port(__port){};
   void begin();
   Client* accept();
-  void closeClient();
   VirtualNetwork* getNetworkInterface() { return ETHERNET; };
 
 private:
   EthernetServer* server = nullptr;
-  EthernetClient client;
+  WiredClientManager clientManager;
   int port;
 };
 

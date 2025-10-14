@@ -4,6 +4,7 @@
 #include "eeprom.h"
 #include "license.h"
 #include "serialport.h"
+#include "styleHTML.h"
 #include "watchdog.h"
 
 static IPAddress __commonIpAddress;
@@ -12,13 +13,17 @@ void setCommonHTMLIpAddress(IPAddress __ipaddress) {
   __commonIpAddress = __ipaddress;
 }
 
-void sendPageBegin(HTMLBuilder* html, bool autoRefresh, int seconds) {
+void sendHTTPBegin(HTMLBuilder* html) {
   // HTTP headers always start with a response code (e.g. HTTP/1.1 200 OK)
   // and a content-type so the client knows what's coming, then a blank line:
   html->println("HTTP/1.1 200 OK");
   html->println("Content-type:text/html");
   html->println("Connection: close");
   html->println();
+}
+
+void sendPageBegin(HTMLBuilder* html, bool autoRefresh, int seconds) {
+  sendHTTPBegin(html);
 
   // Display the HTML web page
   html->println("<!DOCTYPE html>")->openTag("html")->openTag("head");
@@ -27,38 +32,22 @@ void sendPageBegin(HTMLBuilder* html, bool autoRefresh, int seconds) {
     html->print(seconds);
     html->print("; url=http://");
     html->print(__commonIpAddress.toString());
-    html->println("/\"; name=\"viewport\" content=\"width=device-width, "
-                  "initial-scale=1\" >");
+    html->println("\">");
+    html->println("<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">");
   }
-  // CSS to style the on/off buttons
-  html->openTag("style")->println("html { font-family: courier; font-size: 24px; display: "
-                                  "inline-block; margin: 0px auto; text-align: center;}");
-  html->println(".button { background-color: red; border: none; color: white; "
-                "padding: 16px 40px;");
-  html->println("text-decoration: none; font-size: 30px; margin: 2px; cursor: pointer;}");
-  html->println(".button2 {background-color: black;}");
-  html->println(".button3 {background-color: grey;}");
-  html->println(".button4 {background-color: green;}");
-  html->println(".center {margin-left: auto; margin-right: auto;}");
-  html->println(".warning-container {padding: 38px 40px;	padding-bottom: 0; box-sizing: border-box; text-align: center; "
-                "background-color: white;	border: 1px solid #D4D4D4; height: 484px; width: 484px; margin: 0 auto; margin-top: "
-                "10%; -webkit-box-shadow: 0px 0px 41px -8px rgba(237,234,237,1); -moz-box-shadow: 0px 0px 41px -8px "
-                "rgba(237,234,237,1);	box-shadow: 0px 0px 41px -8px rgba(237,234,237,1);}");
-  html->println(".header {margin: 26px 0 0 0; color: #363B3E; font-size: 45px; font-weight: 500;}");
-  html->println(".top-content {margin: 0 0 0 0; color: #9BA0A3; margin-bottom: 35px;}");
-  html->println(".bottom-content {display: inline-block; height: 120px; line-height: 120px;}");
-  html->println(".bottom-content > span {display: inline-block; vertical-align: middle; line-height: normal;}");
-  html->println("table {margin: 0 auto; white-space: nowrap;}");
-  html->println("table, th, td {border-collapse: collapse;white-space: nowrap;}");
-  html->println("footer {");
-  html->println("text-align: center;font-size: 16px;");
-  html->println("padding: 3px;");
-  html->println("background-color: MediumSeaGreen;");
-  html->println("color: white;}");
-  html->closeTag();
+  // Title of the Page
   html->openTag("title");
   html->print(ProgramInfo::AppName);
-  html->closeTag()->closeTag();
+  html->closeTag();
+  html->println();
+
+  // CSS to style the on/off buttons
+  for (unsigned int i = 0; i < STYLEHTML_COUNT; i++) html->println(styleHTML[i]);
+
+  // Close Head
+  html->closeTag();
+
+  // Start Body
   html->openTag("body")->openTag("h1");
   html->print(ProgramInfo::AppName);
   html->closeTag()->hrTag();
@@ -167,8 +156,6 @@ HTMLBuilder* CodePage::getHtml(HTMLBuilder* html) {
   html->openTag("table", "class=\"center\"")->openTrTag()->println();
   html->openTdTag()->openTag("a", "href=\"/\"")->openTag("button", "type=\"button\" class=\"button2 button\"");
   html->print("Cancel")->closeTag()->closeTag()->closeTag()->closeTag()->println();
-  // html->openTrTag()->openTdTag()->openTag("a", "href=\"/code.tar.gz\"")->openTag("button", "class=\"button4 button\"");
-  // html->print("Code")->closeTag()->closeTag()->closeTag()->closeTag();
   html->closeTag()->println();
   sendPageEnd(html);
   return html;

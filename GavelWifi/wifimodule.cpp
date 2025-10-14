@@ -4,18 +4,22 @@
 
 WifiModule* WifiModule::wifiModule = nullptr;
 
+Client* WirelessClientManager::setClient(WiFiClient __client) {
+  for (unsigned int i = 0; i < MAX_CLIENTS; i++) {
+    if (!client[i].connected()) {
+      client[i] = __client;
+      return &client[i];
+    }
+  }
+  return (&errorClient);
+}
 void WifiServer::begin() {
   server = new WiFiServer(port);
   server->begin();
 }
 
 Client* WifiServer::accept() {
-  client = server->accept();
-  return &client;
-}
-
-void WifiServer::closeClient() {
-  client.flush();
+  return clientManager.setClient(server->accept());
 }
 
 WifiModule* WifiModule::get() {

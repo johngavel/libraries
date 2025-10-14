@@ -92,7 +92,7 @@ sort "$TMP_FILE" -o "$TMP_FILE"
 # Only replace if different
 if [ ! -f "$OUTPUT_FILE" ] || ! cmp -s "$TMP_HEADER" "$OUTPUT_FILE"; then
     mv "$TMP_HEADER" "$OUTPUT_FILE"
-    log_info "Header file updated: $OUTPUT_FILE"
+    log_passed "Header file updated: $OUTPUT_FILE"
 else
     log_info "No changes detected. Existing header kept: $OUTPUT_FILE"
 fi

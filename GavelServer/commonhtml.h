@@ -7,6 +7,7 @@
 #include <IPAddress.h>
 
 void setCommonHTMLIpAddress(IPAddress __ipaddress);
+void sendHTTPBegin(HTMLBuilder* html);
 void sendPageBegin(HTMLBuilder* html, bool autoRefresh = false, int seconds = 10);
 void sendPageEnd(HTMLBuilder* html);
 

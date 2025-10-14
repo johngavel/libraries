@@ -6,7 +6,10 @@
 #include "html.h"
 #include "networkinterface.h"
 #include "parameter.h"
+#include "sseclient.h"
+
 #define MAX_PAGES 64
+#define MAX_SSE_CLIENT 1
 #define PAGE_NAME_LENGTH 16
 
 class BasicPage {
@@ -53,6 +56,7 @@ public:
   void setUpgradePage(FilePage* page);
   void setErrorPage(BasicPage* page);
   void pageList(Terminal* terminal);
+  void setSSEClient(SSEClient* client);
   VirtualServer* getServer() { return server; };
 
 private:
@@ -61,12 +65,9 @@ private:
   void sendFile(File* file);
   bool receiveFile(File* file, unsigned long bytes);
   void sendErrorPage(HTMLBuilder* html);
-  void processGet(char* action);
-  void processPost(char* action);
-  char clientRead();
-  bool clientAvailable();
-  void clientWrite(HTMLBuilder* html);
-  bool clientConnected();
+  bool processGet(char* action);
+  bool processPost(char* action);
+  void processSSEClient();
 
   VirtualServer* server = nullptr;
   Client* client = nullptr;
@@ -80,6 +81,7 @@ private:
   BasicPage* rootPage;
   ProcessPage* processPages[MAX_PAGES];
   int currentProcessPageCount;
+  SSEClient* sseclient;
 
   static void pageListCmd(Terminal* terminal) { SERVER->pageList(terminal); };
 };
