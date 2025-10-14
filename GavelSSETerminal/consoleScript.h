@@ -9,7 +9,7 @@
  * Trailing whitespace is trimmed; empty lines are skipped.
  */
 
-static const char *scriptHTML[] = {
+static const char* scriptHTML[] = {
     "<div id=\"status\">Startup...</div>",
     "<div id=\"terminal\"></div>",
     "<input type=\"text\" id=\"input\" placeholder=\"Enter a command ('?' or 'help')...\" autofocus />",

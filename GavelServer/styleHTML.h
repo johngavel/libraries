@@ -9,7 +9,7 @@
  * Trailing whitespace is trimmed; empty lines are skipped.
  */
 
-static const char *styleHTML[] = {
+static const char* styleHTML[] = {
     "<!-- Inline CSS for styling the page -->",
     "<style>",
     "    html {",
