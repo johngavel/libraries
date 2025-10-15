@@ -15,6 +15,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const heartbeatTimeout = 30000; // 30s
     const sseURL = `${window.location.origin}/sse_events`;
 
+    // Command history tracking
+    let commandHistory = [];
+    let historyIndex = -1;
+
     // ✅ Update status text and color
     function updateStatus(text, color = 'lightgray') {
         status.textContent = text;
@@ -23,13 +27,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // ✅ ANSI Parsing Function
     function parseANSI(text) {
-        const ansiRegex = /\x1b\[(\d+(;\d+)*)m/g;
         const span = document.createElement('span');
+        const regex = /\x1b\[([\d;]*)([A-Za-z])/g;
         let lastIndex = 0;
         let match;
         let currentColor = '';
 
-        while ((match = ansiRegex.exec(text)) !== null) {
+        while ((match = regex.exec(text)) !== null) {
             const chunk = text.slice(lastIndex, match.index);
             if (chunk) {
                 const part = document.createElement('span');
@@ -38,22 +42,33 @@ document.addEventListener('DOMContentLoaded', () => {
                 span.appendChild(part);
             }
 
-            const codes = match[1].split(';').map(Number);
-            codes.forEach(code => {
-                switch (code) {
-                    case 30: currentColor = 'black'; break;
-                    case 31: currentColor = 'red'; break;
-                    case 32: currentColor = 'limegreen'; break;
-                    case 33: currentColor = 'yellow'; break;
-                    case 34: currentColor = 'blue'; break;
-                    case 35: currentColor = 'magenta'; break;
-                    case 36: currentColor = 'cyan'; break;
-                    case 37: currentColor = 'white'; break;
-                    case 0: currentColor = ''; break; // Reset
+            const params = match[1].split(';').map(Number);
+            const command = match[2];
+             if (command === 'm') {
+                params.forEach(code => {
+                    switch (code) {
+                        case 30: currentColor = 'black'; break;
+                        case 31: currentColor = 'red'; break;
+                        case 32: currentColor = 'limegreen'; break;
+                        case 33: currentColor = 'yellow'; break;
+                        case 34: currentColor = 'blue'; break;
+                        case 35: currentColor = 'magenta'; break;
+                        case 36: currentColor = 'cyan'; break;
+                        case 37: currentColor = 'white'; break;
+                        case 0: currentColor = ''; break;
+                    }
+                });
+            } else if (command === 'J') {
+                // Clear screen
+                if (params[0] === 2 || params.length === 0) {
+                    terminal.innerHTML = ''; // Clear terminal content
                 }
-            });
+            } else if (command === 'H') {
+                // Move cursor to home (optional)
+                terminal.scrollTop = 0;
+            }
 
-            lastIndex = ansiRegex.lastIndex;
+            lastIndex = regex.lastIndex;
         }
 
         const remaining = text.slice(lastIndex);
@@ -119,6 +134,10 @@ document.addEventListener('DOMContentLoaded', () => {
             const command = input.value.trim();
             if (!command) return;
 
+            // Save command to history
+            commandHistory.push(command);
+            historyIndex = commandHistory.length;
+
             fetch(`${window.location.origin}/sse_command`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -130,9 +149,24 @@ document.addEventListener('DOMContentLoaded', () => {
             .catch(error => appendMessage(`[Error] ${error.message}`, 'error'));
 
             input.value = '';
+        } else if (e.key === 'ArrowUp') {
+            if (historyIndex > 0) {
+                historyIndex--;
+                input.value = commandHistory[historyIndex];
+            }
+            e.preventDefault();
+        } else if (e.key === 'ArrowDown') {
+            if (historyIndex < commandHistory.length - 1) {
+                historyIndex++;
+                input.value = commandHistory[historyIndex];
+            } else {
+                historyIndex = commandHistory.length;
+                input.value = '';
+            }
+            e.preventDefault();
         }
     });
-
+    
     connectSSE();
 });
 </script>
