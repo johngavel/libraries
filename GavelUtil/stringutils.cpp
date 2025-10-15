@@ -21,12 +21,15 @@ String decByteString(byte value) {
 }
 
 String getMacString(byte* mac) {
-  String string = hexByteString(mac[0]) + ":";
-  string += hexByteString(mac[1]) + ":";
-  string += hexByteString(mac[2]) + ":";
-  string += hexByteString(mac[3]) + ":";
-  string += hexByteString(mac[4]) + ":";
-  string += hexByteString(mac[5]);
+  String string = "INVALID";
+  if (mac) {
+    string = hexByteString(mac[0]) + ":";
+    string += hexByteString(mac[1]) + ":";
+    string += hexByteString(mac[2]) + ":";
+    string += hexByteString(mac[3]) + ":";
+    string += hexByteString(mac[4]) + ":";
+    string += hexByteString(mac[5]);
+  }
   return string;
 }
 

@@ -25,10 +25,12 @@ public:
 };
 
 #define MANAGER TaskManager::get()
+#define MANAGER_AVAILABLE TaskManager::initialized()
 
 class TaskManager {
 public:
   static TaskManager* get();
+  static bool initialized() { return taskManager != nullptr; };
   void add(Task* task);
   void setup();
   void system(Terminal* terminal);

@@ -197,7 +197,7 @@ bool ServerModule::processGet(char* action) {
   if (!foundPage) {
     bool fileFound = false;
     char* fileName = action;
-    if (FILES->initialized()) {
+    if (FILES_AVAILABLE) {
       if (FILES->verifyFile(fileName)) {
         File file = FILES->getFile(fileName);
         if (file) {
@@ -342,7 +342,7 @@ bool ServerModule::processPost(char* action) {
         c = clientRead(client);
         if (c == '\n') {
           fileLength = fileLength - strlen(postBuffer) - 3;
-          if (FILES->initialized()) {
+          if (FILES_AVAILABLE) {
             if (fileLength < FILES->availableSpace()) {
               if (upgradeFileFlag)
                 uploadFile = FILES->writeFile(UPGRADE_FILE_NAME);
@@ -385,7 +385,7 @@ bool ServerModule::processPost(char* action) {
     } else if (upgradeFileFlag) {
       upgradePage->setSuccess(state == UPLOAD_DONE);
       clientWrite(client, upgradePage->getHtml(&html));
-      if ((FILES->initialized()) && (state == UPLOAD_DONE)) { FILES->UPGRADE_SYSTEM(); }
+      if ((FILES_AVAILABLE) && (state == UPLOAD_DONE)) { FILES->UPGRADE_SYSTEM(); }
     } else {
       clientWrite(client, errorPage->getHtml(&html));
     }

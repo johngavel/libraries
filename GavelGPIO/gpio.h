@@ -14,11 +14,13 @@
 #endif
 
 #define GPIO GPIOManager::get()
+#define GPIO_AVAILABLE GPIOManager::initialized()
 #define MAX_PINS 64
 
 class GPIOManager : public Task {
 public:
   static GPIOManager* get();
+  static bool initialized() { return gpioManager != nullptr; };
   void configureExpander(unsigned long index, int address);
   void configurePinReserve(GPIO_LOCATION location, int pinNumber, const char* description, bool isShared = false);
   void configurePinUndefined(int pinNumber);

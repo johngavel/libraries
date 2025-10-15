@@ -7,6 +7,7 @@
 #include <Terminal.h>
 
 #define PORT SerialPort::get()
+#define PORT_AVAILABLE SerialPort::initialized()
 #define CONSOLE ((PORT->terminal) ? (PORT->terminal) : (PORT->terminalUSB))
 
 void banner(Terminal* terminal);
@@ -14,6 +15,7 @@ void banner(Terminal* terminal);
 class SerialPort : public Task {
 public:
   static SerialPort* get();
+  static bool initialized() { return serialPort != nullptr; };
   void configurePins(int __txPin, int __rxPin);
   void setupTask();
   void executeTask();

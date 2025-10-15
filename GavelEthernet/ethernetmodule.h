@@ -9,10 +9,12 @@
 #include <SPI.h>
 
 #define ETHERNET EthernetModule::get()
+#define ETHERNET_AVAILABLE EthernetModule::initialized()
 
 class EthernetModule : public Task, public VirtualNetwork, public VirtualServerFactory {
 public:
   static EthernetModule* get();
+  static bool initialized() { return ethernetModule != nullptr; };
 
   void configure(byte* __macAddress, bool __isDHCP, byte* __ipAddress, byte* __dnsAddress, byte* __subnetMask, byte* __gatewayAddress);
   void configure(byte* __macAddress, bool __isDHCP) { configure(__macAddress, __isDHCP, nullptr, nullptr, nullptr, nullptr); };
@@ -23,6 +25,7 @@ public:
   IPAddress getSubnetMask();
   IPAddress getGateway();
   IPAddress getDNS();
+  byte* getMACAddress() { return macAddress; };
   bool getDHCP() { return isDHCP; };
   VirtualServer* getServer(int port);
   bool ipChanged = false;

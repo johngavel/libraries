@@ -28,10 +28,12 @@ public:
 };
 
 #define SCREEN Screen::get()
+#define SCREEN_AVAILABLE Screen::initialized()
 
 class Screen : public Task {
 public:
   static Screen* get();
+  static bool initialized() { return screen != nullptr; };
   virtual void setupTask();
   virtual void executeTask();
 

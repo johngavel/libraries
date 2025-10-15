@@ -6,10 +6,12 @@
 #include <DHT.h>
 
 #define TEMPERATURE Temperature::get()
+#define TEMPERATURE_AVAILABLE Temperature::initialized()
 
 class Temperature : public Task {
 public:
   static Temperature* get();
+  static bool initialized() { return temperature != nullptr; };
   void configure(int __pin, int __drift);
   void setupTask();
   void executeTask();

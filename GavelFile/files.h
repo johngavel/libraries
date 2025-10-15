@@ -6,6 +6,7 @@
 #include <Terminal.h>
 
 #define FILES Files::get()
+#define FILES_AVAILABLE Files::initialized()
 #define UPGRADE_FILE_NAME "pico.bin"
 #define UPGRADE_COMMAND_FILE_NAME "otacommand.bin"
 

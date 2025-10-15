@@ -67,7 +67,7 @@ void LicenseManager::printLicense(Terminal* terminal) {
       LICENSE->getFile(index, &oldLicense);
       terminal->println(INFO, String(oldLicense.libraryName) + " " + String(oldLicense.version) + "  - License File");
       terminal->println();
-      if (FILES->catFile("/license/" + String(oldLicense.link), terminal)) {
+      if ((FILES_AVAILABLE) && (FILES->catFile("/license/" + String(oldLicense.link), terminal))) {
         success = true;
       } else
         terminal->println(ERROR, "Missing License File.");

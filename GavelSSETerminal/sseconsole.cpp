@@ -9,18 +9,6 @@ HTMLBuilder* TerminalPage::getHtml(HTMLBuilder* html) {
   sendPageBegin(html);
   for (unsigned int i = 0; i < SCRIPTHTML_COUNT; i++) html->println(scriptHTML[i]);
   html->brTag()->println();
-  html->openTag("table", "class=\"center\"");
-  html->openTrTag()
-      ->openTdTag()
-      ->openTag("a", "href=\"/\"")
-      ->openTag("button", "type=\"button\" class=\"button2 button\"")
-      ->print("Cancel")
-      ->closeTag()
-      ->closeTag()
-      ->closeTag()
-      ->closeTag()
-      ->closeTag()
-      ->println();
   sendPageEnd(html);
   return html;
 }

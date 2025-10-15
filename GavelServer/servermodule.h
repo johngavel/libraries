@@ -41,11 +41,13 @@ protected:
 };
 
 #define SERVER ServerModule::get()
+#define SERVER_AVAILABLE ServerModule::initialized()
 #define NIC SERVER->getServer()->getNetworkInterface()
 
 class ServerModule : public Task {
 public:
   static ServerModule* get();
+  static bool initialized() { return serverModule; };
   void configure(VirtualServer* __server) { server = __server; };
   void setupTask();
   void executeTask();

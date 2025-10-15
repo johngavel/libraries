@@ -8,10 +8,12 @@
 #include <WiFi.h>
 
 #define WIFI WifiModule::get()
+#define WIFI_AVAILABLE WifiModule::initialized()
 
 class WifiModule : public Task, public VirtualNetwork, public VirtualServerFactory {
 public:
   static WifiModule* get();
+  static bool initialized() { return wifiModule != nullptr; };
 
   void configure(String __ssid, String __password);
   void setupTask();
@@ -22,6 +24,7 @@ public:
   IPAddress getSubnetMask();
   IPAddress getGateway();
   IPAddress getDNS();
+  byte* getMACAddress() { return macAddress; };
   bool getDHCP() { return false; };
   VirtualServer* getServer(int port);
   bool ipChanged;

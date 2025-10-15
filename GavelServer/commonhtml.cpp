@@ -27,6 +27,7 @@ void sendPageBegin(HTMLBuilder* html, bool autoRefresh, int seconds) {
 
   // Display the HTML web page
   html->println("<!DOCTYPE html>")->openTag("html")->openTag("head");
+  html->println("<meta charset=\"UTF-8\" />");
   if (autoRefresh) {
     html->print("<meta http-equiv=\"refresh\" content=\"");
     html->print(seconds);
@@ -134,7 +135,7 @@ HTMLBuilder* CodePage::getHtml(HTMLBuilder* html) {
       String version = file.version;
       String link = file.link;
       html->openTrTag()->tdTag(name)->tdTag(version);
-      html->openTdTag()->openTag("a", "href=\"/license/" + link + "\"")->print(link)->closeTag()->closeTag();
+      if (FILES_AVAILABLE) { html->openTdTag()->openTag("a", "href=\"/license/" + link + "\"")->print(link)->closeTag()->closeTag(); }
       html->closeTag()->println();
     }
     html->closeTag()->brTag()->println();
@@ -154,7 +155,7 @@ HTMLBuilder* CodePage::getHtml(HTMLBuilder* html) {
   html->println(" - Convert Bitmaps to Code");
   html->closeTag()->brTag()->brTag()->println();
   html->openTag("table", "class=\"center\"")->openTrTag()->println();
-  html->openTdTag()->openTag("a", "href=\"/\"")->openTag("button", "type=\"button\" class=\"button2 button\"");
+  html->openTdTag()->openTag("a", "href=\"/server\"")->openTag("button", "type=\"button\" class=\"button2 button\"");
   html->print("Cancel")->closeTag()->closeTag()->closeTag()->closeTag()->println();
   html->closeTag()->println();
   sendPageEnd(html);

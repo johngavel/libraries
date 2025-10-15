@@ -7,10 +7,12 @@
 #include <Terminal.h>
 
 #define TELNET TelnetModule::get()
+#define TELNET_AVAILABLE TelnetModule::initialized()
 
 class TelnetModule : public Task {
 public:
   static TelnetModule* get();
+  static bool initialized() { return telnetModule != nullptr; };
   void configure(VirtualServer* __server) { server = __server; };
   void setupTask();
   void executeTask();

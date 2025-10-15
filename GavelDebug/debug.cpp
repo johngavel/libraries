@@ -7,5 +7,5 @@
 
 void DEBUG(String s) {
   CONSOLE->println(TRACE, s);
-  if (DEBUG_SCREEN->initialized()) DEBUG_SCREEN->add(s);
+  if (DEBUG_SCREEN_AVAILABLE) DEBUG_SCREEN->add(s);
 }

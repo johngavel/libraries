@@ -1,138 +1,129 @@
-<!-- Inline CSS for styling the page -->
-<style>
-    /* Base styling for the HTML document */
-    html {
-        font-family: courier;       /* Monospace font for console-like look */
-        font-size: 24px;            /* Large font size for readability */
-        display: inline-block;
+    <style>
+      :root {
+        --bg: #ffffff;
+        --fg: #000000;
+        --accent: MediumSeaGreen;
+        --muted: #9BA0A3;
+        --border: #D4D4D4;
+        --warn: #ff8c00;
+        --error: #d9534f;
+        --ok: #2ecc71;
+        --console-bg: #000000;
+        --console-fg: #ffffff;
+        --console-font: "Courier New", Courier, monospace;
+      }
+
+      html, body {
+        margin: 0;
+        padding: 0;
+        background: var(--bg);
+        color: var(--fg);
+        font-family: var(--console-font);
+        display: flex;
+        flex-direction: column;
+        align-items: top;       /* Horizontal center */
+        justify-content: flex-start;   /* Vertical center */
+        min-height: 100vh;         /* Full viewport height */
+        text-align: center;        /* Center text inside elements */
+      }
+
+      h1, h2 {
+        margin: 10px 0;
+        font-weight: 600;
+      }
+
+      .container {
+        width: 100%;
+        max-width: 800px; /* optional: limits width for better centering */
+        max-width: none;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 16px;
+      }
+
+      table {
         margin: 0 auto;
-        text-align: center;
-    }
+        border-collapse: collapse;
+      }
 
-    body {
-        background-color: white;
-        color: black;
-        font-family: courier;
-        padding: 20px;
-    }
+      td {
+        padding: 6px 12px;
+      }
 
-    /* Primary button style */
-    .button {
+      #terminal {
+        width: 95%;
+        max-width: none;
+        height: 50vh;
+        min-height: 280px;
+        overflow-y: auto;
+        border: 2px solid var(--accent);
+        padding: 10px;
+        background-color: var(--console-bg);
+        color: var(--console-fg);
+        white-space: pre-wrap;
+        text-align: left;
+        font-size: 14px;
+        font-family: var(--console-font);
+        margin: 10px auto;
+      }
+
+      .controls {
+        display: flex;
+        justify-content: center;
+        gap: 8px;
+        width: 95%;
+        max-width: none;
+        align-items: center;
+      }
+
+      #input {
+        flex: 1;
+        background-color: #1e1e1e;
+        color: #ffffff;
+        border: 2px solid var(--accent);
+        font-family: var(--console-font);
+        font-size: 16px;
+        outline: none;
+        padding: 8px;
+      }
+
+      .button {
         background-color: red;
         border: none;
         color: white;
-        padding: 16px 40px;
-        text-decoration: none;
-        font-size: 30px;
-        margin: 2px;
+        padding: 10px 18px;
+        font-size: 16px;
         cursor: pointer;
-    }
+        border-radius: 4px;
+      }
 
-    /* Additional button color variations */
-    .button2 { background-color: black; }
-    .button3 { background-color: grey; }
-    .button4 { background-color: green; }
+      .button2 { background-color: #000; }
+      .button3 { background-color: grey; }
+      .button4 { background-color: green; }
 
-    /* Center alignment helper class */
-    .center {
-        margin-left: auto;
-        margin-right: auto;
-    }
-
-    /* Container for warnings or alerts */
-    .warning-container {
-        padding: 38px 40px;
-        padding-bottom: 0;
-        box-sizing: border-box;
+      footer {
         text-align: center;
-        background-color: white;
-        border: 1px solid #D4D4D4;
-        height: 484px;
-        width: 484px;
-        margin: 0 auto;
-        margin-top: 10%;
-        box-shadow: 0px 0px 41px -8px rgba(237,234,237,1);
-    }
-
-    /* Header styling */
-    .header {
-        margin: 26px 0 0 0;
-        color: #363B3E;
-        font-size: 45px;
-        font-weight: 500;
-    }
-
-    /* Top content section styling */
-    .top-content {
-        margin: 0;
-        color: #9BA0A3;
-        margin-bottom: 35px;
-    }
-
-    /* Bottom content section styling */
-    .bottom-content {
-        display: inline-block;
-        height: 120px;
-        line-height: 120px;
-    }
-
-    /* Span inside bottom content for vertical alignment */
-    .bottom-content > span {
-        display: inline-block;
-        vertical-align: middle;
-        line-height: normal;
-    }
-
-    /* Table styling for navigation links */
-    table {
-        margin: 0 auto;
-        white-space: nowrap;
-        border-collapse: collapse;
-    }
-
-    /* Footer styling */
-    footer {
-        text-align: center;
-        font-size: 16px;
-        padding: 3px;
-        background-color: MediumSeaGreen;
+        font-size: 14px;
+        padding: 12px;
+        background-color: var(--accent);
         color: white;
-    }
-
-    /* Status text styling */
-    #status {
-        color: lightgray;
-        margin-bottom: 10px;
-        font-size: 16px;
-        text-align: left;
-    }
-
-    /* Terminal display area */
-    #terminal {
-        height: 400px;
-        overflow-y: auto;
-        border: 2px solid MediumSeaGreen;
-        padding: 10px;
-        background-color: #000;
-        color: white;
-        margin-bottom: 10px;
-        white-space: pre-wrap; /* ✅ Preserve spaces and line breaks */
-        text-align: left;
-        font-size: 16px;
-    }
-
-    /* Input field styling */
-    #input {
+        margin-top: 20px;
         width: 100%;
-        background-color: #1e1e1e;
-        color: #ffffff;
-        border: 2px solid MediumSeaGreen;;
-        font-family: monospace;
-        font-size: 16px;
-        outline: none;
-    }
+      }
 
-    /* Error and warning text colors */
-    .error { color: red; }
-    .warning { color: orange; }
-</style>
+      .ok {
+        color: var(--ok);
+        font-weight: bold;
+      }
+      .error {
+        color: var(--error);
+        font-weight: bold;
+      }
+
+      .warning {
+        color: var(--warn);
+        font-weight: bold;
+      }
+
+    </style>

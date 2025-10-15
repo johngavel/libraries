@@ -18,6 +18,7 @@ public:
   virtual IPAddress getGateway() = 0;
   virtual IPAddress getDNS() = 0;
   virtual bool getDHCP() = 0;
+  virtual byte* getMACAddress() = 0;
 };
 
 class VirtualServer {

@@ -5,6 +5,7 @@
 #include "screen.h"
 
 #define DEBUG_SCREEN DebugScreen::get()
+#define DEBUG_SCREEN_AVAILABLE DebugScreen::initialized()
 
 class DebugScreen : public RefreshScreen {
 public:
