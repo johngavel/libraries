@@ -60,10 +60,10 @@
 
       function updateStatus(text, level = 'ok') {
         status.textContent = text;
-        status.classList.remove('ok', 'warning', 'error');
+        status.classList.remove('ok', 'warn', 'error');
         if (level === 'ok') status.classList.add('ok');
-        else if (level === 'warn') status.classList.add('warning');
-        else if (level === 'err') status.classList.add('error');
+        else if (level === 'error') status.classList.add('error');
+        else status.classList.add('warn');
       }
 
       // ANSI color map (basic 30–37)
@@ -166,8 +166,22 @@
         terminal.scrollTop = terminal.scrollHeight;
       }
 
+      function appendCommand(text) {
+        let lastChild = terminal.lastElementChild;
+
+        if (!lastChild) {
+          // If terminal is empty, create the first line
+          lastChild = document.createElement('div');
+          terminal.appendChild(lastChild);
+        }
+
+        // Append the new text to the last line
+        lastChild.appendChild(parseANSI(text));
+        terminal.scrollTop = terminal.scrollHeight;
+      }
+
       function scheduleReconnect() {
-        updateStatus(`Connection lost. Reconnecting in ${Math.round(reconnectBackoffMs / 1000)}s…`, 'warning');
+        updateStatus(`Connection lost. Reconnecting in ${Math.round(reconnectBackoffMs / 1000)}s…`, 'warn');
         setTimeout(connectSSE, reconnectBackoffMs);
         reconnectBackoffMs = Math.min(reconnectBackoffMs * 2, RECONNECT_BACKOFF_MAX_MS);
       }
@@ -179,7 +193,7 @@
             eventSource = null;
           }
 
-          updateStatus('Connecting…', 'warning');
+          updateStatus('Connecting…', 'warn');
           // withCredentials helps include cookies for CSRF/session when same-origin
           eventSource = new EventSource(ENDPOINTS.events, { withCredentials: true });
 
@@ -201,7 +215,7 @@
           });
 
           eventSource.onerror = () => {
-            appendMessage('[Warning] Connection error detected. Attempting to reconnect…', 'warning');
+            appendMessage('[Warning] Connection error detected. Attempting to reconnect…', 'warn');
             try { eventSource && eventSource.close(); } catch {}
             scheduleReconnect();
           };
@@ -215,7 +229,7 @@
       setInterval(() => {
         if (Date.now() - lastHeartbeat > HEARTBEAT_TIMEOUT_MS) {
           updateStatus('No heartbeat. Reconnecting…', 'error');
-          appendMessage('[Warning] No heartbeat detected. Reconnecting…', 'warning');
+          appendMessage('[Warning] No heartbeat detected. Reconnecting…', 'warn');
           try { eventSource && eventSource.close(); } catch {}
           scheduleReconnect();
         }
@@ -225,7 +239,8 @@
       function submitCommand(cmd) {
         const command = cmd.trim();
         if (!command) return;
-
+        // Append Command
+        appendCommand(command);
         // Update history
         commandHistory.push(command);
         historyIndex = commandHistory.length;

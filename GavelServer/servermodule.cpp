@@ -444,6 +444,7 @@ void ServerModule::executeTask() {
 }
 
 void ServerModule::pageList(Terminal* terminal) {
+  terminal->println(INFO, "Server IP Address: " + NIC->getIPAddress());
   if (rootPage)
     terminal->println(PROMPT, "Root Page is set: " + String(rootPage->getPageName()));
   else
