@@ -3,6 +3,7 @@
 #include "architecture.h"
 #include "eeprom.h"
 #include "license.h"
+#include "screen.h"
 #include "serialport.h"
 #include "styleHTML.h"
 #include "watchdog.h"
@@ -142,22 +143,29 @@ HTMLBuilder* CodePage::getHtml(HTMLBuilder* html) {
     html->hrTag();
   }
 
-  html->openTag("h2")->print("Miscellaneous Tools")->closeTag()->brTag()->println();
-  html->openTag("small");
-  html->openTag("a", "href=\"https://github.com/earlephilhower/arduino-pico-littlefs-plugin/releases\"");
-  html->print("PicoLittleFS")->closeTag();
-  html->print(" is a tool which integrates into the Arduino IDE.")->brTag()->println();
-  html->print("It adds a menu item to Tools menu for uploading the contents")->brTag()->println();
-  html->print("of sketch data directory into a new LittleFS flash file system.");
-  html->closeTag()->brTag()->brTag()->println();
-  html->openTag("small");
-  html->openTag("a", "href=\"https://javl.github.io/image2cpp/\"")->print("image2cpp")->closeTag();
-  html->println(" - Convert Bitmaps to Code");
-  html->closeTag()->brTag()->brTag()->println();
+  if (FILES_AVAILABLE || SCREEN_AVAILABLE) {
+    html->openTag("h2")->print("Miscellaneous Tools")->closeTag()->brTag()->println();
+    if (FILES_AVAILABLE) {
+      html->openTag("small");
+      html->openTag("a", "href=\"https://github.com/earlephilhower/arduino-pico-littlefs-plugin/releases\"");
+      html->print("PicoLittleFS")->closeTag();
+      html->print(" is a tool which integrates into the Arduino IDE.")->brTag()->println();
+      html->print("It adds a menu item to Tools menu for uploading the contents")->brTag()->println();
+      html->print("of sketch data directory into a new LittleFS flash file system.");
+      html->closeTag()->brTag()->brTag()->println();
+    }
+    if (SCREEN_AVAILABLE) {
+      html->openTag("small");
+      html->openTag("a", "href=\"https://javl.github.io/image2cpp/\"")->print("image2cpp")->closeTag();
+      html->println(" - Convert Bitmaps to Code");
+      html->closeTag()->brTag()->brTag()->println();
+    }
+  }
   html->openTag("table", "class=\"center\"")->openTrTag()->println();
   html->openTdTag()->openTag("a", "href=\"/server\"")->openTag("button", "type=\"button\" class=\"button2 button\"");
   html->print("Cancel")->closeTag()->closeTag()->closeTag()->closeTag()->println();
   html->closeTag()->println();
+
   sendPageEnd(html);
   return html;
 }
