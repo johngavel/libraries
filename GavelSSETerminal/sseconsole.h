@@ -8,7 +8,7 @@
 
 #include <commonhtml.h>
 
-#define STREAM_BUFFER_SIZE 4096
+#define STREAM_BUFFER_SIZE 8192
 
 class SSEConsole : public SSEClient, Stream {
 public:

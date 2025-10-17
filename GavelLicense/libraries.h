@@ -19,7 +19,7 @@ static const LibraryInfo libraries[] = {
     {"Ethernet", "2.0.2", "Ethernet_README.adoc"},
     {"I2C_EEPROM", "1.9.4", "I2C_EEPROM_LICENSE"},
     {"TCA9555", "0.4.3", "TCA9555_LICENSE"},
-    {"Terminal", "1.0.10", "Terminal_license.txt"},
+    {"Terminal", "1.0.12", "Terminal_license.txt"},
 };
 
 #define LIBRARY_COUNT (sizeof(libraries) / sizeof(libraries[0]))
