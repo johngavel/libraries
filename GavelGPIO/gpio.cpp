@@ -216,10 +216,7 @@ void GPIOManager::setupTask() {
   TERM_CMD->addCmd("gpio", "[v|all]", "Prints the configured GPIO Table", GPIOManager::printTable);
   if (gpioTypeConfigured[GPIO_TONE] == true) { TERM_CMD->addCmd("tone", "[n] [Hz]", "Sets a Square Wave in Hz on Tone Pin n ", GPIOManager::toneCmd); }
   if (gpioTypeConfigured[GPIO_PWM] == true) { TERM_CMD->addCmd("pwm", "[n] [f] [%]", "Sets the frequency and % Duty Cycyle PWM Pin n ", GPIOManager::pwmCmd); }
-  if (gpioTypeConfigured[GPIO_PULSE] == true) {
-    TERM_CMD->addCmd("relay", "[n]", "Command a Output n to toggle relay [DEPRECATED - use pulse instead]", GPIOManager::pulseCmd);
-    TERM_CMD->addCmd("pulse", "[n]", "Command a Output n to pulse", GPIOManager::pulseCmd);
-  }
+  if (gpioTypeConfigured[GPIO_PULSE] == true) { TERM_CMD->addCmd("pulse", "[n]", "Command a Output n to pulse", GPIOManager::pulseCmd); }
   if (gpioTypeConfigured[GPIO_INPUT] == true) { TERM_CMD->addCmd("stat", "[n]", "Status of Input n", GPIOManager::statusCmd); }
 
   // Configure all the pins

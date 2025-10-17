@@ -13,7 +13,7 @@ LicenseManager* LicenseManager::get() {
 }
 
 void LicenseManager::setup() {
-  TERM_CMD->addCmd("license", "[n]", "Prints the License File of the library indicated by n.", LicenseManager::printLicense);
+  TERM_CMD->addCmd("license", "[n]", "Prints the License File indicated by n.", LicenseManager::printLicense);
   TERM_CMD->addCmd("library", "", "Prints the libraries used in this build.", LicenseManager::printTable);
 }
 

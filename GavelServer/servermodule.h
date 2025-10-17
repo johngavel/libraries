@@ -47,7 +47,7 @@ protected:
 class ServerModule : public Task {
 public:
   static ServerModule* get();
-  static bool initialized() { return serverModule; };
+  static bool initialized() { return serverModule != nullptr; };
   void configure(VirtualServer* __server) { server = __server; };
   void setupTask();
   void executeTask();

@@ -1,7 +1,6 @@
 #include "servermodule.h"
 
 #include "commonhtml.h"
-#include "debug.h"
 #include "serialport.h"
 #include "watchdog.h"
 

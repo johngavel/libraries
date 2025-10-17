@@ -11,7 +11,6 @@
 
 static const char* scriptHTML[] = {
     "  <div class=\"container\">",
-    "    <div id=\"status\" class=\"status\">Startup…</div>",
     "    <!-- role=\"log\" with aria-live for accessibility of streaming updates -->",
     "    <div id=\"terminal\" role=\"log\" aria-live=\"polite\" aria-atomic=\"false\"></div>",
     "    <div class=\"controls\">",
@@ -28,6 +27,7 @@ static const char* scriptHTML[] = {
     "        <button type=\"button\" class=\"button button2\" aria-label=\"Cancel and return\">Cancel</button>",
     "      </a>",
     "    </div>",
+    "    <div id=\"status\" class=\"status\">Startup…</div>",
     "  </div>",
     "  <script>",
     "    document.addEventListener('DOMContentLoaded', () => {",
@@ -144,7 +144,7 @@ static const char* scriptHTML[] = {
     "        terminal.scrollTop = terminal.scrollHeight;",
     "      }",
     "      function scheduleReconnect() {",
-    "        updateStatus(`Connection lost. Reconnecting in ${Math.round(reconnectBackoffMs / 1000)}s…`, 'warn');",
+    "        updateStatus(`Connection lost. Reconnecting in ${Math.round(reconnectBackoffMs / 1000)}s…`, 'error');",
     "        setTimeout(connectSSE, reconnectBackoffMs);",
     "        reconnectBackoffMs = Math.min(reconnectBackoffMs * 2, RECONNECT_BACKOFF_MAX_MS);",
     "      }",
@@ -169,7 +169,7 @@ static const char* scriptHTML[] = {
     "            lastHeartbeat = Date.now();",
     "          });",
     "          eventSource.onerror = () => {",
-    "            appendMessage('[Warning] Connection error detected. Attempting to reconnect…', 'warn');",
+    "            appendMessage('[Error] Connection error detected. Attempting to reconnect…', 'error');",
     "            try { eventSource && eventSource.close(); } catch {}",
     "            scheduleReconnect();",
     "          };",

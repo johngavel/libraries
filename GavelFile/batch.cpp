@@ -20,7 +20,7 @@ void runCommand(Terminal* terminal) {
   char* value;
   value = terminal->readParameter();
   if (value != NULL) {
-    if (FILES->verifyFile(value)) {
+    if (FILES_AVAILABLE && (FILES->verifyFile(value))) {
       File file = FILES->getFile(value);
       Terminal runTerminal(&file, terminal->getOutput());
       runTerminal.configure(terminal);

@@ -5,13 +5,15 @@
 #define PARAMETER_COUNT String("ParameterCount")
 
 Export::Export(String __filename) : filename("/" + __filename) {
-  if (verifyFile()) FILES->deleteFile(filename, CONSOLE);
-  exportFile = FILES->writeFile(filename);
+  if (FILES_AVAILABLE) {
+    if (verifyFile()) FILES->deleteFile(filename, CONSOLE);
+    exportFile = FILES->writeFile(filename);
+  }
 }
 
 bool Export::verifyFile() {
   bool success = false;
-  success = FILES->verifyFile(filename);
+  if (FILES_AVAILABLE) success = FILES->verifyFile(filename);
   return success;
 }
 
@@ -51,12 +53,12 @@ bool Export::exportData(String parameter, bool value) {
 
 Import::Import(String __filename) : filename("/" + __filename) {
   exists = verifyFile();
-  if (exists) importFile = FILES->getFile(filename);
+  if (FILES_AVAILABLE && exists) importFile = FILES->getFile(filename);
 }
 
 bool Import::verifyFile() {
   bool success = false;
-  success = FILES->verifyFile(filename);
+  if (FILES_AVAILABLE) success = FILES->verifyFile(filename);
   return success;
 }
 

@@ -13,7 +13,7 @@
 class Files {
 public:
   static Files* get();
-  static bool initialized() { return (files == nullptr); };
+  static bool initialized() { return (files != nullptr); };
   void setup();
   bool format();
   bool verifyFile(String path);

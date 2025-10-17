@@ -1,7 +1,6 @@
 #include "sseclient.h"
 
 #include "commonhtml.h"
-#include "debug.h"
 
 static void sendSseEventOKHeaders(Client* client) {
   client->println("HTTP/1.1 200 OK");
