@@ -1,9 +1,9 @@
 #include "modulePage.h"
 
-#include "html.h"
 #include "commonhtml.h"
 #include "debug.h"
 #include "eeprom.h"
+#include "html.h"
 #include "onboardled.h"
 #include "serialport.h"
 #ifndef __GAVEL_WIFI
