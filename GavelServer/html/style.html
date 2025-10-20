@@ -2,7 +2,20 @@
       :root {
         --bg: #ffffff;
         --fg: #000000;
+        --accent: SteelBlue;
+        /* 
         --accent: MediumSeaGreen;
+        --accent: CadetBlue;
+        --accent: CornflowerBlue;
+        --accent: Coral;
+        --accent: Khaki;
+        --accent: Navy;
+        --accent: Peru;
+        --accent: SteelBlue;
+        --accent: LightSalmon;
+        --accent: GoldenRod;
+        --accent: SandyBrown; 
+        */
         --muted: #9BA0A3;
         --border: #D4D4D4;
         --warn: #ff8c00;
@@ -25,11 +38,12 @@
         justify-content: flex-start;   /* Vertical center */
         min-height: 100vh;         /* Full viewport height */
         text-align: center;        /* Center text inside elements */
+        line-height: 1.1;
       }
 
       h1, h2 {
-        margin: 10px 0;
-        font-weight: 600;
+        margin: 4px 0; /* reduce vertical margin */
+        line-height: 1.1;
       }
 
       .container {
@@ -48,7 +62,8 @@
       }
 
       td {
-        padding: 6px 12px;
+        padding: 6px 12px; /* reduce padding */
+        line-height: 1.0;
       }
 
       #terminal {
