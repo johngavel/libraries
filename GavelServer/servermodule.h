@@ -40,6 +40,16 @@ protected:
   bool success = false;
 };
 
+class DigitalFile {
+public:
+  DigitalFile() { memset(filename, 0, PAGE_NAME_LENGTH); };
+  char filename[PAGE_NAME_LENGTH];
+  char* fileBuffer = nullptr;
+  unsigned int fileLength = 0;
+
+private:
+};
+
 #define SERVER ServerModule::get()
 #define SERVER_AVAILABLE ServerModule::initialized()
 #define NIC SERVER->getServer()->getNetworkInterface()
@@ -57,10 +67,8 @@ public:
   void setUploadPage(FilePage* page);
   void setUpgradePage(FilePage* page);
   void setErrorPage(BasicPage* page);
-  void setFavicon(const unsigned char* __favicon, unsigned int __faviconLenth) {
-    favicon = (char*) __favicon;
-    faviconLength = __faviconLenth;
-  };
+  void setFavicon(const unsigned char* __favicon, unsigned int __faviconLength) { setDigitalFile("favicon.ico", __favicon, __faviconLength); };
+  void setDigitalFile(const char* __filename, const unsigned char* __fileBuffer, unsigned int __fileLength);
   void pageList(Terminal* terminal);
   void setSSEClient(SSEClient* client);
   VirtualServer* getServer() { return server; };
@@ -89,9 +97,8 @@ private:
   int currentProcessPageCount;
   SSEClient* sseclient;
 
-  char* favicon = nullptr;
-  unsigned int faviconLength = 0;
-  const char* faviconString = "favicon.ico";
+  DigitalFile digitalFile[MAX_PAGES];
+  int currentDigitalFileCount = 0;
 
   static void pageListCmd(Terminal* terminal) { SERVER->pageList(terminal); };
 };

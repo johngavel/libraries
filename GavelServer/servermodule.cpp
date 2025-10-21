@@ -92,6 +92,17 @@ void ServerModule::setSSEClient(SSEClient* client) {
     CONSOLE->println(ERROR, "Only one SSE Client allowed.");
 }
 
+void ServerModule::setDigitalFile(const char* __filename, const unsigned char* __fileBuffer, unsigned int __fileLength) {
+  if (currentDigitalFileCount < MAX_PAGES) {
+    strncpy(digitalFile[currentDigitalFileCount].filename, (char*) __filename, PAGE_NAME_LENGTH);
+    digitalFile[currentDigitalFileCount].fileBuffer = (char*) __fileBuffer;
+    digitalFile[currentDigitalFileCount].fileLength = __fileLength;
+    currentDigitalFileCount++;
+  } else {
+    CONSOLE->println(ERROR, "Server has too many digital files");
+  }
+}
+
 static char fileBuffer[BUFFER_SIZE];
 void ServerModule::sendFile(File* file) {
   memset(fileBuffer, 0, BUFFER_SIZE);
@@ -149,9 +160,6 @@ bool ServerModule::processGet(char* action) {
   if (action[0] == 0) {
     clientWrite(client, rootPage->getHtml(&html));
     foundPage = true;
-  } else if ((favicon != nullptr) && ((strncmp(faviconString, action, strlen(faviconString)) == 0))) {
-    clientWrite(client, favicon, faviconLength);
-    foundPage = true;
   } else {
     if (isProcessPage(action) == false) {
       if (sseclient != nullptr) {
@@ -160,6 +168,14 @@ bool ServerModule::processGet(char* action) {
           processSSEClient();
           foundPage = true;
           closeClient = false;
+        }
+      }
+      if (foundPage == false) {
+        for (int i = 0; i < currentDigitalFileCount; i++) {
+          if (strncmp(digitalFile[i].filename, action, strlen(digitalFile[i].filename)) == 0) {
+            clientWrite(client, digitalFile[i].fileBuffer, digitalFile[i].fileLength);
+            foundPage = true;
+          }
         }
       }
       if (foundPage == false) {
@@ -470,11 +486,7 @@ void ServerModule::pageList(Terminal* terminal) {
     terminal->println(PROMPT, "                   " + String(sseclient->getSSECommandName()));
   } else
     terminal->println(WARNING, "SSE Client is not set.");
-  if (favicon) {
-    terminal->println(PROMPT, "Fav Icon is set.");
-  } else {
-    terminal->println(WARNING, "Fav Icon is not set.");
-  }
+  for (int i = 0; i < currentDigitalFileCount; i++) terminal->println(INFO, "Digital File: " + String(digitalFile[i].filename));
   terminal->println(PASSED, "Page List Complete");
   terminal->prompt();
 }
