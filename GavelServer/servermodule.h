@@ -57,6 +57,10 @@ public:
   void setUploadPage(FilePage* page);
   void setUpgradePage(FilePage* page);
   void setErrorPage(BasicPage* page);
+  void setFavicon(const unsigned char* __favicon, unsigned int __faviconLenth) {
+    favicon = (char*) __favicon;
+    faviconLength = __faviconLenth;
+  };
   void pageList(Terminal* terminal);
   void setSSEClient(SSEClient* client);
   VirtualServer* getServer() { return server; };
@@ -84,6 +88,10 @@ private:
   ProcessPage* processPages[MAX_PAGES];
   int currentProcessPageCount;
   SSEClient* sseclient;
+
+  char* favicon = nullptr;
+  unsigned int faviconLength = 0;
+  const char* faviconString = "favicon.ico";
 
   static void pageListCmd(Terminal* terminal) { SERVER->pageList(terminal); };
 };

@@ -149,6 +149,9 @@ bool ServerModule::processGet(char* action) {
   if (action[0] == 0) {
     clientWrite(client, rootPage->getHtml(&html));
     foundPage = true;
+  } else if ((favicon != nullptr) && ((strncmp(faviconString, action, strlen(faviconString)) == 0))) {
+    clientWrite(client, favicon, faviconLength);
+    foundPage = true;
   } else {
     if (isProcessPage(action) == false) {
       if (sseclient != nullptr) {
@@ -467,6 +470,11 @@ void ServerModule::pageList(Terminal* terminal) {
     terminal->println(PROMPT, "                   " + String(sseclient->getSSECommandName()));
   } else
     terminal->println(WARNING, "SSE Client is not set.");
+  if (favicon) {
+    terminal->println(PROMPT, "Fav Icon is set.");
+  } else {
+    terminal->println(WARNING, "Fav Icon is not set.");
+  }
   terminal->println(PASSED, "Page List Complete");
   terminal->prompt();
 }

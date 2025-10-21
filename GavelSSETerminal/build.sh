@@ -13,7 +13,7 @@ case "$BUILD" in
   --clean) rm "$CURRENT_DIR/consoleScript.h" ;;
   --pre) ;;
   --post) ;;
-  --build) bash htmlheader.sh $CURRENT_DIR/html/consoleScript.html $CURRENT_DIR/consoleScript.h scriptHTML ;;
+  --build) bash htmlheader.sh $CURRENT_DIR/assets/consoleScript.html $CURRENT_DIR/consoleScript.h scriptHTML ;;
   *)
     log_failed "Invalid Command Argument: $BUILD"
     exit 1

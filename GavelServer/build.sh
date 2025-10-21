@@ -13,7 +13,7 @@ case "$BUILD" in
   --clean) rm "$CURRENT_DIR/styleHTML.h" ;;
   --pre) ;;
   --post) ;;
-  --build) bash htmlheader.sh $CURRENT_DIR/html/style.html $CURRENT_DIR/styleHTML.h styleHTML ;;
+  --build) bash htmlheader.sh $CURRENT_DIR/assets/style.html $CURRENT_DIR/styleHTML.h styleHTML ;;
   *)
     log_failed "Invalid Command Argument: $BUILD"
     exit 1

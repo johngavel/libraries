@@ -13,7 +13,7 @@ case "$BUILD" in
   --clean) rm "$CURRENT_DIR/libraries.h" ;;
   --pre) ;;
   --post) ;;
-  --build) $CURRENT_DIR/generate_libraries_header.sh "$CURRENT_DIR/.." "$CURRENT_DIR/libraries.h" ;;
+  --build) $CURRENT_DIR/assets/generate_libraries_header.sh "$CURRENT_DIR/.." "$CURRENT_DIR/libraries.h" ;;
   *)
     log_failed "Invalid Command Argument: $BUILD"
     exit 1
