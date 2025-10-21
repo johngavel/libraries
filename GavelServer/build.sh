@@ -10,7 +10,7 @@ BUILD=$1
 CURRENT_DIR=$2
 
 case "$BUILD" in
-  --clean) rm "$CURRENT_DIR/styleHTML.h" ;;
+  --clean) Delete "$CURRENT_DIR/styleHTML.h" ;;
   --pre) ;;
   --post) ;;
   --build) bash htmlheader.sh $CURRENT_DIR/assets/style.html $CURRENT_DIR/styleHTML.h styleHTML ;;

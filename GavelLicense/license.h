@@ -15,18 +15,20 @@
 
 #define ARDUINO_IDE_LICENSE LICENSE_ADD("Arduino IDE", "2.3.6", "")
 
+#define LIBRARY_INFO_INDEX_MISSING -1
 struct LicenseFile {
   char libraryName[40];
   char version[20];
   char link[80];
+  int libraryInfoIndex;
 };
 
 class LicenseManager {
 public:
   static LicenseManager* get();
   static bool initialized() { return licenseManager != nullptr; };
-  static void addLicense(String libraryName, String version, String link);
-  static void addLicense(LibraryInfo libraryInfo);
+  static void addLicense(String libraryName, String version, String link, int index = LIBRARY_INFO_INDEX_MISSING);
+  static void addLicense(LibraryInfo libraryInfo, int index);
 
   void setup();
   unsigned long count() { return licenseList.count(); };
@@ -37,7 +39,7 @@ private:
   static void printTable(Terminal* terminal);
   static void printLicense(Terminal* terminal);
   LicenseManager(){};
-  void addLicenseToDatabase(String libraryName, String version, String link);
+  void addLicenseToDatabase(String libraryName, String version, String link, int index);
   ClassicQueue licenseList = ClassicQueue(MAX_LICENSES, sizeof(LicenseFile));
 };
 

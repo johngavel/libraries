@@ -10,10 +10,10 @@ BUILD=$1
 CURRENT_DIR=$2
 
 case "$BUILD" in
-  --clean) rm "$CURRENT_DIR/libraries.h" ;;
+  --clean) $CURRENT_DIR/assets/generate_libraries_header.sh --clean "$CURRENT_DIR/.." "$CURRENT_DIR" ;;
   --pre) ;;
   --post) ;;
-  --build) $CURRENT_DIR/assets/generate_libraries_header.sh "$CURRENT_DIR/.." "$CURRENT_DIR/libraries.h" ;;
+  --build) $CURRENT_DIR/assets/generate_libraries_header.sh --build "$CURRENT_DIR/.." "$CURRENT_DIR" ;;
   *)
     log_failed "Invalid Command Argument: $BUILD"
     exit 1
