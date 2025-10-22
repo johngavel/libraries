@@ -10,6 +10,10 @@ if ! source common.sh 2> /dev/null; then
   log_info() { echo "$@"; }
 fi
 
+if ! source libraries_helper.sh 2> /dev/null; then
+  log_info() { echo "$@"; }
+fi
+
 ACTION="${1:-"--build"}"
 START_DIR="${2:-.}"
 OUTPUT_DIR="${3:-.}"
@@ -17,50 +21,12 @@ OUTPUT_FILE="$OUTPUT_DIR"/libraries.h
 TMP_FILE=$(mktemp)
 TMP_HEADER=$(mktemp)
 
+build_library_database $TMP_FILE
+
 # Remove old temp files on exit
 trap 'rm -f "$TMP_FILE" "$TMP_HEADER"' EXIT
 
-build_library_database() {
-  # Collect data
-  find "$START_DIR" -type d -name "Gavel*" -prune -o -type f -name "library.properties" -print 2> /dev/null | while read -r file; do
-    dir_path=$(dirname "$file")
-    dir_name=$(basename "$dir_path")
-
-    lib_name=$(grep -E '^name=' "$file" | cut -d'=' -f2- | tr -d '\r')
-    lib_version=$(grep -E '^version=' "$file" | cut -d'=' -f2- | tr -d '\r')
-
-    [ -z "$lib_name" ] && lib_name="UNKNOWN"
-    [ -z "$lib_version" ] && lib_version="0.0.0"
-
-    license_file=$(find "$dir_path" -maxdepth 1 -type f \( \
-      -iname "license" -o \
-      -iname "license.*" -o \
-      -iname "licence" -o \
-      -iname "licence.*" -o \
-      -iname "copying" -o \
-      -iname "copying.*" -o \
-      -iname "*.adoc" \
-      \) -print -quit)
-
-    [ -n "$license_file" ] && license_name=$(basename "$license_file") || license_name="N/A"
-
-    lib_name=${lib_name//\"/\\\"}
-    lib_version=${lib_version//\"/\\\"}
-    license_name=${license_name//\"/\\\"}
-    # Prepend library name to license and replace spaces with underscores
-    full_license="${lib_name}_${license_name}"
-    full_license=${full_license// /_}
-    header_file="${full_license%%.*}".h
-
-    echo "$dir_name,$lib_name,$lib_version,$license_name,$full_license,$header_file" >> "$TMP_FILE"
-  done
-
-  # Sort for consistency
-  sort "$TMP_FILE" -o "$TMP_FILE"
-}
-
 if [[ $ACTION == "--clean" ]]; then
-  build_library_database
   while IFS=',' read -r dir name version license full_license header_file; do
     Delete "$OUTPUT_DIR"/"$header_file"
   done < "$TMP_FILE"
@@ -69,8 +35,6 @@ if [[ $ACTION == "--clean" ]]; then
 fi
 
 if [[ $ACTION == "--build" ]]; then
-  build_library_database
-
   while IFS=',' read -r dir name version license full_license header_file; do
     createfileheader.sh "$HOME_DIR"/libraries/"$dir"/"$license" "$OUTPUT_DIR"/"$header_file" "$full_license" "$full_license"
   done < "$TMP_FILE"
@@ -81,8 +45,22 @@ if [[ $ACTION == "--build" ]]; then
     echo "#ifndef LIBRARIES_H"
     echo "#define LIBRARIES_H"
     echo
+    echo '#if __has_include("library_used.h")'
+    echo '  #include "library_used.h"'
+    echo "#else"
     while IFS=',' read -r dir name version license full_license header_file; do
+      HEADER_MACRO=$(get_library_used "$name")
+      echo "#define ${HEADER_MACRO}"
+    done < "$TMP_FILE"
+    echo "#endif"
+    echo
+    while IFS=',' read -r dir name version license full_license header_file; do
+      HEADER_MACRO="${name^^}"
+      HEADER_MACRO="${HEADER_MACRO// /_}" # Replace spaces with underscores
+      HEADER_MACRO="${HEADER_MACRO%%.*}"
+      echo "#ifdef ${HEADER_MACRO}_USED"
       echo "#include \"$header_file\""
+      echo "#endif"
     done < "$TMP_FILE"
     echo
     echo "typedef struct {"
@@ -94,12 +72,22 @@ if [[ $ACTION == "--build" ]]; then
     echo "  const char* license_name;"
     echo "} LibraryInfo;"
     echo
+    echo '#define NULL_LIBRARY_ENTRY {"null", "0.0", "null", nullptr, 0, '"}"
+    echo
     echo "static const LibraryInfo libraries[] = {"
 
     while IFS=',' read -r dir name version license full_license header_file; do
+      HEADER_MACRO="$full_license"
+      HEADER_MACRO="${HEADER_MACRO%%.*}"
+      HEADER_MACRO=$(echo "$HEADER_MACRO" | tr -cd '[:alpha:]')
+      HEADER_MACRO="${HEADER_MACRO^^}_H"
+      echo "#ifdef $HEADER_MACRO"
       variable_name="${full_license%%.*}"
       variable_name=$(echo "$variable_name" | tr -cd '[:alpha:]')
       echo "    {\"$name\", \"$version\", \"$full_license\", $variable_name, ${variable_name}_len, ${variable_name}_string},"
+      echo "#else"
+      echo "    NULL_LIBRARY_ENTRY,"
+      echo "#endif"
     done < "$TMP_FILE"
 
     echo "};"

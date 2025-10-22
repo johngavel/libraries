@@ -21,6 +21,7 @@ public:
   File getFile(String path);
   void deleteFile(String path, Terminal* terminal);
   File writeFile(String path);
+  unsigned long sizeFile(String path);
   void printDirectory(Terminal* terminal, String path);
   void printInfo(Terminal* terminal);
   unsigned long availableSpace();

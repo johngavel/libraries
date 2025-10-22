@@ -135,8 +135,16 @@ HTMLBuilder* CodePage::getHtml(HTMLBuilder* html) {
       String name = file.libraryName;
       String version = file.version;
       String link = file.link;
+      bool licenseAvailable = false;
+      if (SERVER->verifyPage("/license/" + link)) licenseAvailable = true;
+      if ((FILES_AVAILABLE) && FILES->verifyFile("/license/" + link)) licenseAvailable = true;
+
       html->openTrTag()->tdTag(name)->tdTag(version);
-      if (FILES_AVAILABLE) { html->openTdTag()->openTag("a", "href=\"/license/" + link + "\"")->print(link)->closeTag()->closeTag(); }
+      if (licenseAvailable) {
+        html->openTdTag()->openTag("a", "href=\"/license/" + link + "\"")->print(link)->closeTag()->closeTag();
+      } else {
+        html->openTdTag()->print("--License Unavailable--")->closeTag();
+      }
       html->closeTag()->println();
     }
     html->closeTag()->brTag()->println();

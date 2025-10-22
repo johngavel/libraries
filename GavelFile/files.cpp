@@ -74,6 +74,15 @@ File Files::writeFile(String path) {
   return file;
 }
 
+unsigned long Files::sizeFile(String path) {
+  unsigned long returnSize = 0;
+  if (verifyFile(path)) {
+    File file = getFile(path);
+    returnSize = file.size();
+  }
+  return returnSize;
+}
+
 void Files::printDirectory(Terminal* terminal, String path) {
   int size = 0;
   int count = 0;

@@ -3,6 +3,7 @@
 #include "asciitable.h"
 #include "files.h"
 #include "serialport.h"
+#include "servermodule.h"
 #include "stringutils.h"
 
 LicenseManager* LicenseManager::licenseManager = nullptr;
@@ -13,8 +14,22 @@ LicenseManager* LicenseManager::get() {
 }
 
 void LicenseManager::setup() {
+  LicenseFile oldLicense;
+  LibraryInfo* libraryInfo;
   TERM_CMD->addCmd("license", "[n]", "Prints the License File indicated by n.", LicenseManager::printLicense);
   TERM_CMD->addCmd("library", "", "Prints the libraries used in this build.", LicenseManager::printTable);
+  if (SERVER_AVAILABLE) {
+    for (unsigned long i = 0; i < licenseList.count(); i++) {
+      if (licenseList.get(i, &oldLicense)) {
+        if (oldLicense.libraryInfoIndex != LIBRARY_INFO_INDEX_MISSING) {
+          libraryInfo = (LibraryInfo*) &libraries[oldLicense.libraryInfoIndex];
+          String location = "license/" + String(libraryInfo->license_name);
+          SERVER->setDigitalFile(location.c_str(), libraryInfo->license_buffer, libraryInfo->license_size);
+        }
+      }
+    }
+  }
+  CONSOLE->println(PASSED, "License Manager Complete");
 }
 
 void LicenseManager::addLicense(String libraryName, String version, String link, int index) {
@@ -22,7 +37,12 @@ void LicenseManager::addLicense(String libraryName, String version, String link,
 }
 
 void LicenseManager::addLicense(LibraryInfo libraryInfo, int index) {
-  addLicense(String(libraryInfo.name), String(libraryInfo.version), String(libraryInfo.license_file), index);
+  if (libraryInfo.license_buffer == nullptr) {
+    CONSOLE->println(WARNING, "Invalid Digital License File Added.");
+    addLicense(String(libraryInfo.name), String(libraryInfo.version), String(libraryInfo.license_file), LIBRARY_INFO_INDEX_MISSING);
+  } else {
+    addLicense(String(libraryInfo.name), String(libraryInfo.version), String(libraryInfo.license_file), index);
+  }
 }
 
 void LicenseManager::addLicenseToDatabase(String libraryName, String version, String link, int index) {
@@ -49,9 +69,27 @@ void LicenseManager::printTable(Terminal* terminal) {
   table.addColumn(Normal, "Name", 28);
   table.addColumn(Yellow, "Version", 15);
   table.addColumn(Green, "File Name", 28);
+  table.addColumn(Magenta, "Size", 8);
+  table.addColumn(Blue, "Type", 6);
   table.printHeader();
   for (unsigned long i = 0; i < LICENSE->count(); i++) {
-    if (LICENSE->getFile(i, &oldLicense)) { table.printData(String(i + 1), oldLicense.libraryName, oldLicense.version, oldLicense.link); }
+    if (LICENSE->getFile(i, &oldLicense)) {
+      String size = "0";
+      String type = "";
+      if (oldLicense.libraryInfoIndex != LIBRARY_INFO_INDEX_MISSING) {
+        size = String(libraries[oldLicense.libraryInfoIndex].license_size);
+        type = "d";
+      } else if (FILES_AVAILABLE) {
+        if (FILES->verifyFile(String("license/") + String(oldLicense.link))) {
+          size = String(FILES->sizeFile(String("license/") + String(oldLicense.link)));
+          type = "f";
+        } else {
+          size = "-";
+          type = "m";
+        }
+      }
+      table.printData(String(i + 1), oldLicense.libraryName, oldLicense.version, oldLicense.link, size, type);
+    }
   }
   table.printDone("All Libraries");
   terminal->prompt();
@@ -76,7 +114,7 @@ void LicenseManager::printLicense(Terminal* terminal) {
         unsigned long loops = size / PRINT_BUFFER_SIZE;
         unsigned long remainder = size % PRINT_BUFFER_SIZE;
 
-        for (int i = 0; i < loops; i++) {
+        for (unsigned long i = 0; i < loops; i++) {
           memset(fileBuffer, 0, PRINT_BUFFER_SIZE + 1);
           memcpy(fileBuffer, &libraries[oldLicense.libraryInfoIndex].license_buffer[i * PRINT_BUFFER_SIZE], PRINT_BUFFER_SIZE);
           terminal->print(INFO, String(fileBuffer));

@@ -10,7 +10,7 @@
 
 #define MAX_PAGES 64
 #define MAX_SSE_CLIENT 1
-#define PAGE_NAME_LENGTH 16
+#define PAGE_NAME_LENGTH 64
 
 class BasicPage {
 public:
@@ -69,6 +69,7 @@ public:
   void setErrorPage(BasicPage* page);
   void setFavicon(const unsigned char* __favicon, unsigned int __faviconLength) { setDigitalFile("favicon.ico", __favicon, __faviconLength); };
   void setDigitalFile(const char* __filename, const unsigned char* __fileBuffer, unsigned int __fileLength);
+  bool verifyPage(String name);
   void pageList(Terminal* terminal);
   void setSSEClient(SSEClient* client);
   VirtualServer* getServer() { return server; };

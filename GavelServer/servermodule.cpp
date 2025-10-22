@@ -103,6 +103,24 @@ void ServerModule::setDigitalFile(const char* __filename, const unsigned char* _
   }
 }
 
+bool ServerModule::verifyPage(String name) {
+  bool pageFound = false;
+
+  if ((rootPage) && (name == String(rootPage->getPageName()))) pageFound = true;
+  if ((upgradePage) && (name == String(upgradePage->getPageName()))) pageFound = true;
+  if ((errorPage) && (name == String(errorPage->getPageName()))) pageFound = true;
+  for (int i = 0; i < currentPageCount; i++)
+    if (name == String(pages[i]->getPageName())) pageFound = true;
+  for (int i = 0; i < currentProcessPageCount; i++)
+    if (name == String(processPages[i]->getPageName())) pageFound = true;
+  for (int i = 0; i < currentUploadPageCount; i++)
+    if (name == String(uploadPages[i]->getPageName())) pageFound = true;
+  for (int i = 0; i < currentDigitalFileCount; i++)
+    if (name == String(digitalFile[i].filename)) pageFound = true;
+
+  return pageFound;
+}
+
 static char fileBuffer[BUFFER_SIZE];
 void ServerModule::sendFile(File* file) {
   memset(fileBuffer, 0, BUFFER_SIZE);
