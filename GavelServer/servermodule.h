@@ -69,6 +69,7 @@ public:
   void setErrorPage(BasicPage* page);
   void setFavicon(const unsigned char* __favicon, unsigned int __faviconLength) { setDigitalFile("favicon.ico", __favicon, __faviconLength); };
   void setDigitalFile(const char* __filename, const unsigned char* __fileBuffer, unsigned int __fileLength);
+  DigitalFile* getDigitalFile(const char* __filename);
   bool verifyPage(String name);
   void pageList(Terminal* terminal);
   void setSSEClient(SSEClient* client);

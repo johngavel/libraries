@@ -103,6 +103,17 @@ void ServerModule::setDigitalFile(const char* __filename, const unsigned char* _
   }
 }
 
+DigitalFile* ServerModule::getDigitalFile(const char* __filename) {
+  DigitalFile* returnPtr = nullptr;
+  for (int i = 0; i < currentDigitalFileCount; i++) {
+    if (strcmp(digitalFile[i].filename, __filename) == 0) {
+      returnPtr = &digitalFile[i];
+      break;
+    }
+  }
+  return returnPtr;
+}
+
 bool ServerModule::verifyPage(String name) {
   bool pageFound = false;
 
@@ -115,8 +126,7 @@ bool ServerModule::verifyPage(String name) {
     if (name == String(processPages[i]->getPageName())) pageFound = true;
   for (int i = 0; i < currentUploadPageCount; i++)
     if (name == String(uploadPages[i]->getPageName())) pageFound = true;
-  for (int i = 0; i < currentDigitalFileCount; i++)
-    if (name == String(digitalFile[i].filename)) pageFound = true;
+  if (getDigitalFile(name.c_str())) pageFound = true;
 
   return pageFound;
 }

@@ -136,7 +136,7 @@ HTMLBuilder* CodePage::getHtml(HTMLBuilder* html) {
       String version = file.version;
       String link = file.link;
       bool licenseAvailable = false;
-      if (SERVER->verifyPage("/license/" + link)) licenseAvailable = true;
+      if (SERVER->verifyPage("license/" + link)) licenseAvailable = true;
       if ((FILES_AVAILABLE) && FILES->verifyFile("/license/" + link)) licenseAvailable = true;
 
       html->openTrTag()->tdTag(name)->tdTag(version);

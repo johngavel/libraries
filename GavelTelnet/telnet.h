@@ -7,7 +7,7 @@
 #include <Terminal.h>
 
 #define TELNET TelnetModule::get()
-#define TELNET_AVAILABLE TelnetModule::initialized()
+#define TELNET_AVAILABLE (TelnetModule::initialized() && (TELNET->terminal != nullptr))
 
 class TelnetModule : public Task {
 public:

@@ -3,7 +3,7 @@
 #define LIBRARIES_H
 
 #if __has_include("library_used.h")
-  #include "library_used.h"
+#include "library_used.h"
 #else
 #define ADAFRUIT_BUSIO_USED
 #define ADAFRUIT_GFX_LIBRARY_USED
@@ -61,7 +61,8 @@ typedef struct {
   const char* license_name;
 } LibraryInfo;
 
-#define NULL_LIBRARY_ENTRY {"null", "0.0", "null", nullptr, 0, }
+#define NULL_LIBRARY_ENTRY                                                                                                                                     \
+  { "null", "0.0", "null", nullptr, 0, }
 
 static const LibraryInfo libraries[] = {
 #ifdef ADAFRUITBUSIOLICENSE_H
@@ -70,7 +71,8 @@ static const LibraryInfo libraries[] = {
     NULL_LIBRARY_ENTRY,
 #endif
 #ifdef ADAFRUITGFXLIBRARYLICENSE_H
-    {"Adafruit GFX Library", "1.12.3", "Adafruit_GFX_Library_license.txt", AdafruitGFXLibrarylicense, AdafruitGFXLibrarylicense_len, AdafruitGFXLibrarylicense_string},
+    {"Adafruit GFX Library", "1.12.3", "Adafruit_GFX_Library_license.txt", AdafruitGFXLibrarylicense, AdafruitGFXLibrarylicense_len,
+     AdafruitGFXLibrarylicense_string},
 #else
     NULL_LIBRARY_ENTRY,
 #endif
@@ -90,7 +92,8 @@ static const LibraryInfo libraries[] = {
     NULL_LIBRARY_ENTRY,
 #endif
 #ifdef ADAFRUITUNIFIEDSENSORLICENSE_H
-    {"Adafruit Unified Sensor", "1.1.15", "Adafruit_Unified_Sensor_LICENSE.txt", AdafruitUnifiedSensorLICENSE, AdafruitUnifiedSensorLICENSE_len, AdafruitUnifiedSensorLICENSE_string},
+    {"Adafruit Unified Sensor", "1.1.15", "Adafruit_Unified_Sensor_LICENSE.txt", AdafruitUnifiedSensorLICENSE, AdafruitUnifiedSensorLICENSE_len,
+     AdafruitUnifiedSensorLICENSE_string},
 #else
     NULL_LIBRARY_ENTRY,
 #endif

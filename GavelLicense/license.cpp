@@ -74,18 +74,29 @@ void LicenseManager::printTable(Terminal* terminal) {
   table.printHeader();
   for (unsigned long i = 0; i < LICENSE->count(); i++) {
     if (LICENSE->getFile(i, &oldLicense)) {
-      String size = "0";
-      String type = "";
-      if (oldLicense.libraryInfoIndex != LIBRARY_INFO_INDEX_MISSING) {
+      bool foundFile = false;
+      String size = "-";
+      String type = "m";
+      String link = oldLicense.link;
+      if (link == "") foundFile = true;
+      if (!foundFile && (oldLicense.libraryInfoIndex != LIBRARY_INFO_INDEX_MISSING)) {
         size = String(libraries[oldLicense.libraryInfoIndex].license_size);
         type = "d";
-      } else if (FILES_AVAILABLE) {
-        if (FILES->verifyFile(String("license/") + String(oldLicense.link))) {
-          size = String(FILES->sizeFile(String("license/") + String(oldLicense.link)));
+        foundFile = true;
+      }
+      if (!foundFile && (FILES_AVAILABLE)) {
+        if (FILES->verifyFile(String("license/") + link)) {
+          size = String(FILES->sizeFile(String("license/") + link));
           type = "f";
-        } else {
-          size = "-";
-          type = "m";
+          foundFile = true;
+        }
+      }
+      if (!foundFile && (SERVER_AVAILABLE)) {
+        DigitalFile* file = SERVER->getDigitalFile((String("license/") + link).c_str());
+        if (file != nullptr) {
+          size = String(file->fileLength);
+          type = "D";
+          foundFile = true;
         }
       }
       table.printData(String(i + 1), oldLicense.libraryName, oldLicense.version, oldLicense.link, size, type);
