@@ -3,6 +3,7 @@
 #include "gpio.h"
 #include "license.h"
 #include "serialport.h"
+#include "watchdog.h"
 
 // #define FULL_DATA_SIZE I2C_DEVICESIZE_24LC16 / 8
 // #define FULL_DATA_SIZE I2C_DEVICESIZE_24LC256 / 8

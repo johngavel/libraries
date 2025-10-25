@@ -21,10 +21,7 @@ public:
 
 #define EEPROM EEpromMemory::get()
 #define EEPROM_AVAILABLE EEpromMemory::initialized()
-#define EEPROM_FORCE                                                                                                                                           \
-  {                                                                                                                                                            \
-    if (EEPROM_AVAILABLE) EEPROM->forceWrite();                                                                                                                \
-  }
+#define EEPROM_FORCE EEpromMemory::eeprom_force()
 #define EEPROM_TAKE EEPROM->mutex.take()
 #define EEPROM_GIVE EEPROM->mutex.give()
 
@@ -32,6 +29,9 @@ class EEpromMemory : public Task {
 public:
   static EEpromMemory* get();
   static bool initialized() { return eeprom != nullptr; };
+  static void eeprom_force() {
+    if (EEPROM_AVAILABLE) EEPROM->forceWrite();
+  };
   void configure(unsigned long size);
   void setupTask();
   void executeTask();

@@ -91,6 +91,7 @@ bool GPIO_DESCRIPTION::setup() {
     case GPIO_UNDEFINED: break;
     default: validConfiguration = false; break;
     }
+#ifdef TCA9555_USED
   } else if ((GPIO->expander[0].valid) && (location == GPIO_EXTERNAL_EXPANDER_1)) {
     switch (type) {
     case GPIO_INPUT:
@@ -129,6 +130,7 @@ bool GPIO_DESCRIPTION::setup() {
     case GPIO_RESERVED: break;
     default: validConfiguration = false; break;
     }
+#endif
   }
   if (!validConfiguration) {
     CONSOLE->println(ERROR, "Invalid Setup and Configuration of I/O " + String(stringLocation(location)) + " Pin " + String(pinNumber));
@@ -212,6 +214,7 @@ unsigned long GPIO_DESCRIPTION::execute() {
 void GPIO_DESCRIPTION::readDigital() {
   if (location == GPIO_INTERNAL) {
     currentStatus = digitalRead(pinNumber);
+#ifdef TCA9555_USED
   } else if (location == GPIO_EXTERNAL_EXPANDER_1) {
     COMM_TAKE;
     currentStatus = GPIO->expander[0].TCA1->read1(pinNumber);
@@ -220,6 +223,7 @@ void GPIO_DESCRIPTION::readDigital() {
     COMM_TAKE;
     currentStatus = GPIO->expander[1].TCA1->read1(pinNumber);
     COMM_GIVE;
+#endif
   }
 }
 
@@ -231,6 +235,7 @@ void GPIO_DESCRIPTION::writeDigital(bool status) {
   if (valueChanged == true) {
     if (location == GPIO_INTERNAL) {
       digitalWrite(pinNumber, status);
+#ifdef TCA9555_USED
     } else if (location == GPIO_EXTERNAL_EXPANDER_1) {
       COMM_TAKE;
       GPIO->expander[0].TCA1->write1(pinNumber, status);
@@ -239,6 +244,7 @@ void GPIO_DESCRIPTION::writeDigital(bool status) {
       COMM_TAKE;
       GPIO->expander[1].TCA1->write1(pinNumber, status);
       COMM_GIVE;
+#endif
     }
     valueChanged = false;
   }

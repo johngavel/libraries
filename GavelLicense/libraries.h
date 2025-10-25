@@ -5,17 +5,18 @@
 #if __has_include("library_used.h")
 #include "library_used.h"
 #else
-#define ADAFRUIT_BUSIO_USED
-#define ADAFRUIT_GFX_LIBRARY_USED
-#define ADAFRUIT_MCP4725_USED
-#define ADAFRUIT_NEOPIXEL_USED
-#define ADAFRUIT_SSD1306_USED
-#define ADAFRUIT_UNIFIED_SENSOR_USED
-#define DHT_SENSOR_LIBRARY_USED
-#define ETHERNET_USED
-#define I2C_EEPROM_USED
-#define TCA9555_USED
-#define TERMINAL_USED
+// Removing all Licenses from the system if not defined
+// #define ADAFRUIT_BUSIO_USED
+// #define ADAFRUIT_GFX_LIBRARY_USED
+// #define ADAFRUIT_MCP4725_USED
+// #define ADAFRUIT_NEOPIXEL_USED
+// #define ADAFRUIT_SSD1306_USED
+// #define ADAFRUIT_UNIFIED_SENSOR_USED
+// #define DHT_SENSOR_LIBRARY_USED
+// #define ETHERNET_USED
+// #define I2C_EEPROM_USED
+// #define TCA9555_USED
+// #define TERMINAL_USED
 #endif
 
 #ifdef ADAFRUIT_BUSIO_USED
@@ -61,66 +62,66 @@ typedef struct {
   const char* license_name;
 } LibraryInfo;
 
-#define NULL_LIBRARY_ENTRY                                                                                                                                     \
-  { "null", "0.0", "null", nullptr, 0, }
+#define NULL_LIBRARY_ENTRY(s)                                                                                                                                  \
+  { s, "0.0", "null", nullptr, 0, }
 
 static const LibraryInfo libraries[] = {
 #ifdef ADAFRUITBUSIOLICENSE_H
     {"Adafruit BusIO", "1.17.4", "Adafruit_BusIO_LICENSE", AdafruitBusIOLICENSE, AdafruitBusIOLICENSE_len, AdafruitBusIOLICENSE_string},
 #else
-    NULL_LIBRARY_ENTRY,
+    NULL_LIBRARY_ENTRY("Adafruit BusIO"),
 #endif
 #ifdef ADAFRUITGFXLIBRARYLICENSE_H
     {"Adafruit GFX Library", "1.12.3", "Adafruit_GFX_Library_license.txt", AdafruitGFXLibrarylicense, AdafruitGFXLibrarylicense_len,
      AdafruitGFXLibrarylicense_string},
 #else
-    NULL_LIBRARY_ENTRY,
+    NULL_LIBRARY_ENTRY("Adafruit GFX Library"),
 #endif
 #ifdef ADAFRUITMCPLICENSE_H
     {"Adafruit MCP4725", "2.0.2", "Adafruit_MCP4725_license.txt", AdafruitMCPlicense, AdafruitMCPlicense_len, AdafruitMCPlicense_string},
 #else
-    NULL_LIBRARY_ENTRY,
+    NULL_LIBRARY_ENTRY("Adafruit MCP4725"),
 #endif
 #ifdef ADAFRUITNEOPIXELCOPYING_H
     {"Adafruit NeoPixel", "1.15.2", "Adafruit_NeoPixel_COPYING", AdafruitNeoPixelCOPYING, AdafruitNeoPixelCOPYING_len, AdafruitNeoPixelCOPYING_string},
 #else
-    NULL_LIBRARY_ENTRY,
+    NULL_LIBRARY_ENTRY("Adafruit NeoPixel"),
 #endif
 #ifdef ADAFRUITSSDLICENSE_H
     {"Adafruit SSD1306", "2.5.15", "Adafruit_SSD1306_license.txt", AdafruitSSDlicense, AdafruitSSDlicense_len, AdafruitSSDlicense_string},
 #else
-    NULL_LIBRARY_ENTRY,
+    NULL_LIBRARY_ENTRY("Adafruit SSD1306"),
 #endif
 #ifdef ADAFRUITUNIFIEDSENSORLICENSE_H
     {"Adafruit Unified Sensor", "1.1.15", "Adafruit_Unified_Sensor_LICENSE.txt", AdafruitUnifiedSensorLICENSE, AdafruitUnifiedSensorLICENSE_len,
      AdafruitUnifiedSensorLICENSE_string},
 #else
-    NULL_LIBRARY_ENTRY,
+    NULL_LIBRARY_ENTRY("Adafruit Unified Sensor"),
 #endif
 #ifdef DHTSENSORLIBRARYLICENSE_H
     {"DHT sensor library", "1.4.6", "DHT_sensor_library_license.txt", DHTsensorlibrarylicense, DHTsensorlibrarylicense_len, DHTsensorlibrarylicense_string},
 #else
-    NULL_LIBRARY_ENTRY,
+    NULL_LIBRARY_ENTRY("DHT sensor library"),
 #endif
 #ifdef ETHERNETREADME_H
     {"Ethernet", "2.0.2", "Ethernet_README.adoc", EthernetREADME, EthernetREADME_len, EthernetREADME_string},
 #else
-    NULL_LIBRARY_ENTRY,
+    NULL_LIBRARY_ENTRY("Ethernet"),
 #endif
 #ifdef ICEEPROMLICENSE_H
     {"I2C_EEPROM", "1.9.4", "I2C_EEPROM_LICENSE", ICEEPROMLICENSE, ICEEPROMLICENSE_len, ICEEPROMLICENSE_string},
 #else
-    NULL_LIBRARY_ENTRY,
+    NULL_LIBRARY_ENTRY("I2C_EEPROM"),
 #endif
 #ifdef TCALICENSE_H
     {"TCA9555", "0.4.3", "TCA9555_LICENSE", TCALICENSE, TCALICENSE_len, TCALICENSE_string},
 #else
-    NULL_LIBRARY_ENTRY,
+    NULL_LIBRARY_ENTRY("TCA9555"),
 #endif
 #ifdef TERMINALLICENSE_H
     {"Terminal", "1.0.12", "Terminal_license.txt", Terminallicense, Terminallicense_len, Terminallicense_string},
 #else
-    NULL_LIBRARY_ENTRY,
+    NULL_LIBRARY_ENTRY("Terminal"),
 #endif
 };
 

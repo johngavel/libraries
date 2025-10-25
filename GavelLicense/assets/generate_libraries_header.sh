@@ -48,9 +48,11 @@ if [[ $ACTION == "--build" ]]; then
     echo '#if __has_include("library_used.h")'
     echo '  #include "library_used.h"'
     echo "#else"
+    echo "// Removing all Licenses from the system if not defined"
     while IFS=',' read -r dir name version license full_license header_file; do
       HEADER_MACRO=$(get_library_used "$name")
-      echo "#define ${HEADER_MACRO}"
+
+      echo "// #define ${HEADER_MACRO}"
     done < "$TMP_FILE"
     echo "#endif"
     echo
@@ -72,7 +74,7 @@ if [[ $ACTION == "--build" ]]; then
     echo "  const char* license_name;"
     echo "} LibraryInfo;"
     echo
-    echo '#define NULL_LIBRARY_ENTRY {"null", "0.0", "null", nullptr, 0, '"}"
+    echo '#define NULL_LIBRARY_ENTRY(s) {s, "0.0", "null", nullptr, 0, }'
     echo
     echo "static const LibraryInfo libraries[] = {"
 
@@ -86,7 +88,7 @@ if [[ $ACTION == "--build" ]]; then
       variable_name=$(echo "$variable_name" | tr -cd '[:alpha:]')
       echo "    {\"$name\", \"$version\", \"$full_license\", $variable_name, ${variable_name}_len, ${variable_name}_string},"
       echo "#else"
-      echo "    NULL_LIBRARY_ENTRY,"
+      echo "    NULL_LIBRARY_ENTRY(\"$name\"),"
       echo "#endif"
     done < "$TMP_FILE"
 

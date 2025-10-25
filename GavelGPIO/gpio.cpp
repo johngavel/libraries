@@ -12,10 +12,12 @@ const char* stringLocation(GPIO_LOCATION location);
 GPIOManager* GPIOManager::gpioManager = nullptr;
 
 GPIOManager::GPIOManager() : Task("GPIO") {
+#ifdef TCA9555_USED
   for (int i = 0; i < 2; i++) {
     expander[i].address = 0;
     expander[i].configured = false;
   }
+#endif
   for (int i = 0; i < GPIO_MAX_TYPES; i++) gpioTypeConfigured[i] = false;
   currentConfiguredPins = 0;
   invalidOverallConfiguration = true;
@@ -76,8 +78,10 @@ void GPIOManager::configureHW() {
   }
 }
 
+#ifdef TCA9555_USED
 void GPIOManager::configureExpander(unsigned long index, int address) {
   int error;
+  TCA9555_LICENSE;
   if ((index < 2) && (expander[index].configured == false)) {
     GPIO->configurePinReserve(GPIO_INTERNAL, ProgramInfo::hardwarewire.pinSDA, "I2C SDA", true);
     GPIO->configurePinReserve(GPIO_INTERNAL, ProgramInfo::hardwarewire.pinSCL, "I2C SCL", true);
@@ -102,6 +106,7 @@ void GPIOManager::configureExpander(unsigned long index, int address) {
     COMM_GIVE;
   }
 }
+#endif
 
 void GPIOManager::addPinConfiguration(int index, int pinNumber, GPIO_TYPE type, GPIO_LOCATION location, GPIO_LED_TYPE led_type, const char* description) {
   GPIO_DESCRIPTION* entry = &table[currentConfiguredPins];
@@ -126,6 +131,7 @@ bool GPIOManager::validConfiguration(GPIO_LOCATION location, int pinNumber) {
     if ((pinNumber > 29) || (pinNumber < 0)) valid = false;
     if ((ProgramInfo::hw_type == HW_RASPBERRYPI_PICOW) && (pinNumber == LED_BUILTIN)) valid = true;
     break;
+#ifdef TCA9555_USED
   case GPIO_EXTERNAL_EXPANDER_1:
     if (expander[0].valid == false) valid = false;
     if ((pinNumber > 15) || (pinNumber < 0)) valid = false;
@@ -134,6 +140,7 @@ bool GPIOManager::validConfiguration(GPIO_LOCATION location, int pinNumber) {
     if (expander[1].valid == false) valid = false;
     if ((pinNumber > 15) || (pinNumber < 0)) valid = false;
     break;
+#endif
   default: valid = false; break;
   }
   for (int i = 0; i < MAX_PINS; i++) {
@@ -212,7 +219,6 @@ GPIO_DESCRIPTION* GPIOManager::getPin(GPIO_TYPE __type, int __index) {
 }
 
 void GPIOManager::setupTask() {
-  TCA9555_LICENSE;
   TERM_CMD->addCmd("gpio", "[v|all]", "Prints the configured GPIO Table", GPIOManager::printTable);
   if (gpioTypeConfigured[GPIO_TONE] == true) { TERM_CMD->addCmd("tone", "[n] [Hz]", "Sets a Square Wave in Hz on Tone Pin n ", GPIOManager::toneCmd); }
   if (gpioTypeConfigured[GPIO_PWM] == true) { TERM_CMD->addCmd("pwm", "[n] [f] [%]", "Sets the frequency and % Duty Cycyle PWM Pin n ", GPIOManager::pwmCmd); }
@@ -311,11 +317,13 @@ void GPIOManager::printTable(Terminal* terminal) {
 
   terminal->println(INFO, "GPIO Table");
   terminal->println(INFO, "Hardware is " + String(stringHardware(ProgramInfo::hw_type)));
+#ifdef TCA9555_USED
   for (int i = 0; i < 2; i++) {
     if (GPIO->expander[i].configured)
       terminal->println(INFO,
                         "Expander " + String(i + 1) + " Address: " + String(GPIO->expander[i].address) + ((GPIO->expander[i].valid) ? " Valid" : " Invalid"));
   }
+#endif
 
   AsciiTable table(terminal);
   table.addColumn(Normal, "#", 4);

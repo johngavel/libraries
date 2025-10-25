@@ -38,7 +38,8 @@ void LicenseManager::addLicense(String libraryName, String version, String link,
 
 void LicenseManager::addLicense(LibraryInfo libraryInfo, int index) {
   if (libraryInfo.license_buffer == nullptr) {
-    CONSOLE->println(WARNING, "Invalid Digital License File Added.");
+    String errorLine = String(libraryInfo.name) + " - Invalid Digital License File Added.";
+    CONSOLE->println(WARNING, errorLine.c_str());
     addLicense(String(libraryInfo.name), String(libraryInfo.version), String(libraryInfo.license_file), LIBRARY_INFO_INDEX_MISSING);
   } else {
     addLicense(String(libraryInfo.name), String(libraryInfo.version), String(libraryInfo.license_file), index);

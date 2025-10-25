@@ -1,12 +1,18 @@
 #include "commonhtml.h"
 
 #include "architecture.h"
-#include "eeprom.h"
 #include "license.h"
 #include "screen.h"
 #include "serialport.h"
 #include "styleHTML.h"
 #include "watchdog.h"
+
+#if __has_include("library_used.h")
+#include "library_used.h"
+#else
+#include "eeprom.h"
+#define I2C_EEPROM
+#endif
 
 static IPAddress __commonIpAddress;
 
@@ -193,6 +199,7 @@ HTMLBuilder* UploadPage::getHtml(HTMLBuilder* html) {
 }
 
 HTMLBuilder* ExportPage::getHtml(HTMLBuilder* html) {
+#ifdef I2C_EEPROM
   EEPROM->getData()->exportMem();
   sendPageBegin(html);
   html->openTag("h2")->print("Configuration Export")->closeTag()->println();
@@ -201,6 +208,13 @@ HTMLBuilder* ExportPage::getHtml(HTMLBuilder* html) {
   html->openTag("a", "href=\"/\"")->openTag("button", "type=\"button\" class=\"button2 button\"");
   html->print("Cancel")->closeTag()->closeTag()->brTag()->println();
   sendPageEnd(html);
+#else
+  sendPageBegin(html, true, 5);
+  html->print("Export NOT SUPPORTED....");
+  html->openTag("a", "href=\"/\"")->openTag("button", "type=\"button\" class=\"button2 button\"");
+  html->print("Cancel")->closeTag()->closeTag()->brTag()->println();
+  sendPageEnd(html);
+#endif
   return html;
 }
 
@@ -268,6 +282,7 @@ HTMLBuilder* UploadProcessingFilePage::getHtml(HTMLBuilder* html) {
 }
 
 HTMLBuilder* ImportProcessingFilePage::getHtml(HTMLBuilder* html) {
+#ifdef I2C_EEPROM
   EEPROM->getData()->importMem();
   sendPageBegin(html, true, 5);
   html->brTag();
@@ -277,5 +292,10 @@ HTMLBuilder* ImportProcessingFilePage::getHtml(HTMLBuilder* html) {
     html->print("Processing Import FAILED....");
   html->brTag();
   sendPageEnd(html);
+#else
+  sendPageBegin(html, true, 5);
+  html->print("Processing Import NOT SUPPORTED....");
+  sendPageEnd(html);
+#endif
   return html;
 }

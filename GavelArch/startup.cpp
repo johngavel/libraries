@@ -1,5 +1,3 @@
-#include "eeprom.h"
-#include "gpio.h"
 #include "license.h"
 #include "lock.h"
 #include "serialport.h"
@@ -8,10 +6,6 @@
 
 static Mutex startupMutex;
 static Mutex startupMutex1;
-
-void WatchDogReboot() {
-  EEPROM_FORCE;
-}
 
 void setup0Start() {
   startupMutex.take();
@@ -34,7 +28,6 @@ void setup0Complete() {
   startupMutex1.take();
   MANAGER->setup();
   addStandardTerminalCommands();
-  if (WATCHDOG_AVAILABLE) WATCHDOG->setRebootCallback(WatchDogReboot);
   startupMutex1.give();
 
   CONSOLE->println(PASSED, ProgramInfo::AppName + String(" - Startup Complete"));

@@ -7,6 +7,12 @@
 #include "lock.h"
 #include "timer.h"
 
+#if __has_include("library_used.h")
+#include "library_used.h"
+#else
+#define TCA9555_USED
+#endif
+
 // LED_BUILTIN is defined for the PICO and PICOW, it is not defined for the ZERO
 // This pin is directly connected to the LED on the board for BLINK purposes.
 #ifndef LED_BUILTIN
@@ -21,7 +27,10 @@ class GPIOManager : public Task {
 public:
   static GPIOManager* get();
   static bool initialized() { return gpioManager != nullptr; };
+#ifdef TCA9555_USED
   void configureExpander(unsigned long index, int address);
+  EXPANDER expander[2];
+#endif
   void configurePinReserve(GPIO_LOCATION location, int pinNumber, const char* description, bool isShared = false);
   void configurePinUndefined(int pinNumber);
   void configurePinIO(GPIO_TYPE type, GPIO_LOCATION location, int pinNumber, int index, const char* description);
@@ -31,7 +40,6 @@ public:
   void setupTask();
   void executeTask();
   GPIO_DESCRIPTION table[MAX_PINS];
-  EXPANDER expander[2];
 
 private:
   GPIOManager();
