@@ -10,7 +10,7 @@
 #if __has_include("library_used.h")
 #include "library_used.h"
 #else
-#define TCA9555_USED
+#define TCA9555_GPIO
 #endif
 
 // LED_BUILTIN is defined for the PICO and PICOW, it is not defined for the ZERO
@@ -27,7 +27,7 @@ class GPIOManager : public Task {
 public:
   static GPIOManager* get();
   static bool initialized() { return gpioManager != nullptr; };
-#ifdef TCA9555_USED
+#ifdef TCA9555_GPIO
   void configureExpander(unsigned long index, int address);
   EXPANDER expander[2];
 #endif
@@ -52,11 +52,11 @@ private:
   bool invalidOverallConfiguration;
   bool gpioTypeConfigured[GPIO_MAX_TYPES];
 
-  static void printTable(Terminal* terminal);
-  static void toneCmd(Terminal* terminal);
-  static void pwmCmd(Terminal* terminal);
-  static void pulseCmd(Terminal* terminal);
-  static void statusCmd(Terminal* terminal);
+  static void printTable(OutputInterface* terminal);
+  static void toneCmd(OutputInterface* terminal);
+  static void pwmCmd(OutputInterface* terminal);
+  static void pulseCmd(OutputInterface* terminal);
+  static void statusCmd(OutputInterface* terminal);
 };
 
 #endif

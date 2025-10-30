@@ -28,7 +28,7 @@ void SSEConsole::connectClient() {
   readQueue.clear();
   terminal.configure(CONSOLE);
   terminal.setEcho(false);
-  terminal.useColor(true);
+  terminal.setColor(true);
   terminal.clearHistory();
   sseBroadcastLine("Web Browser Terminal: ");
   terminal.banner();

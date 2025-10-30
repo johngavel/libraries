@@ -71,7 +71,7 @@ public:
   void setDigitalFile(const char* __filename, const unsigned char* __fileBuffer, unsigned int __fileLength);
   DigitalFile* getDigitalFile(const char* __filename);
   bool verifyPage(String name);
-  void pageList(Terminal* terminal);
+  void pageList(OutputInterface* terminal);
   void setSSEClient(SSEClient* client);
   VirtualServer* getServer() { return server; };
 
@@ -102,7 +102,7 @@ private:
   DigitalFile digitalFile[MAX_PAGES];
   int currentDigitalFileCount = 0;
 
-  static void pageListCmd(Terminal* terminal) { SERVER->pageList(terminal); };
+  static void pageListCmd(OutputInterface* terminal) { SERVER->pageList(terminal); };
 };
 
 #endif

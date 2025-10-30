@@ -47,7 +47,7 @@ private:
   byte* subnetMask = nullptr;
   byte* gatewayAddress = nullptr;
 
-  static void ipStat(Terminal* terminal);
+  static void ipStat(OutputInterface* terminal);
 };
 
 class WiredClientManager {

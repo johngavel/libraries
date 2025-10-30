@@ -171,7 +171,7 @@ bool EthernetModule::linkStatus() {
   return status;
 }
 
-void EthernetModule::ipStat(Terminal* terminal) {
+void EthernetModule::ipStat(OutputInterface* terminal) {
   IPAddress ipAddress = ETHERNET->getIPAddress();
   bool linked = ETHERNET->linkStatus();
   terminal->print(INFO, "MAC Address:  ");

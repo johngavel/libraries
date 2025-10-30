@@ -37,8 +37,8 @@ public:
 
 private:
   static LicenseManager* licenseManager;
-  static void printTable(Terminal* terminal);
-  static void printLicense(Terminal* terminal);
+  static void printTable(OutputInterface* terminal);
+  static void printLicense(OutputInterface* terminal);
   LicenseManager(){};
   void addLicenseToDatabase(String libraryName, String version, String link, int index);
   ClassicQueue licenseList = ClassicQueue(MAX_LICENSES, sizeof(LicenseFile));

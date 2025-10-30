@@ -49,7 +49,7 @@ File Files::getFile(String path) {
   return file;
 }
 
-void Files::deleteFile(String path, Terminal* terminal) {
+void Files::deleteFile(String path, OutputInterface* terminal) {
   File file;
   if (path == String("*")) {
     Dir dir = LittleFS.openDir("/");
@@ -83,7 +83,7 @@ unsigned long Files::sizeFile(String path) {
   return returnSize;
 }
 
-void Files::printDirectory(Terminal* terminal, String path) {
+void Files::printDirectory(OutputInterface* terminal, String path) {
   int size = 0;
   int count = 0;
   ClassicQueue queue(10, 32);
@@ -116,7 +116,7 @@ void Files::printDirectory(Terminal* terminal, String path) {
   for (unsigned long i = 0; i < queue.count(); i++) printDirectory(terminal, String((char*) queue.get(i)));
 }
 
-void Files::printInfo(Terminal* terminal) {
+void Files::printInfo(OutputInterface* terminal) {
   FSInfo info;
   LittleFS.info(info);
 
@@ -158,7 +158,7 @@ void Files::UPGRADE_SYSTEM() {
   }
 }
 
-void Files::deleteCommand(Terminal* terminal) {
+void Files::deleteCommand(OutputInterface* terminal) {
   char* value;
   value = terminal->readParameter();
   if (value != NULL) {
@@ -169,7 +169,7 @@ void Files::deleteCommand(Terminal* terminal) {
   terminal->prompt();
 }
 
-void Files::printDir(Terminal* terminal) {
+void Files::printDir(OutputInterface* terminal) {
   FILES->printInfo(terminal);
   terminal->prompt();
 }
@@ -177,7 +177,7 @@ void Files::printDir(Terminal* terminal) {
 #define BUFFER_SIZE 2
 static char fileBuffer[BUFFER_SIZE];
 
-bool Files::catFile(String path, Terminal* terminal) {
+bool Files::catFile(String path, OutputInterface* terminal) {
   bool success = false;
   if (verifyFile(path)) {
     File file = FILES->getFile(path);
@@ -207,7 +207,7 @@ bool Files::catFile(String path, Terminal* terminal) {
   return success;
 }
 
-void Files::catCommand(Terminal* terminal) {
+void Files::catCommand(OutputInterface* terminal) {
   char* value;
   value = terminal->readParameter();
   if (value != NULL) {
@@ -222,13 +222,13 @@ void Files::catCommand(Terminal* terminal) {
   terminal->prompt();
 }
 
-void Files::formatCommand(Terminal* terminal) {
+void Files::formatCommand(OutputInterface* terminal) {
   bool success = FILES->format();
   terminal->println((success) ? PASSED : FAILED, "Format of Little File System Complete");
   terminal->prompt();
 }
 
-void Files::copyconCommand(Terminal* terminal) {
+void Files::copyconCommand(OutputInterface* terminal) {
   char* value;
   bool exit = false;
   char readChar[3];

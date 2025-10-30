@@ -6,9 +6,9 @@
 
 #include <Terminal.h>
 
-static void runCommand(Terminal* terminal);
-static void delayCommand(Terminal* terminal);
-static void echoCommand(Terminal* terminal);
+static void runCommand(OutputInterface* terminal);
+static void delayCommand(OutputInterface* terminal);
+static void echoCommand(OutputInterface* terminal);
 
 void addBatchTerminalCommands() {
   TERM_CMD->addCmd("run", "[filename]", "Runs the commands located in the file", runCommand);
@@ -16,7 +16,7 @@ void addBatchTerminalCommands() {
   TERM_CMD->addCmd("echo", "...", "Displays a line of text", echoCommand);
 }
 
-void runCommand(Terminal* terminal) {
+void runCommand(OutputInterface* terminal) {
   char* value;
   value = terminal->readParameter();
   if (value != NULL) {
@@ -26,7 +26,7 @@ void runCommand(Terminal* terminal) {
       runTerminal.configure(terminal);
       runTerminal.setup();
       runTerminal.setEcho(false);
-      runTerminal.usePrompt(false);
+      runTerminal.setPrompt(false);
       while (file.available()) runTerminal.loop();
     } else {
       terminal->println(ERROR, "\"" + String(value) + "\" File does not exist!!!");
@@ -37,7 +37,7 @@ void runCommand(Terminal* terminal) {
   terminal->prompt();
 }
 
-void delayCommand(Terminal* terminal) {
+void delayCommand(OutputInterface* terminal) {
   char* value;
   int intValue;
   Timer timer;
@@ -59,7 +59,7 @@ void delayCommand(Terminal* terminal) {
   terminal->prompt();
 }
 
-void echoCommand(Terminal* terminal) {
+void echoCommand(OutputInterface* terminal) {
   char* value;
   Timer timer;
   value = terminal->readParameter();

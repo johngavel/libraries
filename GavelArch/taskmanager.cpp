@@ -1,6 +1,6 @@
 #include "taskmanager.h"
 
-#include "asciitable.h"
+#include "asciitable/asciitable.h"
 #include "serialport.h"
 #include "stringutils.h"
 
@@ -43,7 +43,7 @@ void TaskManager::add(Task* task) {
   queue.push(&task);
 }
 
-void TaskManager::system(Terminal* terminal) {
+void TaskManager::system(OutputInterface* terminal) {
   Task* task;
   AsciiTable table(terminal);
   double coreUtil[CPU_CORES] = {0.0, 0.0};
@@ -79,6 +79,6 @@ void TaskManager::system(Terminal* terminal) {
   table.printDone("System Complete");
   terminal->prompt();
 }
-void TaskManager::systemCmd(Terminal* terminal) {
+void TaskManager::systemCmd(OutputInterface* terminal) {
   MANAGER->system(terminal);
 }

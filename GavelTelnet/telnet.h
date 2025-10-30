@@ -25,7 +25,7 @@ private:
   static TelnetModule* telnetModule;
   bool clientConnected;
   VirtualServer* server;
-  static void closeTelnet(Terminal* terminal);
+  static void closeTelnet(OutputInterface* terminal);
 };
 
 #endif

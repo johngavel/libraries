@@ -12,7 +12,7 @@ class Data {
 public:
   virtual void setup() = 0;
   virtual void initMemory() = 0;
-  virtual void printData(Terminal* terminal) = 0;
+  virtual void printData(OutputInterface* terminal) = 0;
   virtual unsigned char* getData() = 0;
   virtual unsigned long getLength() = 0;
   virtual void exportMem() = 0;
@@ -65,8 +65,8 @@ private:
   };
   PrivateAppInfo appInfo;
 
-  static void wipe(Terminal* terminal);
-  static void mem(Terminal* terminal);
+  static void wipe(OutputInterface* terminal);
+  static void mem(OutputInterface* terminal);
 };
 
 #endif

@@ -20,7 +20,7 @@
 #include "wifimodule.h"
 #endif
 
-static void moduleCommand(Terminal* terminal);
+static void moduleCommand(OutputInterface* terminal);
 
 void addModuleCommand() {
   TERM_CMD->addCmd("modules", "", "Lists the availabilty of Gavel Modules", moduleCommand);
@@ -30,7 +30,7 @@ static String boolString(bool value) {
   if (value) return "Initialized";
   return "NOT AVAILABLE";
 }
-void moduleCommand(Terminal* terminal) {
+void moduleCommand(OutputInterface* terminal) {
   terminal->banner();
   terminal->println(HELP, "Blink        - ", boolString(BLINK_AVAILABLE));
   terminal->println(HELP, "Debug Screen - ", boolString(DEBUG_SCREEN_AVAILABLE));

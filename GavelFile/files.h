@@ -17,13 +17,13 @@ public:
   void setup();
   bool format();
   bool verifyFile(String path);
-  bool catFile(String path, Terminal* terminal);
+  bool catFile(String path, OutputInterface* terminal);
   File getFile(String path);
-  void deleteFile(String path, Terminal* terminal);
+  void deleteFile(String path, OutputInterface* terminal);
   File writeFile(String path);
   unsigned long sizeFile(String path);
-  void printDirectory(Terminal* terminal, String path);
-  void printInfo(Terminal* terminal);
+  void printDirectory(OutputInterface* terminal, String path);
+  void printInfo(OutputInterface* terminal);
   unsigned long availableSpace();
   void UPGRADE_SYSTEM();
 
@@ -31,11 +31,11 @@ private:
   Files(){};
   static Files* files;
 
-  static void deleteCommand(Terminal* terminal);
-  static void printDir(Terminal* terminal);
-  static void catCommand(Terminal* terminal);
-  static void formatCommand(Terminal* terminal);
-  static void copyconCommand(Terminal* terminal);
+  static void deleteCommand(OutputInterface* terminal);
+  static void printDir(OutputInterface* terminal);
+  static void catCommand(OutputInterface* terminal);
+  static void formatCommand(OutputInterface* terminal);
+  static void copyconCommand(OutputInterface* terminal);
 };
 
 #endif

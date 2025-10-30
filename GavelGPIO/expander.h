@@ -7,7 +7,7 @@
 #include "library_everything.h"
 #endif
 
-#ifdef TCA9555_USED
+#ifdef TCA9555_GPIO
 #include <TCA9555.h>
 
 class EXPANDER {

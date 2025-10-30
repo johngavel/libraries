@@ -91,7 +91,7 @@ bool GPIO_DESCRIPTION::setup() {
     case GPIO_UNDEFINED: break;
     default: validConfiguration = false; break;
     }
-#ifdef TCA9555_USED
+#ifdef TCA9555_GPIO
   } else if ((GPIO->expander[0].valid) && (location == GPIO_EXTERNAL_EXPANDER_1)) {
     switch (type) {
     case GPIO_INPUT:
@@ -214,7 +214,7 @@ unsigned long GPIO_DESCRIPTION::execute() {
 void GPIO_DESCRIPTION::readDigital() {
   if (location == GPIO_INTERNAL) {
     currentStatus = digitalRead(pinNumber);
-#ifdef TCA9555_USED
+#ifdef TCA9555_GPIO
   } else if (location == GPIO_EXTERNAL_EXPANDER_1) {
     COMM_TAKE;
     currentStatus = GPIO->expander[0].TCA1->read1(pinNumber);
@@ -235,7 +235,7 @@ void GPIO_DESCRIPTION::writeDigital(bool status) {
   if (valueChanged == true) {
     if (location == GPIO_INTERNAL) {
       digitalWrite(pinNumber, status);
-#ifdef TCA9555_USED
+#ifdef TCA9555_GPIO
     } else if (location == GPIO_EXTERNAL_EXPANDER_1) {
       COMM_TAKE;
       GPIO->expander[0].TCA1->write1(pinNumber, status);

@@ -1,6 +1,6 @@
 #include "license.h"
 
-#include "asciitable.h"
+#include "asciitable/asciitable.h"
 #include "files.h"
 #include "serialport.h"
 #include "servermodule.h"
@@ -63,7 +63,7 @@ void LicenseManager::addLicenseToDatabase(String libraryName, String version, St
   if (!found) { licenseList.push(&newLicense); }
 }
 
-void LicenseManager::printTable(Terminal* terminal) {
+void LicenseManager::printTable(OutputInterface* terminal) {
   AsciiTable table(terminal);
   LicenseFile oldLicense;
   table.addColumn(Cyan, "#", 4);
@@ -110,7 +110,7 @@ void LicenseManager::printTable(Terminal* terminal) {
 #define PRINT_BUFFER_SIZE 200
 static char fileBuffer[PRINT_BUFFER_SIZE + 1];
 
-void LicenseManager::printLicense(Terminal* terminal) {
+void LicenseManager::printLicense(OutputInterface* terminal) {
   bool success = false;
   LicenseFile oldLicense;
   char* value;

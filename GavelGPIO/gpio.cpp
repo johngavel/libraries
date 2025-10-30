@@ -1,6 +1,6 @@
 #include "gpio.h"
 
-#include "asciitable.h"
+#include "asciitable/asciitable.h"
 #include "license.h"
 #include "serialport.h"
 
@@ -12,7 +12,7 @@ const char* stringLocation(GPIO_LOCATION location);
 GPIOManager* GPIOManager::gpioManager = nullptr;
 
 GPIOManager::GPIOManager() : Task("GPIO") {
-#ifdef TCA9555_USED
+#ifdef TCA9555_GPIO
   for (int i = 0; i < 2; i++) {
     expander[i].address = 0;
     expander[i].configured = false;
@@ -78,7 +78,7 @@ void GPIOManager::configureHW() {
   }
 }
 
-#ifdef TCA9555_USED
+#ifdef TCA9555_GPIO
 void GPIOManager::configureExpander(unsigned long index, int address) {
   int error;
   TCA9555_LICENSE;
@@ -131,7 +131,7 @@ bool GPIOManager::validConfiguration(GPIO_LOCATION location, int pinNumber) {
     if ((pinNumber > 29) || (pinNumber < 0)) valid = false;
     if ((ProgramInfo::hw_type == HW_RASPBERRYPI_PICOW) && (pinNumber == LED_BUILTIN)) valid = true;
     break;
-#ifdef TCA9555_USED
+#ifdef TCA9555_GPIO
   case GPIO_EXTERNAL_EXPANDER_1:
     if (expander[0].valid == false) valid = false;
     if ((pinNumber > 15) || (pinNumber < 0)) valid = false;
@@ -296,7 +296,7 @@ int comp(const void* __lhs, const void* __rhs) {
 
 static int sorted[MAX_PINS];
 
-void GPIOManager::printTable(Terminal* terminal) {
+void GPIOManager::printTable(OutputInterface* terminal) {
   bool all = false;
   bool verbose = false;
   char* value = terminal->readParameter();
@@ -317,7 +317,7 @@ void GPIOManager::printTable(Terminal* terminal) {
 
   terminal->println(INFO, "GPIO Table");
   terminal->println(INFO, "Hardware is " + String(stringHardware(ProgramInfo::hw_type)));
-#ifdef TCA9555_USED
+#ifdef TCA9555_GPIO
   for (int i = 0; i < 2; i++) {
     if (GPIO->expander[i].configured)
       terminal->println(INFO,
@@ -350,7 +350,7 @@ void GPIOManager::printTable(Terminal* terminal) {
   terminal->prompt();
 }
 
-void GPIOManager::toneCmd(Terminal* terminal) {
+void GPIOManager::toneCmd(OutputInterface* terminal) {
   unsigned long freq;
   unsigned long index;
   GPIO_DESCRIPTION* gpio;
@@ -374,7 +374,7 @@ void GPIOManager::toneCmd(Terminal* terminal) {
   terminal->prompt();
 }
 
-void GPIOManager::pwmCmd(Terminal* terminal) {
+void GPIOManager::pwmCmd(OutputInterface* terminal) {
   unsigned long frequency;
   unsigned long dutyCycle;
   unsigned long index;
@@ -403,7 +403,7 @@ void GPIOManager::pwmCmd(Terminal* terminal) {
   terminal->prompt();
 }
 
-void GPIOManager::pulseCmd(Terminal* terminal) {
+void GPIOManager::pulseCmd(OutputInterface* terminal) {
   unsigned long index;
   GPIO_DESCRIPTION* gpio;
   char* value;
@@ -422,7 +422,7 @@ void GPIOManager::pulseCmd(Terminal* terminal) {
   terminal->prompt();
 }
 
-void GPIOManager::statusCmd(Terminal* terminal) {
+void GPIOManager::statusCmd(OutputInterface* terminal) {
   unsigned long index;
   GPIO_DESCRIPTION* gpio;
   char* value;

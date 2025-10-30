@@ -68,7 +68,7 @@ void TelnetModule::executeTask() {
   }
 }
 
-void TelnetModule::closeTelnet(Terminal* terminal) {
+void TelnetModule::closeTelnet(OutputInterface* terminal) {
   if (terminal == TELNET->terminal) {
     terminal->println(INFO, "Closing Telnet Session.");
     TELNET->client->flush();

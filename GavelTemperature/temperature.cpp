@@ -63,7 +63,7 @@ int Temperature::getTemperature() {
   return temp;
 }
 
-void Temperature::temperatureStatus(Terminal* terminal) {
+void Temperature::temperatureStatus(OutputInterface* terminal) {
   terminal->print(INFO, "Temperature Sensor is ");
   (TEMPERATURE->isConfigured()) ? terminal->println(INFO, "Configured ") : terminal->println(WARNING, "Unconfigured ");
   terminal->print(INFO, "Temperature Data is ");

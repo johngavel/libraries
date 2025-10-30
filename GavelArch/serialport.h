@@ -10,7 +10,7 @@
 #define PORT_AVAILABLE SerialPort::initialized()
 #define CONSOLE ((PORT->terminal) ? (PORT->terminal) : (PORT->terminalUSB))
 
-void banner(Terminal* terminal);
+void banner(OutputInterface* terminal);
 
 class SerialPort : public Task {
 public:

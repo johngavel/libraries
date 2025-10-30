@@ -63,7 +63,7 @@ private:
   Mutex screenAccess;
 
   RefreshScreen* refreshScreen;
-  static void bitmap(Terminal* terminal);
+  static void bitmap(OutputInterface* terminal);
 };
 
 #endif

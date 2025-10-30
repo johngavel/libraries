@@ -184,7 +184,6 @@ bool ServerModule::processGet(char* action) {
   bool foundPage = false;
   bool closeClient = true;
   HTMLBuilder html;
-
   if (action[0] == 0) {
     clientWrite(client, rootPage->getHtml(&html));
     foundPage = true;
@@ -198,6 +197,7 @@ bool ServerModule::processGet(char* action) {
           closeClient = false;
         }
       }
+
       if (foundPage == false) {
         for (int i = 0; i < currentDigitalFileCount; i++) {
           if (strncmp(digitalFile[i].filename, action, strlen(digitalFile[i].filename)) == 0) {
@@ -489,7 +489,7 @@ void ServerModule::executeTask() {
   if (sseclient != nullptr) sseclient->executeTask();
 }
 
-void ServerModule::pageList(Terminal* terminal) {
+void ServerModule::pageList(OutputInterface* terminal) {
   terminal->println(INFO, "Server IP Address: " + NIC->getIPAddress());
   if (rootPage)
     terminal->println(PROMPT, "Root Page is set: " + String(rootPage->getPageName()));

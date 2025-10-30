@@ -40,8 +40,8 @@ private:
   // Only used for initial configuration
   String ssid;
   String password;
-  static void wifiStat(Terminal* terminal);
-  static void wifiScan(Terminal* terminal);
+  static void wifiStat(OutputInterface* terminal);
+  static void wifiScan(OutputInterface* terminal);
 };
 
 class WirelessClientManager {

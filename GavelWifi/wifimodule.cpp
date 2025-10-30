@@ -136,7 +136,7 @@ bool WifiModule::linkStatus() {
   return status;
 }
 
-void WifiModule::wifiStat(Terminal* terminal) {
+void WifiModule::wifiStat(OutputInterface* terminal) {
   IPAddress ipAddress = WIFI->getIPAddress();
   bool linked = WIFI->linkStatus();
   terminal->println(INFO, "Network: " + WIFI->getSSID() + ((linked) ? " Connected" : " Unconnected"));
@@ -170,7 +170,7 @@ static const char* encToString(uint8_t enc) {
   return "UNKN";
 }
 
-void WifiModule::wifiScan(Terminal* terminal) {
+void WifiModule::wifiScan(OutputInterface* terminal) {
   terminal->println(INFO, "Begining Scan.........");
   auto cnt = WiFi.scanNetworks();
   if (!cnt) {

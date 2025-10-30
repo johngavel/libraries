@@ -20,7 +20,7 @@ void Scan::setup() {
   CONSOLE->println(PASSED, "I2C Scanner Complete");
 }
 
-void Scan::scani2c(Terminal* terminal) {
+void Scan::scani2c(OutputInterface* terminal) {
   byte error, address;
   int nDevices;
   String devicesFound[MAX_SCAN_DEVICES];

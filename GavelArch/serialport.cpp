@@ -5,8 +5,8 @@
 #include "stringutils.h"
 #include "watchdog.h"
 
-void rebootPico(Terminal* terminal);
-void uploadPico(Terminal* terminal);
+void rebootPico(OutputInterface* terminal);
+void uploadPico(OutputInterface* terminal);
 
 SerialPort* SerialPort::serialPort = nullptr;
 
@@ -22,8 +22,8 @@ void SerialPort::serialSetup() {
     ProgramInfo::hardwareserial.serialUART->begin(115200);
     terminal = new Terminal(ProgramInfo::hardwareserial.serialUART);
     terminal->setup();
-    terminal->useColor(true);
-    terminal->setPrompt(String(ProgramInfo::ShortName) + ":\\>");
+    terminal->setColor(true);
+    terminal->setPromptString(String(ProgramInfo::ShortName) + ":\\>");
     terminal->setBannerFunction(banner);
     Serial.begin();
     terminalUSB = new Terminal(&Serial);
@@ -33,8 +33,8 @@ void SerialPort::serialSetup() {
     Serial.begin();
     terminal = new Terminal(&Serial);
     terminal->setup();
-    terminal->useColor(true);
-    terminal->setPrompt(String(ProgramInfo::ShortName) + ":\\>");
+    terminal->setColor(true);
+    terminal->setPromptString(String(ProgramInfo::ShortName) + ":\\>");
     terminal->setBannerFunction(banner);
     terminalUSB = nullptr;
   }
@@ -56,13 +56,13 @@ void SerialPort::executeTask() {
   if (terminalUSB != nullptr) terminalUSB->loop();
 }
 
-void rebootPico(Terminal* terminal) {
+void rebootPico(OutputInterface* terminal) {
   terminal->println(WARNING, "Rebooting....");
   delay(100);
   WATCHDOG->reboot();
 }
 
-void uploadPico(Terminal* terminal) {
+void uploadPico(OutputInterface* terminal) {
   terminal->println(WARNING, "Rebooting in USB Mode....");
   delay(100);
   rp2040.rebootToBootloader();
@@ -70,7 +70,7 @@ void uploadPico(Terminal* terminal) {
 
 extern const char* stringHardware(HW_TYPES hw_type);
 
-void banner(Terminal* terminal) {
+void banner(OutputInterface* terminal) {
   terminal->println();
   terminal->println(PROMPT, String(ProgramInfo::AppName) + " Version: " + String(ProgramInfo::MajorVersion) + String(".") + String(ProgramInfo::MinorVersion) +
                                 String(".") + String(ProgramInfo::BuildVersion));

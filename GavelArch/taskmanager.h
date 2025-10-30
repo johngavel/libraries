@@ -33,7 +33,7 @@ public:
   static bool initialized() { return taskManager != nullptr; };
   void add(Task* task);
   void setup();
-  void system(Terminal* terminal);
+  void system(OutputInterface* terminal);
 
 private:
   TaskManager();
@@ -41,7 +41,7 @@ private:
 
   ClassicQueue queue;
 
-  static void systemCmd(Terminal* terminal);
+  static void systemCmd(OutputInterface* terminal);
 };
 
 #endif

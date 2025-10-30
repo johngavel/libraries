@@ -15,7 +15,7 @@ public:
 private:
   Scan(){};
   static Scan* scanner;
-  static void scani2c(Terminal* terminal);
+  static void scani2c(OutputInterface* terminal);
 };
 
 #endif
