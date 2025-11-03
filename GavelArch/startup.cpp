@@ -27,7 +27,7 @@ void setup0Complete() {
   startupMutex.give();
   startupMutex1.take();
   MANAGER->setup();
-  addStandardTerminalCommands();
+  addStandardTerminalCommands(TERM_CMD);
   startupMutex1.give();
 
   CONSOLE->println(PASSED, ProgramInfo::AppName + String(" - Startup Complete"));
