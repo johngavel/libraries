@@ -11,7 +11,8 @@ typedef enum { HW_UNKNOWN, HW_RP2040_ZERO, HW_RASPBERRYPI_PICO, HW_RASPBERRYPI_P
 
 class HardwareSerialPort {
 public:
-  HardwareSerialPort(SerialUART* __serial, unsigned long __pintx, unsigned long __pinrx) : serialUART(__serial), pintx(__pintx), pinrx(__pinrx){};
+  HardwareSerialPort(SerialUART* __serial, unsigned long __pintx, unsigned long __pinrx)
+      : serialUART(__serial), pintx(__pintx), pinrx(__pinrx){};
   HardwareSerialPort() : serialUART(nullptr), pintx(-1), pinrx(-1){};
   SerialUART* serialUART;
   unsigned long pintx;
@@ -21,7 +22,8 @@ public:
 #define WIRE ((TwoWire*) ProgramInfo::hardwarewire.wire)
 class HardwareWire {
 public:
-  HardwareWire(TwoWire* __wire, unsigned long __pinSDA, unsigned long __pinSCL) : wire(__wire), pinSDA(__pinSDA), pinSCL(__pinSCL){};
+  HardwareWire(TwoWire* __wire, unsigned long __pinSDA, unsigned long __pinSCL)
+      : wire(__wire), pinSDA(__pinSDA), pinSCL(__pinSCL){};
   TwoWire* wire;
   unsigned long pinSDA;
   unsigned long pinSCL;

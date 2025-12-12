@@ -75,7 +75,9 @@ void TaskManager::system(OutputInterface* terminal) {
     coreUtil[core] += timeTakenPerSec;
     table.printData(String(core), name, timeString, highString, lowString, rateString, String(percentage, 1) + "%");
   }
-  for (int i = 0; i < CPU_CORES; i++) { terminal->println(HELP, "CPU Core " + String(i) + ": ", String(coreUtil[i] / 10000.0, 1) + " %"); }
+  for (int i = 0; i < CPU_CORES; i++) {
+    terminal->println(HELP, "CPU Core " + String(i) + ": ", String(coreUtil[i] / 10000.0, 1) + " %");
+  }
   table.printDone("System Complete");
   terminal->prompt();
 }

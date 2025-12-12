@@ -62,13 +62,14 @@ void sendPageBegin(HTMLBuilder* html, bool autoRefresh, int seconds) {
 }
 
 void sendPageEnd(HTMLBuilder* html) {
-  String versionString =
-      "Ver. " + String(ProgramInfo::MajorVersion) + String(".") + String(ProgramInfo::MinorVersion) + String(".") + String(ProgramInfo::BuildVersion);
+  String versionString = "Ver. " + String(ProgramInfo::MajorVersion) + String(".") + String(ProgramInfo::MinorVersion) +
+                         String(".") + String(ProgramInfo::BuildVersion);
 
   html->hrTag()->closeTag()->println()->openTag("footer")->brTag();
   html->println(ProgramInfo::AppName);
   html->brTag()->println(versionString);
-  html->brTag()->println("Build Date: " + String(ProgramInfo::compileDate) + " Time: " + String(ProgramInfo::compileTime));
+  html->brTag()->println("Build Date: " + String(ProgramInfo::compileDate) +
+                         " Time: " + String(ProgramInfo::compileTime));
   html->brTag()->println("Author: " + String(ProgramInfo::AuthorName))->brTag()->brTag();
   html->closeTag()->closeTag();
   html->println();
@@ -118,7 +119,15 @@ HTMLBuilder* CodePage::getHtml(HTMLBuilder* html) {
   sendPageBegin(html);
   html->openTag("h2")->print("Source Code")->closeTag()->println();
   html->openTag("table", "border=\"1\" class=\"center\"")->println();
-  html->openTrTag()->tdTag(name)->openTdTag()->openTag("a", "href=\"" + location + "\"")->print(location)->closeTag()->closeTag()->closeTag()->println();
+  html->openTrTag()
+      ->tdTag(name)
+      ->openTdTag()
+      ->openTag("a", "href=\"" + location + "\"")
+      ->print(location)
+      ->closeTag()
+      ->closeTag()
+      ->closeTag()
+      ->println();
   html->openTrTag()
       ->tdTag("Libraries")
       ->openTdTag()
@@ -203,7 +212,8 @@ HTMLBuilder* ExportPage::getHtml(HTMLBuilder* html) {
   EEPROM->getData()->exportMem();
   sendPageBegin(html);
   html->openTag("h2")->print("Configuration Export")->closeTag()->println();
-  html->openTag("a", "href=\"/" + MEMORY_CONFIG_FILE + "\"")->openTag("button", "type=\"button\" class=\"button4 button\"");
+  html->openTag("a", "href=\"/" + MEMORY_CONFIG_FILE + "\"")
+      ->openTag("button", "type=\"button\" class=\"button4 button\"");
   html->print("File")->closeTag()->closeTag()->brTag()->println();
   html->openTag("a", "href=\"/\"")->openTag("button", "type=\"button\" class=\"button2 button\"");
   html->print("Cancel")->closeTag()->closeTag()->brTag()->println();

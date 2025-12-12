@@ -140,17 +140,17 @@ void WifiModule::wifiStat(OutputInterface* terminal) {
   IPAddress ipAddress = WIFI->getIPAddress();
   bool linked = WIFI->linkStatus();
   terminal->println(INFO, "Network: " + WIFI->getSSID() + ((linked) ? " Connected" : " Unconnected"));
-  terminal->println(INFO, "  IP Address:  " + String(ipAddress[0]) + String(".") + String(ipAddress[1]) + String(".") + String(ipAddress[2]) + String(".") +
-                              String(ipAddress[3]));
+  terminal->println(INFO, "  IP Address:  " + String(ipAddress[0]) + String(".") + String(ipAddress[1]) + String(".") +
+                              String(ipAddress[2]) + String(".") + String(ipAddress[3]));
   ipAddress = WIFI->getSubnetMask();
-  terminal->println(INFO, "  Subnet Mask: " + String(ipAddress[0]) + String(".") + String(ipAddress[1]) + String(".") + String(ipAddress[2]) + String(".") +
-                              String(ipAddress[3]));
+  terminal->println(INFO, "  Subnet Mask: " + String(ipAddress[0]) + String(".") + String(ipAddress[1]) + String(".") +
+                              String(ipAddress[2]) + String(".") + String(ipAddress[3]));
   ipAddress = WIFI->getGateway();
-  terminal->println(INFO, "  Gateway:     " + String(ipAddress[0]) + String(".") + String(ipAddress[1]) + String(".") + String(ipAddress[2]) + String(".") +
-                              String(ipAddress[3]));
+  terminal->println(INFO, "  Gateway:     " + String(ipAddress[0]) + String(".") + String(ipAddress[1]) + String(".") +
+                              String(ipAddress[2]) + String(".") + String(ipAddress[3]));
   ipAddress = WIFI->getDNS();
-  terminal->println(INFO, "  DNS Server:  " + String(ipAddress[0]) + String(".") + String(ipAddress[1]) + String(".") + String(ipAddress[2]) + String(".") +
-                              String(ipAddress[3]));
+  terminal->println(INFO, "  DNS Server:  " + String(ipAddress[0]) + String(".") + String(ipAddress[1]) + String(".") +
+                              String(ipAddress[2]) + String(".") + String(ipAddress[3]));
   terminal->prompt();
 }
 
@@ -184,7 +184,8 @@ void WifiModule::wifiScan(OutputInterface* terminal) {
     for (auto i = 0; i < cnt; i++) {
       uint8_t bssid[6];
       WiFi.BSSID(i, bssid);
-      sprintf(line, "%32s %5s %17s %2d %4ld", WiFi.SSID(i), encToString(WiFi.encryptionType(i)), macToString(bssid), WiFi.channel(i), WiFi.RSSI(i));
+      sprintf(line, "%32s %5s %17s %2d %4ld", WiFi.SSID(i), encToString(WiFi.encryptionType(i)), macToString(bssid),
+              WiFi.channel(i), WiFi.RSSI(i));
       terminal->println(INFO, line);
     }
   }

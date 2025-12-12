@@ -41,15 +41,17 @@ public:
     refreshScreen = __refreshScreen;
     refreshScreen->refresh = __refresh;
   };
-  void setScreen(String line1 = "", String line2 = "", String line3 = "", String line4 = "", String line5 = "", String line6 = "", String line7 = "",
-                 String line8 = "");
+  void setScreen(String line1 = "", String line2 = "", String line3 = "", String line4 = "", String line5 = "",
+                 String line6 = "", String line7 = "", String line8 = "");
   void setScreen(BITMAP bitmap, String caption);
   void setScreen(unsigned char* bitmap, String caption, unsigned long width, unsigned long height);
   Adafruit_SSD1306* getDisplay() { return &display; };
   unsigned char* getBitmap(BITMAP bitmap);
 
 private:
-  Screen() : Task("Screen"), display(Adafruit_SSD1306(SCREEN_WIDTH, SCREEN_HEIGHT, WIRE, OLED_RESET)) { refreshScreen = nullptr; };
+  Screen() : Task("Screen"), display(Adafruit_SSD1306(SCREEN_WIDTH, SCREEN_HEIGHT, WIRE, OLED_RESET)) {
+    refreshScreen = nullptr;
+  };
   static Screen* screen;
   Adafruit_SSD1306 display;
   void beginScreen();

@@ -25,7 +25,8 @@ public:
   void screen() {
     char* line[8];
     for (unsigned int i = 0; i < 8; i++) { line[i] = (char*) queue.get(i); }
-    SCREEN->setScreen(String(line[0]), String(line[1]), String(line[2]), String(line[3]), String(line[4]), String(line[5]), String(line[6]), String(line[7]));
+    SCREEN->setScreen(String(line[0]), String(line[1]), String(line[2]), String(line[3]), String(line[4]),
+                      String(line[5]), String(line[6]), String(line[7]));
   };
 
 private:

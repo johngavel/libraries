@@ -40,7 +40,8 @@ void LicenseManager::addLicense(LibraryInfo libraryInfo, int index) {
   if (libraryInfo.license_buffer == nullptr) {
     String errorLine = String(libraryInfo.name) + " - Invalid Digital License File Added.";
     CONSOLE->println(WARNING, errorLine.c_str());
-    addLicense(String(libraryInfo.name), String(libraryInfo.version), String(libraryInfo.license_file), LIBRARY_INFO_INDEX_MISSING);
+    addLicense(String(libraryInfo.name), String(libraryInfo.version), String(libraryInfo.license_file),
+               LIBRARY_INFO_INDEX_MISSING);
   } else {
     addLicense(String(libraryInfo.name), String(libraryInfo.version), String(libraryInfo.license_file), index);
   }
@@ -128,11 +129,13 @@ void LicenseManager::printLicense(OutputInterface* terminal) {
 
         for (unsigned long i = 0; i < loops; i++) {
           memset(fileBuffer, 0, PRINT_BUFFER_SIZE + 1);
-          memcpy(fileBuffer, &libraries[oldLicense.libraryInfoIndex].license_buffer[i * PRINT_BUFFER_SIZE], PRINT_BUFFER_SIZE);
+          memcpy(fileBuffer, &libraries[oldLicense.libraryInfoIndex].license_buffer[i * PRINT_BUFFER_SIZE],
+                 PRINT_BUFFER_SIZE);
           terminal->print(INFO, String(fileBuffer));
         }
         memset(fileBuffer, 0, PRINT_BUFFER_SIZE + 1);
-        memcpy(fileBuffer, &libraries[oldLicense.libraryInfoIndex].license_buffer[loops * PRINT_BUFFER_SIZE], remainder);
+        memcpy(fileBuffer, &libraries[oldLicense.libraryInfoIndex].license_buffer[loops * PRINT_BUFFER_SIZE],
+               remainder);
         terminal->print(INFO, String(fileBuffer));
         success = true;
       } else if ((FILES_AVAILABLE) && (FILES->catFile("/license/" + String(oldLicense.link), terminal))) {

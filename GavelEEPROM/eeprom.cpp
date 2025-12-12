@@ -57,8 +57,8 @@ void EEpromMemory::setupTask() {
     breakSeal();
   }
   if (!getTimerRun()) CONSOLE->println(ERROR, "EEPROM Not Connected");
-  String memoryString =
-      "Memory Complete: PRG Num: " + String(appInfo.ProgramNumber) + " PRG Ver: " + String(appInfo.MajorVersion) + "." + String(appInfo.MinorVersion);
+  String memoryString = "Memory Complete: PRG Num: " + String(appInfo.ProgramNumber) +
+                        " PRG Ver: " + String(appInfo.MajorVersion) + "." + String(appInfo.MinorVersion);
   if (getData())
     getData()->setup();
   else
@@ -112,7 +112,9 @@ void EEpromMemory::readEEPROM() {
     EEPROM_TAKE;
     for (index = 0; index < sizeof(PrivateAppInfo); index++) { appInfoData[index] = readEEPROMbyte(index); }
     if (getData()) {
-      for (index = 0; index < data->getLength(); index++) { data->getData()[index] = readEEPROMbyte(index + sizeof(PrivateAppInfo)); }
+      for (index = 0; index < data->getLength(); index++) {
+        data->getData()[index] = readEEPROMbyte(index + sizeof(PrivateAppInfo));
+      }
     }
     EEPROM_GIVE;
     COMM_GIVE;
@@ -127,7 +129,9 @@ void EEpromMemory::writeEEPROM() {
     EEPROM_TAKE;
     for (index = 0; index < sizeof(PrivateAppInfo); index++) { writeEEPROMbyte(index, appInfoData[index]); }
     if (getData()) {
-      for (index = 0; index < data->getLength(); index++) { writeEEPROMbyte(index + sizeof(PrivateAppInfo), data->getData()[index]); }
+      for (index = 0; index < data->getLength(); index++) {
+        writeEEPROMbyte(index + sizeof(PrivateAppInfo), data->getData()[index]);
+      }
     }
     EEPROM_GIVE;
     COMM_GIVE;
@@ -142,10 +146,12 @@ void EEpromMemory::wipe(OutputInterface* terminal) {
 }
 
 void EEpromMemory::mem(OutputInterface* terminal) {
-  terminal->println(PROMPT, String(ProgramInfo::AppName) + " Version: " + String(ProgramInfo::MajorVersion) + String(".") + String(ProgramInfo::MinorVersion) +
-                                String(".") + String(ProgramInfo::BuildVersion));
+  terminal->println(PROMPT, String(ProgramInfo::AppName) + " Version: " + String(ProgramInfo::MajorVersion) +
+                                String(".") + String(ProgramInfo::MinorVersion) + String(".") +
+                                String(ProgramInfo::BuildVersion));
   terminal->println(INFO, "Program: " + String(ProgramInfo::ProgramNumber));
-  terminal->println(INFO, "EEPROM Size: " + String(EEPROM->getLength()) + "/" + String(EEPROM->getMemorySize() / 8) + " bytes.");
+  terminal->println(INFO, "EEPROM Size: " + String(EEPROM->getLength()) + "/" + String(EEPROM->getMemorySize() / 8) +
+                              " bytes.");
   if (EEPROM->getData())
     EEPROM->getData()->printData(terminal);
   else

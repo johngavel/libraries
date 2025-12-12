@@ -33,7 +33,8 @@ void Screen::setupTask() {
   // Clear the buffer
   display.clearDisplay();
   COMM_GIVE;
-  setScreen(JAXSON, String(ProgramInfo::AppName) + " v" + String(ProgramInfo::MajorVersion) + String(".") + String(ProgramInfo::MinorVersion));
+  setScreen(JAXSON, String(ProgramInfo::AppName) + " v" + String(ProgramInfo::MajorVersion) + String(".") +
+                        String(ProgramInfo::MinorVersion));
   CONSOLE->println((getTimerRun()) ? PASSED : FAILED, "Screen Complete");
 }
 
@@ -111,7 +112,8 @@ void Screen::setScreen(BITMAP bitmap, String caption) {
   screenAccess.give();
 }
 
-void Screen::setScreen(String line1, String line2, String line3, String line4, String line5, String line6, String line7, String line8) {
+void Screen::setScreen(String line1, String line2, String line3, String line4, String line5, String line6, String line7,
+                       String line8) {
   screenAccess.take();
   beginScreen();
   printLnScreen(line1);

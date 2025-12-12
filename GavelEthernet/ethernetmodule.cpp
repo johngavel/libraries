@@ -71,7 +71,8 @@ bool EthernetModule::setupW5500() {
     COMM_GIVE;
     ipChanged = true;
   } else {
-    if ((macAddress != nullptr) && (ipAddress != nullptr) && (dnsAddress != nullptr) && (gatewayAddress != nullptr) && (subnetMask != nullptr)) {
+    if ((macAddress != nullptr) && (ipAddress != nullptr) && (dnsAddress != nullptr) && (gatewayAddress != nullptr) &&
+        (subnetMask != nullptr)) {
       COMM_TAKE;
       Ethernet.begin(macAddress, ipAddress, dnsAddress, gatewayAddress, subnetMask);
       COMM_GIVE;
@@ -94,7 +95,8 @@ bool EthernetModule::setupW5500() {
   return status;
 }
 
-void EthernetModule::configure(byte* __macAddress, bool __isDHCP, byte* __ipAddress, byte* __dnsAddress, byte* __subnetMask, byte* __gatewayAddress) {
+void EthernetModule::configure(byte* __macAddress, bool __isDHCP, byte* __ipAddress, byte* __dnsAddress,
+                               byte* __subnetMask, byte* __gatewayAddress) {
   isConfigured = true;
   macAddress = __macAddress;
   isDHCP = __isDHCP;
@@ -183,16 +185,16 @@ void EthernetModule::ipStat(OutputInterface* terminal) {
   terminal->println(INFO, String(ETHERNET->macAddress[5], HEX));
   terminal->println(INFO, "IP Address is " + String((ETHERNET->isDHCP) ? "DHCP" : "Static"));
   terminal->println(INFO, String((linked) ? "Connected" : "Unconnected"));
-  terminal->println(INFO, "  IP Address:  " + String(ipAddress[0]) + String(".") + String(ipAddress[1]) + String(".") + String(ipAddress[2]) + String(".") +
-                              String(ipAddress[3]));
+  terminal->println(INFO, "  IP Address:  " + String(ipAddress[0]) + String(".") + String(ipAddress[1]) + String(".") +
+                              String(ipAddress[2]) + String(".") + String(ipAddress[3]));
   ipAddress = ETHERNET->getSubnetMask();
-  terminal->println(INFO, "  Subnet Mask: " + String(ipAddress[0]) + String(".") + String(ipAddress[1]) + String(".") + String(ipAddress[2]) + String(".") +
-                              String(ipAddress[3]));
+  terminal->println(INFO, "  Subnet Mask: " + String(ipAddress[0]) + String(".") + String(ipAddress[1]) + String(".") +
+                              String(ipAddress[2]) + String(".") + String(ipAddress[3]));
   ipAddress = ETHERNET->getGateway();
-  terminal->println(INFO, "  Gateway:     " + String(ipAddress[0]) + String(".") + String(ipAddress[1]) + String(".") + String(ipAddress[2]) + String(".") +
-                              String(ipAddress[3]));
+  terminal->println(INFO, "  Gateway:     " + String(ipAddress[0]) + String(".") + String(ipAddress[1]) + String(".") +
+                              String(ipAddress[2]) + String(".") + String(ipAddress[3]));
   ipAddress = ETHERNET->getDNS();
-  terminal->println(INFO, "  DNS Server:  " + String(ipAddress[0]) + String(".") + String(ipAddress[1]) + String(".") + String(ipAddress[2]) + String(".") +
-                              String(ipAddress[3]));
+  terminal->println(INFO, "  DNS Server:  " + String(ipAddress[0]) + String(".") + String(ipAddress[1]) + String(".") +
+                              String(ipAddress[2]) + String(".") + String(ipAddress[3]));
   terminal->prompt();
 }

@@ -133,7 +133,8 @@ bool GPIO_DESCRIPTION::setup() {
 #endif
   }
   if (!validConfiguration) {
-    CONSOLE->println(ERROR, "Invalid Setup and Configuration of I/O " + String(stringLocation(location)) + " Pin " + String(pinNumber));
+    CONSOLE->println(ERROR, "Invalid Setup and Configuration of I/O " + String(stringLocation(location)) + " Pin " +
+                                String(pinNumber));
   }
   return validConfiguration;
 }

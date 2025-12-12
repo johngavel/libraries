@@ -67,7 +67,9 @@ public:
   void setUploadPage(FilePage* page);
   void setUpgradePage(FilePage* page);
   void setErrorPage(BasicPage* page);
-  void setFavicon(const unsigned char* __favicon, unsigned int __faviconLength) { setDigitalFile("favicon.ico", __favicon, __faviconLength); };
+  void setFavicon(const unsigned char* __favicon, unsigned int __faviconLength) {
+    setDigitalFile("favicon.ico", __favicon, __faviconLength);
+  };
   void setDigitalFile(const char* __filename, const unsigned char* __fileBuffer, unsigned int __fileLength);
   DigitalFile* getDigitalFile(const char* __filename);
   bool verifyPage(String name);

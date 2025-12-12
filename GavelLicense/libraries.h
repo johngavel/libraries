@@ -62,44 +62,49 @@ typedef struct {
   const char* license_name;
 } LibraryInfo;
 
-#define NULL_LIBRARY_ENTRY(s)                                                                                                                                  \
+#define NULL_LIBRARY_ENTRY(s)                                                                                          \
   { s, "0.0", "null", nullptr, 0, }
 
 static const LibraryInfo libraries[] = {
 #ifdef ADAFRUITBUSIOLICENSE_H
-    {"Adafruit BusIO", "1.17.4", "Adafruit_BusIO_LICENSE", AdafruitBusIOLICENSE, AdafruitBusIOLICENSE_len, AdafruitBusIOLICENSE_string},
+    {"Adafruit BusIO", "1.17.4", "Adafruit_BusIO_LICENSE", AdafruitBusIOLICENSE, AdafruitBusIOLICENSE_len,
+     AdafruitBusIOLICENSE_string},
 #else
     NULL_LIBRARY_ENTRY("Adafruit BusIO"),
 #endif
 #ifdef ADAFRUITGFXLIBRARYLICENSE_H
-    {"Adafruit GFX Library", "1.12.4", "Adafruit_GFX_Library_license.txt", AdafruitGFXLibrarylicense, AdafruitGFXLibrarylicense_len,
-     AdafruitGFXLibrarylicense_string},
+    {"Adafruit GFX Library", "1.12.4", "Adafruit_GFX_Library_license.txt", AdafruitGFXLibrarylicense,
+     AdafruitGFXLibrarylicense_len, AdafruitGFXLibrarylicense_string},
 #else
     NULL_LIBRARY_ENTRY("Adafruit GFX Library"),
 #endif
 #ifdef ADAFRUITMCPLICENSE_H
-    {"Adafruit MCP4725", "2.0.2", "Adafruit_MCP4725_license.txt", AdafruitMCPlicense, AdafruitMCPlicense_len, AdafruitMCPlicense_string},
+    {"Adafruit MCP4725", "2.0.2", "Adafruit_MCP4725_license.txt", AdafruitMCPlicense, AdafruitMCPlicense_len,
+     AdafruitMCPlicense_string},
 #else
     NULL_LIBRARY_ENTRY("Adafruit MCP4725"),
 #endif
 #ifdef ADAFRUITNEOPIXELCOPYING_H
-    {"Adafruit NeoPixel", "1.15.2", "Adafruit_NeoPixel_COPYING", AdafruitNeoPixelCOPYING, AdafruitNeoPixelCOPYING_len, AdafruitNeoPixelCOPYING_string},
+    {"Adafruit NeoPixel", "1.15.2", "Adafruit_NeoPixel_COPYING", AdafruitNeoPixelCOPYING, AdafruitNeoPixelCOPYING_len,
+     AdafruitNeoPixelCOPYING_string},
 #else
     NULL_LIBRARY_ENTRY("Adafruit NeoPixel"),
 #endif
 #ifdef ADAFRUITSSDLICENSE_H
-    {"Adafruit SSD1306", "2.5.16", "Adafruit_SSD1306_license.txt", AdafruitSSDlicense, AdafruitSSDlicense_len, AdafruitSSDlicense_string},
+    {"Adafruit SSD1306", "2.5.16", "Adafruit_SSD1306_license.txt", AdafruitSSDlicense, AdafruitSSDlicense_len,
+     AdafruitSSDlicense_string},
 #else
     NULL_LIBRARY_ENTRY("Adafruit SSD1306"),
 #endif
 #ifdef ADAFRUITUNIFIEDSENSORLICENSE_H
-    {"Adafruit Unified Sensor", "1.1.15", "Adafruit_Unified_Sensor_LICENSE.txt", AdafruitUnifiedSensorLICENSE, AdafruitUnifiedSensorLICENSE_len,
-     AdafruitUnifiedSensorLICENSE_string},
+    {"Adafruit Unified Sensor", "1.1.15", "Adafruit_Unified_Sensor_LICENSE.txt", AdafruitUnifiedSensorLICENSE,
+     AdafruitUnifiedSensorLICENSE_len, AdafruitUnifiedSensorLICENSE_string},
 #else
     NULL_LIBRARY_ENTRY("Adafruit Unified Sensor"),
 #endif
 #ifdef DHTSENSORLIBRARYLICENSE_H
-    {"DHT sensor library", "1.4.6", "DHT_sensor_library_license.txt", DHTsensorlibrarylicense, DHTsensorlibrarylicense_len, DHTsensorlibrarylicense_string},
+    {"DHT sensor library", "1.4.6", "DHT_sensor_library_license.txt", DHTsensorlibrarylicense,
+     DHTsensorlibrarylicense_len, DHTsensorlibrarylicense_string},
 #else
     NULL_LIBRARY_ENTRY("DHT sensor library"),
 #endif

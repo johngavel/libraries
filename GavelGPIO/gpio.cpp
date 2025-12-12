@@ -108,7 +108,8 @@ void GPIOManager::configureExpander(unsigned long index, int address) {
 }
 #endif
 
-void GPIOManager::addPinConfiguration(int index, int pinNumber, GPIO_TYPE type, GPIO_LOCATION location, GPIO_LED_TYPE led_type, const char* description) {
+void GPIOManager::addPinConfiguration(int index, int pinNumber, GPIO_TYPE type, GPIO_LOCATION location,
+                                      GPIO_LED_TYPE led_type, const char* description) {
   GPIO_DESCRIPTION* entry = &table[currentConfiguredPins];
   entry->index = index;
   entry->pinNumber = pinNumber;
@@ -162,7 +163,8 @@ void GPIOManager::configurePinReserve(GPIO_LOCATION location, int pinNumber, con
     addPinConfiguration(NOT_ACCESSIBLE, pinNumber, GPIO_RESERVED, location, GPIO_NOT_APPLICABLE, description);
   } else {
     if (!isShared) {
-      CONSOLE->println(ERROR, "GPIO Invalid Reserve Configuration " + String(stringLocation(location)) + ":" + String(pinNumber));
+      CONSOLE->println(ERROR, "GPIO Invalid Reserve Configuration " + String(stringLocation(location)) + ":" +
+                                  String(pinNumber));
       invalidOverallConfiguration = true;
     }
   }
@@ -170,14 +172,17 @@ void GPIOManager::configurePinReserve(GPIO_LOCATION location, int pinNumber, con
 
 void GPIOManager::configurePinUndefined(int pinNumber) {
   if (validConfiguration(GPIO_INTERNAL, pinNumber)) {
-    addPinConfiguration(NOT_ACCESSIBLE, pinNumber, GPIO_UNDEFINED, GPIO_INTERNAL, GPIO_NOT_APPLICABLE, "Not Accessible");
+    addPinConfiguration(NOT_ACCESSIBLE, pinNumber, GPIO_UNDEFINED, GPIO_INTERNAL, GPIO_NOT_APPLICABLE,
+                        "Not Accessible");
   } else {
-    CONSOLE->println(ERROR, "GPIO Invalid Undefined Configuration " + String(stringLocation(GPIO_INTERNAL)) + ":" + String(pinNumber));
+    CONSOLE->println(ERROR, "GPIO Invalid Undefined Configuration " + String(stringLocation(GPIO_INTERNAL)) + ":" +
+                                String(pinNumber));
     invalidOverallConfiguration = true;
   }
 }
 
-void GPIOManager::configurePinIO(GPIO_TYPE type, GPIO_LOCATION location, int pinNumber, int index, const char* description) {
+void GPIOManager::configurePinIO(GPIO_TYPE type, GPIO_LOCATION location, int pinNumber, int index,
+                                 const char* description) {
   bool validType = false;
   if (location == GPIO_INTERNAL) {
     validType = type == GPIO_INPUT;
@@ -196,16 +201,19 @@ void GPIOManager::configurePinIO(GPIO_TYPE type, GPIO_LOCATION location, int pin
   if (validType && (validConfiguration(location, pinNumber, index, type))) {
     addPinConfiguration(index, pinNumber, type, location, GPIO_NOT_APPLICABLE, description);
   } else {
-    CONSOLE->println(ERROR, "GPIO Invalid I/O Configuration " + String(stringLocation(location)) + ":" + String(pinNumber));
+    CONSOLE->println(ERROR,
+                     "GPIO Invalid I/O Configuration " + String(stringLocation(location)) + ":" + String(pinNumber));
     invalidOverallConfiguration = true;
   }
 }
 
-void GPIOManager::configurePinLED(GPIO_LOCATION location, int pinNumber, GPIO_LED_TYPE type, int index, const char* description) {
+void GPIOManager::configurePinLED(GPIO_LOCATION location, int pinNumber, GPIO_LED_TYPE type, int index,
+                                  const char* description) {
   if ((type != GPIO_NOT_APPLICABLE) && (validConfiguration(location, pinNumber, index, GPIO_LED))) {
     addPinConfiguration(index, pinNumber, GPIO_LED, location, type, description);
   } else {
-    CONSOLE->println(ERROR, "GPIO Invalid LED Configuration " + String(stringLocation(location)) + ":" + String(pinNumber));
+    CONSOLE->println(ERROR,
+                     "GPIO Invalid LED Configuration " + String(stringLocation(location)) + ":" + String(pinNumber));
     invalidOverallConfiguration = true;
   }
 }
@@ -220,10 +228,18 @@ GPIO_DESCRIPTION* GPIOManager::getPin(GPIO_TYPE __type, int __index) {
 
 void GPIOManager::setupTask() {
   TERM_CMD->addCmd("gpio", "[v|all]", "Prints the configured GPIO Table", GPIOManager::printTable);
-  if (gpioTypeConfigured[GPIO_TONE] == true) { TERM_CMD->addCmd("tone", "[n] [Hz]", "Sets a Square Wave in Hz on Tone Pin n ", GPIOManager::toneCmd); }
-  if (gpioTypeConfigured[GPIO_PWM] == true) { TERM_CMD->addCmd("pwm", "[n] [f] [%]", "Sets the frequency and % Duty Cycyle PWM Pin n ", GPIOManager::pwmCmd); }
-  if (gpioTypeConfigured[GPIO_PULSE] == true) { TERM_CMD->addCmd("pulse", "[n]", "Command a Output n to pulse", GPIOManager::pulseCmd); }
-  if (gpioTypeConfigured[GPIO_INPUT] == true) { TERM_CMD->addCmd("stat", "[n]", "Status of Input n", GPIOManager::statusCmd); }
+  if (gpioTypeConfigured[GPIO_TONE] == true) {
+    TERM_CMD->addCmd("tone", "[n] [Hz]", "Sets a Square Wave in Hz on Tone Pin n ", GPIOManager::toneCmd);
+  }
+  if (gpioTypeConfigured[GPIO_PWM] == true) {
+    TERM_CMD->addCmd("pwm", "[n] [f] [%]", "Sets the frequency and % Duty Cycyle PWM Pin n ", GPIOManager::pwmCmd);
+  }
+  if (gpioTypeConfigured[GPIO_PULSE] == true) {
+    TERM_CMD->addCmd("pulse", "[n]", "Command a Output n to pulse", GPIOManager::pulseCmd);
+  }
+  if (gpioTypeConfigured[GPIO_INPUT] == true) {
+    TERM_CMD->addCmd("stat", "[n]", "Status of Input n", GPIOManager::statusCmd);
+  }
 
   // Configure all the pins
   GPIO_DESCRIPTION* gpio = nullptr;
@@ -290,7 +306,9 @@ int comp(const void* __lhs, const void* __rhs) {
   int rhs = *((int*) __rhs);
   int c = 1;
   if (GPIO->table[lhs].location < GPIO->table[rhs].location) c = -1;
-  if ((GPIO->table[lhs].location == GPIO->table[rhs].location) && (GPIO->table[lhs].pinNumber < GPIO->table[rhs].pinNumber)) c = -1;
+  if ((GPIO->table[lhs].location == GPIO->table[rhs].location) &&
+      (GPIO->table[lhs].pinNumber < GPIO->table[rhs].pinNumber))
+    c = -1;
   return c;
 }
 
@@ -320,8 +338,8 @@ void GPIOManager::printTable(OutputInterface* terminal) {
 #ifdef TCA9555_GPIO
   for (int i = 0; i < 2; i++) {
     if (GPIO->expander[i].configured)
-      terminal->println(INFO,
-                        "Expander " + String(i + 1) + " Address: " + String(GPIO->expander[i].address) + ((GPIO->expander[i].valid) ? " Valid" : " Invalid"));
+      terminal->println(INFO, "Expander " + String(i + 1) + " Address: " + String(GPIO->expander[i].address) +
+                                  ((GPIO->expander[i].valid) ? " Valid" : " Invalid"));
   }
 #endif
 
@@ -341,8 +359,9 @@ void GPIOManager::printTable(OutputInterface* terminal) {
     if ((entry->type == GPIO_UNDEFINED) && (all == false)) printPin = false;
     if ((entry->type == GPIO_RESERVED) && (verbose == false)) printPin = false;
     if (printPin)
-      table.printData(String(i + 1), String(stringType(entry->type)), String(entry->pinNumber), String(stringLocation(entry->location)),
-                      (entry->index == -1) ? " " : String(entry->index), String(entry->getCurrentStatus()), String(entry->description));
+      table.printData(String(i + 1), String(stringType(entry->type)), String(entry->pinNumber),
+                      String(stringLocation(entry->location)), (entry->index == -1) ? " " : String(entry->index),
+                      String(entry->getCurrentStatus()), String(entry->description));
   }
   table.printDone("GPIO Table");
 

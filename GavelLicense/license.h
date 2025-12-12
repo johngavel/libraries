@@ -10,7 +10,7 @@
 #define MAX_LICENSES 20
 
 #define LICENSE LicenseManager::get()
-#define LICENSE_ADD                                                                                                                                            \
+#define LICENSE_ADD                                                                                                    \
   if (LICENSE_AVAILABLE) LicenseManager::addLicense
 #define LICENSE_AVAILABLE LicenseManager::initialized()
 

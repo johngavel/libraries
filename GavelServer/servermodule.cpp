@@ -92,7 +92,8 @@ void ServerModule::setSSEClient(SSEClient* client) {
     CONSOLE->println(ERROR, "Only one SSE Client allowed.");
 }
 
-void ServerModule::setDigitalFile(const char* __filename, const unsigned char* __fileBuffer, unsigned int __fileLength) {
+void ServerModule::setDigitalFile(const char* __filename, const unsigned char* __fileBuffer,
+                                  unsigned int __fileLength) {
   if (currentDigitalFileCount < MAX_PAGES) {
     strncpy(digitalFile[currentDigitalFileCount].filename, (char*) __filename, PAGE_NAME_LENGTH);
     digitalFile[currentDigitalFileCount].fileBuffer = (char*) __fileBuffer;
@@ -266,7 +267,16 @@ static const char* contentType = "Content-Type: multipart/form-data; boundary=--
 static const char* contentDisposition = "Content-Disposition: ";
 static const char* fileNameToken = " :;=\"";
 
-typedef enum { POST_UPLOAD, CHECK_BOUNDARY, FORM_DISP, STRING1, STRING2, FILE_CONTENTS, UPLOAD_DONE, ERROR_STATE } POST_STATE;
+typedef enum {
+  POST_UPLOAD,
+  CHECK_BOUNDARY,
+  FORM_DISP,
+  STRING1,
+  STRING2,
+  FILE_CONTENTS,
+  UPLOAD_DONE,
+  ERROR_STATE
+} POST_STATE;
 
 static char postBuffer[HEADER_LENGTH];
 #define WORKING_LENGTH 128
@@ -350,7 +360,9 @@ bool ServerModule::processPost(char* action) {
             char* postBufferSave;
             fileLength = fileLength - strlen(postBuffer) - 1;
             workingString = strtok_r(postBuffer, fileNameToken, &postBufferSave);
-            while ((workingString != NULL) && strncmp(workingString, "filename", 8) != 0) { workingString = strtok_r(NULL, fileNameToken, &postBufferSave); }
+            while ((workingString != NULL) && strncmp(workingString, "filename", 8) != 0) {
+              workingString = strtok_r(NULL, fileNameToken, &postBufferSave);
+            }
             if (workingString != NULL) {
               workingString = strtok_r(NULL, fileNameToken, &postBufferSave);
               if (workingString != NULL) {
@@ -400,8 +412,8 @@ bool ServerModule::processPost(char* action) {
                 state = ERROR_STATE;
               }
             } else {
-              CONSOLE->println(WARNING, "NOT ENOUGH SPACE FOR FILE: " + String(fileName) + String(" Size: ") + String(fileLength) + String("/") +
-                                            String(FILES->availableSpace()));
+              CONSOLE->println(WARNING, "NOT ENOUGH SPACE FOR FILE: " + String(fileName) + String(" Size: ") +
+                                            String(fileLength) + String("/") + String(FILES->availableSpace()));
               state = ERROR_STATE;
             }
           }
@@ -506,15 +518,18 @@ void ServerModule::pageList(OutputInterface* terminal) {
   terminal->println(PROMPT, "Basic Pages - " + String(currentPageCount));
   for (int i = 0; i < currentPageCount; i++) terminal->println(INFO, "Page: " + String(pages[i]->getPageName()));
   terminal->println(PROMPT, "Process Pages - " + String(currentProcessPageCount));
-  for (int i = 0; i < currentProcessPageCount; i++) terminal->println(INFO, "Page: " + String(processPages[i]->getPageName()));
+  for (int i = 0; i < currentProcessPageCount; i++)
+    terminal->println(INFO, "Page: " + String(processPages[i]->getPageName()));
   terminal->println(PROMPT, "Upload Pages - " + String(currentUploadPageCount));
-  for (int i = 0; i < currentUploadPageCount; i++) terminal->println(INFO, "Page: " + String(uploadPages[i]->getPageName()));
+  for (int i = 0; i < currentUploadPageCount; i++)
+    terminal->println(INFO, "Page: " + String(uploadPages[i]->getPageName()));
   if (sseclient) {
     terminal->println(PROMPT, "SSE Client is set: " + String(sseclient->getSSEEventName()));
     terminal->println(PROMPT, "                   " + String(sseclient->getSSECommandName()));
   } else
     terminal->println(WARNING, "SSE Client is not set.");
-  for (int i = 0; i < currentDigitalFileCount; i++) terminal->println(INFO, "Digital File: " + String(digitalFile[i].filename));
+  for (int i = 0; i < currentDigitalFileCount; i++)
+    terminal->println(INFO, "Digital File: " + String(digitalFile[i].filename));
   terminal->println(PASSED, "Page List Complete");
   terminal->prompt();
 }

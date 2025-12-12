@@ -44,7 +44,8 @@ public:
 private:
   GPIOManager();
   void configureHW();
-  void addPinConfiguration(int index, int pinNumber, GPIO_TYPE type, GPIO_LOCATION location, GPIO_LED_TYPE led_type, const char* description);
+  void addPinConfiguration(int index, int pinNumber, GPIO_TYPE type, GPIO_LOCATION location, GPIO_LED_TYPE led_type,
+                           const char* description);
   static GPIOManager* gpioManager;
   bool validConfiguration(GPIO_LOCATION location, int pinNumber);
   bool validConfiguration(GPIO_LOCATION location, int pinNumber, int index, GPIO_TYPE type);
