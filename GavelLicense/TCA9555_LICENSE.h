@@ -1,5 +1,5 @@
-#ifndef TCALICENSE_H
-#define TCALICENSE_H
+#ifndef __GAVEL_TCALICENSE_AUTO_H
+#define __GAVEL_TCALICENSE_AUTO_H
 
 // LICENSE data converted to C-style header
 const char TCALICENSE[] = {
@@ -63,4 +63,4 @@ const char TCALICENSE[] = {
 const unsigned int TCALICENSE_len = sizeof(TCALICENSE);
 const char TCALICENSE_string[] = "TCA9555_LICENSE";
 
-#endif // TCALICENSE_H
+#endif // __GAVEL_TCALICENSE_AUTO_H

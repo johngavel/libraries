@@ -1,5 +1,5 @@
-#ifndef ADAFRUITSSDLICENSE_H
-#define ADAFRUITSSDLICENSE_H
+#ifndef __GAVEL_ADAFRUITSSDLICENSE_AUTO_H
+#define __GAVEL_ADAFRUITSSDLICENSE_AUTO_H
 
 // license.txt data converted to C-style header
 const char AdafruitSSDlicense[] = {
@@ -85,4 +85,4 @@ const char AdafruitSSDlicense[] = {
 const unsigned int AdafruitSSDlicense_len = sizeof(AdafruitSSDlicense);
 const char AdafruitSSDlicense_string[] = "Adafruit_SSD1306_license.txt";
 
-#endif // ADAFRUITSSDLICENSE_H
+#endif // __GAVEL_ADAFRUITSSDLICENSE_AUTO_H

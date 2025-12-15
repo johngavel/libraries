@@ -1,5 +1,5 @@
-#ifndef ADAFRUITNEOPIXELCOPYING_H
-#define ADAFRUITNEOPIXELCOPYING_H
+#ifndef __GAVEL_ADAFRUITNEOPIXELCOPYING_AUTO_H
+#define __GAVEL_ADAFRUITNEOPIXELCOPYING_AUTO_H
 
 // COPYING data converted to C-style header
 const char AdafruitNeoPixelCOPYING[] = {
@@ -409,4 +409,4 @@ const char AdafruitNeoPixelCOPYING[] = {
 const unsigned int AdafruitNeoPixelCOPYING_len = sizeof(AdafruitNeoPixelCOPYING);
 const char AdafruitNeoPixelCOPYING_string[] = "Adafruit_NeoPixel_COPYING";
 
-#endif // ADAFRUITNEOPIXELCOPYING_H
+#endif // __GAVEL_ADAFRUITNEOPIXELCOPYING_AUTO_H

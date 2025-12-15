@@ -1,5 +1,5 @@
-#ifndef ADAFRUITUNIFIEDSENSORLICENSE_H
-#define ADAFRUITUNIFIEDSENSORLICENSE_H
+#ifndef __GAVEL_ADAFRUITUNIFIEDSENSORLICENSE_AUTO_H
+#define __GAVEL_ADAFRUITUNIFIEDSENSORLICENSE_AUTO_H
 
 // LICENSE.txt data converted to C-style header
 const char AdafruitUnifiedSensorLICENSE[] = {
@@ -604,4 +604,4 @@ const char AdafruitUnifiedSensorLICENSE[] = {
 const unsigned int AdafruitUnifiedSensorLICENSE_len = sizeof(AdafruitUnifiedSensorLICENSE);
 const char AdafruitUnifiedSensorLICENSE_string[] = "Adafruit_Unified_Sensor_LICENSE.txt";
 
-#endif // ADAFRUITUNIFIEDSENSORLICENSE_H
+#endif // __GAVEL_ADAFRUITUNIFIEDSENSORLICENSE_AUTO_H

@@ -1,5 +1,5 @@
-#ifndef ICEEPROMLICENSE_H
-#define ICEEPROMLICENSE_H
+#ifndef __GAVEL_ICEEPROMLICENSE_AUTO_H
+#define __GAVEL_ICEEPROMLICENSE_AUTO_H
 
 // LICENSE data converted to C-style header
 const char ICEEPROMLICENSE[] = {
@@ -63,4 +63,4 @@ const char ICEEPROMLICENSE[] = {
 const unsigned int ICEEPROMLICENSE_len = sizeof(ICEEPROMLICENSE);
 const char ICEEPROMLICENSE_string[] = "I2C_EEPROM_LICENSE";
 
-#endif // ICEEPROMLICENSE_H
+#endif // __GAVEL_ICEEPROMLICENSE_AUTO_H

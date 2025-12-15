@@ -1,5 +1,5 @@
-#ifndef DHTSENSORLIBRARYLICENSE_H
-#define DHTSENSORLIBRARYLICENSE_H
+#ifndef __GAVEL_DHTSENSORLIBRARYLICENSE_AUTO_H
+#define __GAVEL_DHTSENSORLIBRARYLICENSE_AUTO_H
 
 // license.txt data converted to C-style header
 const char DHTsensorlibrarylicense[] = {
@@ -62,4 +62,4 @@ const char DHTsensorlibrarylicense[] = {
 const unsigned int DHTsensorlibrarylicense_len = sizeof(DHTsensorlibrarylicense);
 const char DHTsensorlibrarylicense_string[] = "DHT_sensor_library_license.txt";
 
-#endif // DHTSENSORLIBRARYLICENSE_H
+#endif // __GAVEL_DHTSENSORLIBRARYLICENSE_AUTO_H

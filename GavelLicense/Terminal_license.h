@@ -1,5 +1,5 @@
-#ifndef TERMINALLICENSE_H
-#define TERMINALLICENSE_H
+#ifndef __GAVEL_TERMINALLICENSE_AUTO_H
+#define __GAVEL_TERMINALLICENSE_AUTO_H
 
 // license.txt data converted to C-style header
 const char Terminallicense[] = {
@@ -63,4 +63,4 @@ const char Terminallicense[] = {
 const unsigned int Terminallicense_len = sizeof(Terminallicense);
 const char Terminallicense_string[] = "Terminal_license.txt";
 
-#endif // TERMINALLICENSE_H
+#endif // __GAVEL_TERMINALLICENSE_AUTO_H

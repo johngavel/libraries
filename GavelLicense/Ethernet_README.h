@@ -1,5 +1,5 @@
-#ifndef ETHERNETREADME_H
-#define ETHERNETREADME_H
+#ifndef __GAVEL_ETHERNETREADME_AUTO_H
+#define __GAVEL_ETHERNETREADME_AUTO_H
 
 // README.adoc data converted to C-style header
 const char EthernetREADME[] = {
@@ -101,4 +101,4 @@ const char EthernetREADME[] = {
 const unsigned int EthernetREADME_len = sizeof(EthernetREADME);
 const char EthernetREADME_string[] = "Ethernet_README.adoc";
 
-#endif // ETHERNETREADME_H
+#endif // __GAVEL_ETHERNETREADME_AUTO_H

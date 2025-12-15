@@ -1,5 +1,5 @@
-#ifndef ADAFRUITGFXLIBRARYLICENSE_H
-#define ADAFRUITGFXLIBRARYLICENSE_H
+#ifndef __GAVEL_ADAFRUITGFXLIBRARYLICENSE_AUTO_H
+#define __GAVEL_ADAFRUITGFXLIBRARYLICENSE_AUTO_H
 
 // license.txt data converted to C-style header
 const char AdafruitGFXLibrarylicense[] = {
@@ -77,4 +77,4 @@ const char AdafruitGFXLibrarylicense[] = {
 const unsigned int AdafruitGFXLibrarylicense_len = sizeof(AdafruitGFXLibrarylicense);
 const char AdafruitGFXLibrarylicense_string[] = "Adafruit_GFX_Library_license.txt";
 
-#endif // ADAFRUITGFXLIBRARYLICENSE_H
+#endif // __GAVEL_ADAFRUITGFXLIBRARYLICENSE_AUTO_H

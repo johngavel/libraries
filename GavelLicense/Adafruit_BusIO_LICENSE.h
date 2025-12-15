@@ -1,5 +1,5 @@
-#ifndef ADAFRUITBUSIOLICENSE_H
-#define ADAFRUITBUSIOLICENSE_H
+#ifndef __GAVEL_ADAFRUITBUSIOLICENSE_AUTO_H
+#define __GAVEL_ADAFRUITBUSIOLICENSE_AUTO_H
 
 // LICENSE data converted to C-style header
 const char AdafruitBusIOLICENSE[] = {
@@ -64,4 +64,4 @@ const char AdafruitBusIOLICENSE[] = {
 const unsigned int AdafruitBusIOLICENSE_len = sizeof(AdafruitBusIOLICENSE);
 const char AdafruitBusIOLICENSE_string[] = "Adafruit_BusIO_LICENSE";
 
-#endif // ADAFRUITBUSIOLICENSE_H
+#endif // __GAVEL_ADAFRUITBUSIOLICENSE_AUTO_H

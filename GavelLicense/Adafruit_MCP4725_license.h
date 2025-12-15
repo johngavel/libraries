@@ -1,5 +1,5 @@
-#ifndef ADAFRUITMCPLICENSE_H
-#define ADAFRUITMCPLICENSE_H
+#ifndef __GAVEL_ADAFRUITMCPLICENSE_AUTO_H
+#define __GAVEL_ADAFRUITMCPLICENSE_AUTO_H
 
 // license.txt data converted to C-style header
 const char AdafruitMCPlicense[] = {
@@ -85,4 +85,4 @@ const char AdafruitMCPlicense[] = {
 const unsigned int AdafruitMCPlicense_len = sizeof(AdafruitMCPlicense);
 const char AdafruitMCPlicense_string[] = "Adafruit_MCP4725_license.txt";
 
-#endif // ADAFRUITMCPLICENSE_H
+#endif // __GAVEL_ADAFRUITMCPLICENSE_AUTO_H
