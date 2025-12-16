@@ -92,8 +92,7 @@ void ServerModule::setSSEClient(SSEClient* client) {
     CONSOLE->println(ERROR, "Only one SSE Client allowed.");
 }
 
-void ServerModule::setDigitalFile(const char* __filename, const unsigned char* __fileBuffer,
-                                  unsigned int __fileLength) {
+void ServerModule::setDigitalFile(const char* __filename, const char* __fileBuffer, unsigned int __fileLength) {
   if (currentDigitalFileCount < MAX_PAGES) {
     strncpy(digitalFile[currentDigitalFileCount].filename, (char*) __filename, PAGE_NAME_LENGTH);
     digitalFile[currentDigitalFileCount].fileBuffer = (char*) __fileBuffer;

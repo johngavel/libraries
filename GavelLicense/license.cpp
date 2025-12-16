@@ -24,7 +24,8 @@ void LicenseManager::setup() {
         if (oldLicense.libraryInfoIndex != LIBRARY_INFO_INDEX_MISSING) {
           libraryInfo = (LibraryInfo*) &libraries[oldLicense.libraryInfoIndex];
           String location = "license/" + String(libraryInfo->license_name);
-          SERVER->setDigitalFile(location.c_str(), libraryInfo->license_buffer, libraryInfo->license_size);
+          SERVER->setDigitalFile(location.c_str(), (const char*) libraryInfo->license_buffer,
+                                 libraryInfo->license_size);
         }
       }
     }
