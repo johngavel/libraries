@@ -12,6 +12,7 @@
 // #define ADAFRUIT_NEOPIXEL_USED
 // #define ADAFRUIT_SSD1306_USED
 // #define ADAFRUIT_UNIFIED_SENSOR_USED
+// #define ARDUINOJSON_USED
 // #define DHT_SENSOR_LIBRARY_USED
 // #define ETHERNET_USED
 // #define I2C_EEPROM_USED
@@ -36,6 +37,9 @@
 #endif
 #ifdef ADAFRUIT_UNIFIED_SENSOR_USED
 #include "Adafruit_Unified_Sensor_LICENSE.h"
+#endif
+#ifdef ARDUINOJSON_USED
+#include "ArduinoJson_LICENSE.h"
 #endif
 #ifdef DHT_SENSOR_LIBRARY_USED
 #include "DHT_sensor_library_license.h"
@@ -102,6 +106,12 @@ static const LibraryInfo libraries[] = {
 #else
     NULL_LIBRARY_ENTRY("Adafruit Unified Sensor"),
 #endif
+#ifdef ARDUINOJSONLICENSE_H
+    {"ArduinoJson", "7.4.2", "ArduinoJson_LICENSE.txt", ArduinoJsonLICENSE, ArduinoJsonLICENSE_len,
+     ArduinoJsonLICENSE_string},
+#else
+    NULL_LIBRARY_ENTRY("ArduinoJson"),
+#endif
 #ifdef DHTSENSORLIBRARYLICENSE_H
     {"DHT sensor library", "1.4.6", "DHT_sensor_library_license.txt", DHTsensorlibrarylicense,
      DHTsensorlibrarylicense_len, DHTsensorlibrarylicense_string},
@@ -139,11 +149,12 @@ static const LibraryInfo libraries[] = {
 #define ADAFRUIT_NEOPIXEL_LICENSE LICENSE_ADD(libraries[3], 3)
 #define ADAFRUIT_SSD1306_LICENSE LICENSE_ADD(libraries[4], 4)
 #define ADAFRUIT_UNIFIED_SENSOR_LICENSE LICENSE_ADD(libraries[5], 5)
-#define DHT_SENSOR_LIBRARY_LICENSE LICENSE_ADD(libraries[6], 6)
-#define ETHERNET_LICENSE LICENSE_ADD(libraries[7], 7)
-#define I2C_EEPROM_LICENSE LICENSE_ADD(libraries[8], 8)
-#define TCA9555_LICENSE LICENSE_ADD(libraries[9], 9)
-#define TERMINAL_LICENSE LICENSE_ADD(libraries[10], 10)
+#define ARDUINOJSON_LICENSE LICENSE_ADD(libraries[6], 6)
+#define DHT_SENSOR_LIBRARY_LICENSE LICENSE_ADD(libraries[7], 7)
+#define ETHERNET_LICENSE LICENSE_ADD(libraries[8], 8)
+#define I2C_EEPROM_LICENSE LICENSE_ADD(libraries[9], 9)
+#define TCA9555_LICENSE LICENSE_ADD(libraries[10], 10)
+#define TERMINAL_LICENSE LICENSE_ADD(libraries[11], 11)
 #define RASPBERRY_PICO_LICENSE LICENSE_ADD("Arduino-Pico", "5.4.4", "Pico_LICENSE", -1)
 
 #endif /* LIBRARIES_H */
