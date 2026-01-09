@@ -129,7 +129,7 @@ static const LibraryInfo libraries[] = {
     NULL_LIBRARY_ENTRY("I2C_EEPROM"),
 #endif
 #ifdef TCALICENSE_H
-    {"TCA9555", "0.4.3", "TCA9555_LICENSE", TCALICENSE, TCALICENSE_len, TCALICENSE_string},
+    {"TCA9555", "0.4.4", "TCA9555_LICENSE", TCALICENSE, TCALICENSE_len, TCALICENSE_string},
 #else
     NULL_LIBRARY_ENTRY("TCA9555"),
 #endif
