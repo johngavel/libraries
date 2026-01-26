@@ -155,6 +155,6 @@ static const LibraryInfo libraries[] = {
 #define I2C_EEPROM_LICENSE LICENSE_ADD(libraries[9], 9)
 #define TCA9555_LICENSE LICENSE_ADD(libraries[10], 10)
 #define TERMINAL_LICENSE LICENSE_ADD(libraries[11], 11)
-#define RASPBERRY_PICO_LICENSE LICENSE_ADD("Arduino-Pico", "5.4.4", "Pico_LICENSE", -1)
+#define RASPBERRY_PICO_LICENSE LICENSE_ADD("Arduino-Pico", "5.5.0", "Pico_LICENSE", -1)
 
 #endif /* LIBRARIES_H */
