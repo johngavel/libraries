@@ -89,7 +89,7 @@ static const LibraryInfo libraries[] = {
     NULL_LIBRARY_ENTRY("Adafruit MCP4725"),
 #endif
 #ifdef ADAFRUITNEOPIXELCOPYING_H
-    {"Adafruit NeoPixel", "1.15.3", "Adafruit_NeoPixel_COPYING", AdafruitNeoPixelCOPYING, AdafruitNeoPixelCOPYING_len,
+    {"Adafruit NeoPixel", "1.15.4", "Adafruit_NeoPixel_COPYING", AdafruitNeoPixelCOPYING, AdafruitNeoPixelCOPYING_len,
      AdafruitNeoPixelCOPYING_string},
 #else
     NULL_LIBRARY_ENTRY("Adafruit NeoPixel"),
