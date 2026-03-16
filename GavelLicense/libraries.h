@@ -77,7 +77,7 @@ static const LibraryInfo libraries[] = {
     NULL_LIBRARY_ENTRY("Adafruit BusIO"),
 #endif
 #ifdef ADAFRUITGFXLIBRARYLICENSE_H
-    {"Adafruit GFX Library", "1.12.4", "Adafruit_GFX_Library_license.txt", AdafruitGFXLibrarylicense,
+    {"Adafruit GFX Library", "1.12.5", "Adafruit_GFX_Library_license.txt", AdafruitGFXLibrarylicense,
      AdafruitGFXLibrarylicense_len, AdafruitGFXLibrarylicense_string},
 #else
     NULL_LIBRARY_ENTRY("Adafruit GFX Library"),
@@ -107,13 +107,13 @@ static const LibraryInfo libraries[] = {
     NULL_LIBRARY_ENTRY("Adafruit Unified Sensor"),
 #endif
 #ifdef ARDUINOJSONLICENSE_H
-    {"ArduinoJson", "7.4.2", "ArduinoJson_LICENSE.txt", ArduinoJsonLICENSE, ArduinoJsonLICENSE_len,
+    {"ArduinoJson", "7.4.3", "ArduinoJson_LICENSE.txt", ArduinoJsonLICENSE, ArduinoJsonLICENSE_len,
      ArduinoJsonLICENSE_string},
 #else
     NULL_LIBRARY_ENTRY("ArduinoJson"),
 #endif
 #ifdef DHTSENSORLIBRARYLICENSE_H
-    {"DHT sensor library", "1.4.6", "DHT_sensor_library_license.txt", DHTsensorlibrarylicense,
+    {"DHT sensor library", "1.4.7", "DHT_sensor_library_license.txt", DHTsensorlibrarylicense,
      DHTsensorlibrarylicense_len, DHTsensorlibrarylicense_string},
 #else
     NULL_LIBRARY_ENTRY("DHT sensor library"),
@@ -155,6 +155,6 @@ static const LibraryInfo libraries[] = {
 #define I2C_EEPROM_LICENSE LICENSE_ADD(libraries[9], 9)
 #define TCA9555_LICENSE LICENSE_ADD(libraries[10], 10)
 #define TERMINAL_LICENSE LICENSE_ADD(libraries[11], 11)
-#define RASPBERRY_PICO_LICENSE LICENSE_ADD("Arduino-Pico", "5.5.0", "Pico_LICENSE", -1)
+#define RASPBERRY_PICO_LICENSE LICENSE_ADD("Arduino-Pico", "5.5.1", "Pico_LICENSE", -1)
 
 #endif /* LIBRARIES_H */
