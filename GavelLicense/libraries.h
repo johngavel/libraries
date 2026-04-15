@@ -77,7 +77,7 @@ static const LibraryInfo libraries[] = {
     NULL_LIBRARY_ENTRY("Adafruit BusIO"),
 #endif
 #ifdef ADAFRUITGFXLIBRARYLICENSE_H
-    {"Adafruit GFX Library", "1.12.5", "Adafruit_GFX_Library_license.txt", AdafruitGFXLibrarylicense,
+    {"Adafruit GFX Library", "1.12.6", "Adafruit_GFX_Library_license.txt", AdafruitGFXLibrarylicense,
      AdafruitGFXLibrarylicense_len, AdafruitGFXLibrarylicense_string},
 #else
     NULL_LIBRARY_ENTRY("Adafruit GFX Library"),
