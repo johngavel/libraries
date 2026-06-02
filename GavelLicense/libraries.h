@@ -95,7 +95,7 @@ static const LibraryInfo libraries[] = {
     NULL_LIBRARY_ENTRY("Adafruit NeoPixel"),
 #endif
 #ifdef ADAFRUITSSDLICENSE_H
-    {"Adafruit SSD1306", "2.5.16", "Adafruit_SSD1306_license.txt", AdafruitSSDlicense, AdafruitSSDlicense_len,
+    {"Adafruit SSD1306", "2.5.17", "Adafruit_SSD1306_license.txt", AdafruitSSDlicense, AdafruitSSDlicense_len,
      AdafruitSSDlicense_string},
 #else
     NULL_LIBRARY_ENTRY("Adafruit SSD1306"),
