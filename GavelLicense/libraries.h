@@ -134,7 +134,7 @@ static const LibraryInfo libraries[] = {
     NULL_LIBRARY_ENTRY("TCA9555"),
 #endif
 #ifdef TERMINALLICENSE_H
-    {"Terminal", "1.0.12", "Terminal_license.txt", Terminallicense, Terminallicense_len, Terminallicense_string},
+    {"Terminal", "1.0.13", "Terminal_license.txt", Terminallicense, Terminallicense_len, Terminallicense_string},
 #else
     NULL_LIBRARY_ENTRY("Terminal"),
 #endif
