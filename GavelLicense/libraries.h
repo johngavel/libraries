@@ -77,7 +77,7 @@ static const LibraryInfo libraries[] = {
     NULL_LIBRARY_ENTRY("Adafruit BusIO"),
 #endif
 #ifdef ADAFRUITGFXLIBRARYLICENSE_H
-    {"Adafruit GFX Library", "1.12.6", "Adafruit_GFX_Library_license.txt", AdafruitGFXLibrarylicense,
+    {"Adafruit GFX Library", "1.13.0", "Adafruit_GFX_Library_license.txt", AdafruitGFXLibrarylicense,
      AdafruitGFXLibrarylicense_len, AdafruitGFXLibrarylicense_string},
 #else
     NULL_LIBRARY_ENTRY("Adafruit GFX Library"),
@@ -155,6 +155,6 @@ static const LibraryInfo libraries[] = {
 #define I2C_EEPROM_LICENSE LICENSE_ADD(libraries[9], 9)
 #define TCA9555_LICENSE LICENSE_ADD(libraries[10], 10)
 #define TERMINAL_LICENSE LICENSE_ADD(libraries[11], 11)
-#define RASPBERRY_PICO_LICENSE LICENSE_ADD("Arduino-Pico", "6.2.0", "Pico_LICENSE", -1)
+#define RASPBERRY_PICO_LICENSE LICENSE_ADD("Arduino-Pico", "6.3.0", "Pico_LICENSE", -1)
 
 #endif /* LIBRARIES_H */
