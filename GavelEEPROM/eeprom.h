@@ -46,7 +46,7 @@ public:
   Mutex mutex;
 
 private:
-  EEpromMemory() : Task("EEPROM"){};
+  EEpromMemory() : Task("EEPROM") {};
   static EEpromMemory* eeprom;
   void readEEPROM();
   void writeEEPROM();

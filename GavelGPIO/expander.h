@@ -12,7 +12,7 @@
 
 class EXPANDER {
 public:
-  EXPANDER() : configured(false), valid(false), address(0x00), TCA1(nullptr){};
+  EXPANDER() : configured(false), valid(false), address(0x00), TCA1(nullptr) {};
   bool configured;
   bool valid;
   int address;

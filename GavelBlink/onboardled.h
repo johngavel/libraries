@@ -14,7 +14,7 @@ public:
   virtual void executeTask();
 
 private:
-  Blink() : Task("Blink"), state(true){};
+  Blink() : Task("Blink"), state(true) {};
   static Blink* blink;
   bool state;
 };

@@ -25,7 +25,7 @@ private:
 
 class ProcessPage : public BasicPage {
 public:
-  ProcessPage() : parametersProcessed(false){};
+  ProcessPage() : parametersProcessed(false) {};
   virtual void processParameterList() = 0;
   bool parametersProcessed;
 

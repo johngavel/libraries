@@ -12,8 +12,8 @@ typedef enum { HW_UNKNOWN, HW_RP2040_ZERO, HW_RASPBERRYPI_PICO, HW_RASPBERRYPI_P
 class HardwareSerialPort {
 public:
   HardwareSerialPort(SerialUART* __serial, unsigned long __pintx, unsigned long __pinrx)
-      : serialUART(__serial), pintx(__pintx), pinrx(__pinrx){};
-  HardwareSerialPort() : serialUART(nullptr), pintx(-1), pinrx(-1){};
+      : serialUART(__serial), pintx(__pintx), pinrx(__pinrx) {};
+  HardwareSerialPort() : serialUART(nullptr), pintx(-1), pinrx(-1) {};
   SerialUART* serialUART;
   unsigned long pintx;
   unsigned long pinrx;
@@ -23,7 +23,7 @@ public:
 class HardwareWire {
 public:
   HardwareWire(TwoWire* __wire, unsigned long __pinSDA, unsigned long __pinSCL)
-      : wire(__wire), pinSDA(__pinSDA), pinSCL(__pinSCL){};
+      : wire(__wire), pinSDA(__pinSDA), pinSCL(__pinSCL) {};
   TwoWire* wire;
   unsigned long pinSDA;
   unsigned long pinSCL;
@@ -60,7 +60,7 @@ public:
   static Mutex* get();
 
 private:
-  Communication(){};
+  Communication() {};
   static Mutex* mutex;
 };
 

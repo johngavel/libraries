@@ -13,7 +13,7 @@ public:
   void setup();
 
 private:
-  Scan(){};
+  Scan() {};
   static Scan* scanner;
   static void scani2c(OutputInterface* terminal);
 };

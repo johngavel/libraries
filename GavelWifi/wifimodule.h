@@ -33,7 +33,7 @@ public:
   byte* macAddress;
 
 private:
-  WifiModule() : Task("WifiModule"), ipChanged(false), isConfigured(false), macAddress(nullptr){};
+  WifiModule() : Task("WifiModule"), ipChanged(false), isConfigured(false), macAddress(nullptr) {};
   static WifiModule* wifiModule;
   bool setupWifi();
 
@@ -46,7 +46,7 @@ private:
 
 class WirelessClientManager {
 public:
-  WirelessClientManager(){};
+  WirelessClientManager() {};
   Client* setClient(WiFiClient __client);
 
 private:
@@ -56,7 +56,7 @@ private:
 
 class WifiServer : public VirtualServer {
 public:
-  WifiServer(int __port) : server(nullptr), port(__port){};
+  WifiServer(int __port) : server(nullptr), port(__port) {};
   void begin();
   Client* accept();
   VirtualNetwork* getNetworkInterface() { return WIFI; };

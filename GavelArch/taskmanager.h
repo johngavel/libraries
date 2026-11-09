@@ -10,7 +10,7 @@
 
 class Task : public Timer {
 public:
-  Task(String __name) : name(__name){};
+  Task(String __name) : name(__name) {};
   void setup();
   void loop();
   virtual void setupTask() = 0;

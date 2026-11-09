@@ -38,7 +38,7 @@ public:
   bool isDHCP = false;
 
 private:
-  EthernetModule() : Task("EthernetModule"), ipChanged(false){};
+  EthernetModule() : Task("EthernetModule"), ipChanged(false) {};
   static EthernetModule* ethernetModule;
   bool setupSPI();
   bool resetW5500();
@@ -55,7 +55,7 @@ private:
 
 class WiredClientManager {
 public:
-  WiredClientManager(){};
+  WiredClientManager() {};
   Client* setClient(EthernetClient __client);
 
 private:
@@ -65,7 +65,7 @@ private:
 
 class WiredServer : public VirtualServer {
 public:
-  WiredServer(int __port) : port(__port){};
+  WiredServer(int __port) : port(__port) {};
   void begin();
   Client* accept();
   VirtualNetwork* getNetworkInterface() { return ETHERNET; };

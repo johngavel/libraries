@@ -28,7 +28,7 @@ void Task::loop() {
 
 TaskManager* TaskManager::taskManager = nullptr;
 
-TaskManager::TaskManager() : queue(20, sizeof(Task*)){};
+TaskManager::TaskManager() : queue(20, sizeof(Task*)) {};
 
 void TaskManager::setup() {
   TERM_CMD->addCmd("system", "", "Prints a list of Tasks running in the system", systemCmd);

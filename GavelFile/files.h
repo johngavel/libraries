@@ -28,7 +28,7 @@ public:
   void UPGRADE_SYSTEM();
 
 private:
-  Files(){};
+  Files() {};
   static Files* files;
 
   static void deleteCommand(OutputInterface* terminal);

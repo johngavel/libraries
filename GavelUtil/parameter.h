@@ -10,7 +10,7 @@ class ParameterList {
 public:
   class Parameter {
   public:
-    Parameter() : parameter(""), value(""){};
+    Parameter() : parameter(""), value("") {};
     String parameter;
     String value;
   };
@@ -22,7 +22,7 @@ public:
   String getValue(int index);
 
 private:
-  ParameterList() : parameterCount(0){};
+  ParameterList() : parameterCount(0) {};
   static ParameterList* list;
   Parameter parameters[MAX_PARAMETERS];
   int parameterCount;

@@ -67,7 +67,9 @@ typedef struct {
 } LibraryInfo;
 
 #define NULL_LIBRARY_ENTRY(s)                                                                                          \
-  { s, "0.0", "null", nullptr, 0, }
+  {                                                                                                                    \
+      s, "0.0", "null", nullptr, 0,                                                                                    \
+  }
 
 static const LibraryInfo libraries[] = {
 #ifdef ADAFRUITBUSIOLICENSE_H
